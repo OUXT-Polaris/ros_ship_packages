@@ -1,0 +1,17 @@
+<launch>
+    <param name="robot_description" command="$(find xacro)/xacro --check-order $(find ros_ship_description)/robots/ros_ship.urdf.xacro" />
+
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find ros_ship_description)/config/urdf.rviz" required="true" />
+
+    <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+      <arg name="use_sim_time" value="true"/>
+      <arg name="paused" value="false"/>
+    </include>
+
+    <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
+    <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+      args="-urdf -model ros_ship -param robot_description -x 0 -y 0 -z 1"/>
+
+    <include file="$(find ros_ship_control)/launch/ros_ship_control.launch"/>
+</launch>

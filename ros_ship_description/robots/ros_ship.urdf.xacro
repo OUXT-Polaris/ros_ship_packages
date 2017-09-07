@@ -1,0 +1,286 @@
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="ros_ship">
+
+  <xacro:property name="camera_position_x" value="1.6" />
+  <xacro:property name="camera_position_y" value="0.06" />
+  <xacro:property name="camera_position_z" value="0.21" />
+
+  <xacro:property name="motor_position_x" value="-0.85" />
+  <xacro:property name="motor_position_y" value="0.325" />
+  <xacro:property name="motor_position_z" value="-0.15" />
+
+  <link name="base_footprint"/>
+
+  <joint name="base_link_joint" type="fixed">
+    <origin xyz="0 0 0.3"/>
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+  </joint>
+
+  <link name="base_link">
+     <visual>
+      <geometry>
+        <mesh filename="package://ros_ship_description/mesh/ROS_SHIP.dae"/>
+      </geometry>
+    </visual>
+    <collision name="base_link_collision">
+      <geometry>
+        <mesh filename="package://ros_ship_description/mesh/ROS_SHIP.dae"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="95.7802"/>
+      <inertia ixx="57.28" ixy="0.00" ixz="-0.23" iyy="57.28" iyz="0.00" izz="6.09"/>
+    </inertial>
+  </link>
+
+  <xacro:include filename="$(find velodyne_description)/urdf/VLP-16.urdf.xacro"/>
+  <VLP-16 parent="base_link" name="velodyne" topic="/velodyne_points">
+    <origin xyz="1.4 0 0.55" rpy="0 0 0" />
+  </VLP-16>
+
+  <joint name="camera_r_joint" type="fixed">
+    <origin xyz="${camera_position_x} ${-1*camera_position_y} ${camera_position_z}"/>
+    <parent link="base_link"/>
+    <child link="camera_r"/>
+  </joint>
+
+  <link name="camera_r">
+    <visual>
+     <geometry>
+       <mesh filename="package://ros_ship_description/mesh/CAMERA.dae"/>
+     </geometry>
+    </visual>
+    <collision name="camera_r_collision">
+      <geometry>
+        <mesh filename="package://ros_ship_description/mesh/CAMERA.dae"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.00" ixy="0.00" ixz="0.00" iyy="0.00" iyz="0.00" izz="0.00"/>
+    </inertial>
+  </link>
+
+  <joint name="camera_l_joint" type="fixed">
+    <origin xyz="${camera_position_x} ${camera_position_y} ${camera_position_z}"/>
+    <parent link="base_link"/>
+    <child link="camera_l"/>
+  </joint>
+
+  <link name="camera_l">
+    <visual>
+     <geometry>
+       <mesh filename="package://ros_ship_description/mesh/CAMERA.dae"/>
+     </geometry>
+    </visual>
+    <collision name="camera_l_collision">
+      <geometry>
+        <mesh filename="package://ros_ship_description/mesh/CAMERA.dae"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.00" ixy="0.00" ixz="0.00" iyy="0.00" iyz="0.00" izz="0.00"/>
+    </inertial>
+  </link>
+
+  <joint name="motor_r_joint" type="fixed">
+    <origin xyz="${motor_position_x} ${-1*motor_position_y} ${motor_position_z}" rpy="0 0 ${pi}"/>
+    <parent link="base_link"/>
+    <child link="motor_r"/>
+  </joint>
+
+  <link name="motor_r">
+    <visual>
+     <geometry>
+       <mesh filename="package://ros_ship_description/mesh/MOTOR.dae"/>
+     </geometry>
+    </visual>
+    <collision name="motor_r_collision">
+      <geometry>
+        <mesh filename="package://ros_ship_description/mesh/MOTOR.dae"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.28"/>
+      <inertia ixx="0.0001" ixy="0.00" ixz="0.00" iyy="0.0001" iyz="0.00" izz="0.0001"/>
+    </inertial>
+  </link>
+
+  <joint name="propeller_r_joint" type="continuous">
+    <origin xyz="0.17 0 0.026" rpy="0 0 ${pi}"/>
+    <parent link="motor_r"/>
+    <child link="propeller_r"/>
+  </joint>
+
+  <link name="propeller_r">
+    <visual>
+     <geometry>
+       <mesh filename="package://ros_ship_description/mesh/PROPELLER.dae"/>
+     </geometry>
+    </visual>
+    <collision name="propeller_r_collision">
+      <geometry>
+        <mesh filename="package://ros_ship_description/mesh/PROPELLER.dae"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.28"/>
+      <inertia ixx="0.00086" ixy="0.00" ixz="0.00" iyy="0.00086" iyz="0.00" izz="0.0017"/>
+    </inertial>
+  </link>
+
+  <joint name="motor_l_joint" type="fixed">
+    <origin xyz="${motor_position_x} ${motor_position_y} ${motor_position_z}" rpy="0 0 ${pi}"/>
+    <parent link="base_link"/>
+    <child link="motor_l"/>
+  </joint>
+
+  <link name="motor_l">
+    <visual>
+     <geometry>
+       <mesh filename="package://ros_ship_description/mesh/MOTOR.dae"/>
+     </geometry>
+    </visual>
+    <collision name="motor_r_collision">
+      <geometry>
+        <mesh filename="package://ros_ship_description/mesh/MOTOR.dae"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.28"/>
+      <inertia ixx="0.00" ixy="0.00" ixz="0.00" iyy="0.00" iyz="0.00" izz="0.00"/>
+    </inertial>
+  </link>
+
+  <joint name="propeller_l_joint" type="continuous">
+    <origin xyz="0.17 0 0.026" rpy="0 0 ${pi}"/>
+    <parent link="motor_l"/>
+    <child link="propeller_l"/>
+  </joint>
+
+  <link name="propeller_l">
+    <visual>
+     <geometry>
+       <mesh filename="package://ros_ship_description/mesh/PROPELLER.dae"/>
+     </geometry>
+    </visual>
+    <collision name="propeller_l_collision">
+      <geometry>
+        <mesh filename="package://ros_ship_description/mesh/PROPELLER.dae"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.28"/>
+      <inertia ixx="0.00086" ixy="0.00" ixz="0.00" iyy="0.00086" iyz="0.00" izz="0.0017"/>
+    </inertial>
+  </link>
+
+  <transmission name="motor_r_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="propeller_r_joint">
+      <hardwareInterface>VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor_r_actuator">
+      <hardwareInterface>VelocityJointInterface</hardwareInterface>
+      <mechanicalReduction>30</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="motor_l_trans">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="propeller_l_joint">
+      <hardwareInterface>VelocityJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor_l_actuator">
+      <hardwareInterface>VelocityJointInterface</hardwareInterface>
+      <mechanicalReduction>30</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/ros_ship</robotNamespace>
+    </plugin>
+  </gazebo>
+
+  <gazebo reference="camera_r">
+    <sensor type="camera" name="camera_r">
+      <update_rate>30.0</update_rate>
+      <camera name="head">
+        <horizontal_fov>1.3962634</horizontal_fov>
+        <image>
+          <width>640</width>
+          <height>480</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.02</near>
+          <far>300</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <!-- Noise is sampled independently per pixel on each frame.
+               That pixel's noise value is added to each of its color
+               channels, which at that point lie in the range [0,1]. -->
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
+      </camera>
+      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>0.0</updateRate>
+        <cameraName>ros_ship/camera_r</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>camera_link</frameName>
+        <hackBaseline>0.07</hackBaseline>
+        <distortionK1>0.0</distortionK1>
+        <distortionK2>0.0</distortionK2>
+        <distortionK3>0.0</distortionK3>
+        <distortionT1>0.0</distortionT1>
+        <distortionT2>0.0</distortionT2>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <gazebo reference="camera_l">
+    <sensor type="camera" name="camera_l">
+      <update_rate>30.0</update_rate>
+      <camera name="head">
+        <horizontal_fov>1.3962634</horizontal_fov>
+        <image>
+          <width>640</width>
+          <height>480</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.02</near>
+          <far>300</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <!-- Noise is sampled independently per pixel on each frame.
+               That pixel's noise value is added to each of its color
+               channels, which at that point lie in the range [0,1]. -->
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
+      </camera>
+      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>0.0</updateRate>
+        <cameraName>ros_ship/camera_l</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>camera_link</frameName>
+        <hackBaseline>0.07</hackBaseline>
+        <distortionK1>0.0</distortionK1>
+        <distortionK2>0.0</distortionK2>
+        <distortionK3>0.0</distortionK3>
+        <distortionT1>0.0</distortionT1>
+        <distortionT2>0.0</distortionT2>
+      </plugin>
+    </sensor>
+  </gazebo>
+</robot>
