@@ -285,13 +285,13 @@
   <gazebo>
     <plugin name="simple_buoyancy" filename="libsimple_buoyancy_plugin.so">
       <target_link>base_footprint</target_link>
-      <water_surface_height>1</water_surface_height>
       <cob_x>0.375</cob_x>
       <cob_y>0</cob_y>
       <cob_z>0.25</cob_z>
       <bbox_x>2.75</bbox_x>
       <bbox_y>1.0</bbox_y>
       <bbox_z>0.5</bbox_z>
+      <publish_data>true</publish_data>
     </plugin>
     <plugin name="simple_buoyancy" filename="libworld_frame_publisher_plugin.so">
       <reference_link>base_footprint</reference_link>

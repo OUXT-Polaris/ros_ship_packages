@@ -1,5 +1,6 @@
 <launch>
     <param name="robot_description" command="$(find xacro)/xacro --check-order $(find ros_ship_description)/robots/ros_ship.urdf.xacro" />
+    <param name="water_surface_height" value="1.0" type="double"/>
 
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find ros_ship_description)/config/urdf.rviz" required="true" />
 

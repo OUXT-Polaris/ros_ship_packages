@@ -158,6 +158,31 @@ Visualization Manager:
         "": true
       Queue Size: 100
       Value: true
+    - Buffer length: 100
+      Class: jsk_rviz_plugin/Plotter2D
+      Enabled: true
+      Name: buoyancy
+      Show Value: true
+      Topic: /base_footprint/buoyancy
+      Value: true
+      auto color change: false
+      auto scale: true
+      background color: 0; 0; 0
+      backround alpha: 0
+      border: true
+      foreground alpha: 0.699999988
+      foreground color: 25; 255; 240
+      height: 128
+      left: 32
+      linewidth: 1
+      max color: 255; 0; 0
+      max value: 1
+      min value: -1
+      show caption: true
+      text size: 12
+      top: 256
+      update interval: 0.0399999991
+      width: 128
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -182,7 +207,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 3.99931002
+      Distance: 7.89392805
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
@@ -200,7 +225,7 @@ Visualization Manager:
       Pitch: 0.594796777
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.665044665
+      Yaw: 4.41322184
     Saved: ~
 Window Geometry:
   Displays:

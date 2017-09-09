@@ -14,6 +14,7 @@
 //headers for ROS
 #include <ros/ros.h>
 #include <visualization_msgs/Marker.h>
+#include <std_msgs/Float32.h>
 
 namespace gazebo
 {
@@ -28,20 +29,27 @@ namespace gazebo
       if(this->LoadParams(sdf,"target_link",target_link))
       {
         this->link = this->model->GetLink(target_link);
-        this->LoadParams(sdf,"water_surface_height",this->water_surface_height);
-        this->LoadParams(sdf,"cob_x",cob_x);
-        this->LoadParams(sdf,"cob_y",cob_y);
-        this->LoadParams(sdf,"cob_z",cob_z);
-        this->LoadParams(sdf,"bbox_x",bbox_x);
-        this->LoadParams(sdf,"bbox_y",bbox_y);
-        this->LoadParams(sdf,"bbox_z",bbox_z);
+        nh.param<float>("water_surface_height", this->water_surface_height,1.0);
+        //this->LoadParams(sdf,"water_surface_height",this->water_surface_height,0);
+        this->LoadParams(sdf,"cob_x",this->cob_x);
+        this->LoadParams(sdf,"cob_y",this->cob_y);
+        this->LoadParams(sdf,"cob_z",this->cob_z);
+        this->LoadParams(sdf,"bbox_x",this->bbox_x);
+        this->LoadParams(sdf,"bbox_y",this->bbox_y);
+        this->LoadParams(sdf,"bbox_z",this->bbox_z);
+        this->LoadParams(sdf,"publish_data",this->publish_data);
+
         if(!this->link)
         {
           ROS_ERROR_STREAM("Cannot find target link!! Check your URDF and gzclient panels");
         }
         else
         {
-          this->bounding_box_pub = nh.advertise<visualization_msgs::Marker>("/"+target_link+"/bounding_box", 1);
+          if(this->publish_data = true)
+          {
+            this->bounding_box_pub = nh.advertise<visualization_msgs::Marker>("/"+target_link+"/bounding_box", 1);
+            this->buoyancy_pub = nh.advertise<std_msgs::Float32>("/"+target_link+"/buoyancy", 1);
+          }
           this->target_link_bounding_box = this->link->GetBoundingBox();
           this->updateConnection = event::Events::ConnectWorldUpdateBegin(boost::bind(&simple_buoyancy_plugin::OnUpdate, this, _1));
         }
@@ -52,8 +60,22 @@ namespace gazebo
     public: void OnUpdate(const common::UpdateInfo & /*_info*/)
     {
       link_pose = this->link->GetWorldPose();
-      this->PublishMarker();
-      //this->link->AddForce(math::Vector3(0, 0, 939.280937));
+      std_msgs::Float32 buoyancy;
+      if((link_pose.pos.z+this->cob_z-this->bbox_z/2) >= this->water_surface_height)
+      {
+        buoyancy.data = 0;
+        this->link->AddForce(math::Vector3(0, 0, 0));
+      }
+      else
+      {
+        buoyancy.data = (this->water_surface_height-(link_pose.pos.z+this->cob_z-this->bbox_z/2))*9.8*1000*this->bbox_x*this->bbox_y;
+        this->link->AddForce(math::Vector3(0, 0, buoyancy.data));
+      }
+      if(this->publish_data == true)
+      {
+        this->PublishMarker();
+        this->buoyancy_pub.publish(buoyancy);
+      }
     }
 
     public: bool LoadParams(sdf::ElementPtr sdf,std::string key,std::string& param)
@@ -89,6 +111,55 @@ namespace gazebo
       {
         ROS_WARN_STREAM("failed to get " << key);
         param = 0;
+      }
+      return true;
+    }
+
+    public: bool LoadParams(sdf::ElementPtr sdf,std::string key,float& param, float default_param)
+    {
+      std::string param_str;
+      if(!sdf->HasElement(key))
+      {
+        ROS_WARN_STREAM("failed to get " << key);
+        param = default_param;
+        return false;
+      }
+      else
+      {
+        param_str = sdf->GetElement(key)->GetValue()->GetAsString();
+      }
+      try
+      {
+        param = boost::lexical_cast<float>(param_str);
+      }
+      catch(boost::bad_lexical_cast &)
+      {
+        ROS_WARN_STREAM("failed to get " << key);
+        param = default_param;
+      }
+      return true;
+    }
+
+    public: bool LoadParams(sdf::ElementPtr sdf,std::string key,bool& param)
+    {
+      std::string param_str;
+      if(!sdf->HasElement(key))
+      {
+        ROS_WARN_STREAM("failed to get " << key);
+        return false;
+      }
+      else
+      {
+        param_str = sdf->GetElement(key)->GetValue()->GetAsString();
+      }
+      try
+      {
+        param = boost::lexical_cast<bool>(param_str);
+      }
+      catch(boost::bad_lexical_cast &)
+      {
+        ROS_WARN_STREAM("failed to get " << key);
+        param = false;
       }
       return true;
     }
@@ -134,11 +205,12 @@ namespace gazebo
     //parameters
     private: std::string target_link;
     private: float water_surface_height;
+    private: float cob_x,cob_y,cob_z,bbox_x,bbox_y,bbox_z;
+    private: bool publish_data;
 
     //publishers
-    private: ros::Publisher bounding_box_pub;
+    private: ros::Publisher bounding_box_pub,buoyancy_pub;
     private: ros::NodeHandle nh;
-    private: float cob_x,cob_y,cob_z,bbox_x,bbox_y,bbox_z;
   };
 
   // Register this plugin with the simulator
