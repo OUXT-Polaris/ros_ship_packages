@@ -8,6 +8,9 @@
   <xacro:property name="motor_position_y" value="0.325" />
   <xacro:property name="motor_position_z" value="-0.15" />
 
+  <xacro:property name="cob" value="0.0 0.0 -0.3"/>
+  <xacro:property name="volume" value="30000"/>
+
   <link name="base_footprint"/>
 
   <joint name="base_link_joint" type="fixed">
@@ -28,11 +31,12 @@
       </geometry>
     </collision>
     <inertial>
-      <mass value="95.7802"/>
+      <mass value="95.78"/>
       <inertia ixx="57.28" ixy="0.00" ixz="-0.23" iyy="57.28" iyz="0.00" izz="6.09"/>
     </inertial>
   </link>
 
+<!--
   <xacro:include filename="$(find velodyne_description)/urdf/VLP-16.urdf.xacro"/>
   <VLP-16 parent="base_link" name="velodyne" topic="/velodyne_points">
     <origin xyz="1.4 0 0.55" rpy="0 0 0" />
@@ -220,9 +224,6 @@
         </clip>
         <noise>
           <type>gaussian</type>
-          <!-- Noise is sampled independently per pixel on each frame.
-               That pixel's noise value is added to each of its color
-               channels, which at that point lie in the range [0,1]. -->
           <mean>0.0</mean>
           <stddev>0.007</stddev>
         </noise>
@@ -260,9 +261,6 @@
         </clip>
         <noise>
           <type>gaussian</type>
-          <!-- Noise is sampled independently per pixel on each frame.
-               That pixel's noise value is added to each of its color
-               channels, which at that point lie in the range [0,1]. -->
           <mean>0.0</mean>
           <stddev>0.007</stddev>
         </noise>
@@ -282,5 +280,21 @@
         <distortionT2>0.0</distortionT2>
       </plugin>
     </sensor>
+  </gazebo>
+-->
+  <gazebo>
+    <plugin name="simple_buoyancy" filename="libsimple_buoyancy_plugin.so">
+      <target_link>base_footprint</target_link>
+      <water_surface_height>1</water_surface_height>
+      <cob_x>0.375</cob_x>
+      <cob_y>0</cob_y>
+      <cob_z>0.25</cob_z>
+      <bbox_x>2.75</bbox_x>
+      <bbox_y>1.0</bbox_y>
+      <bbox_z>0.5</bbox_z>
+    </plugin>
+    <plugin name="simple_buoyancy" filename="libworld_frame_publisher_plugin.so">
+      <reference_link>base_footprint</reference_link>
+    </plugin>
   </gazebo>
 </robot>

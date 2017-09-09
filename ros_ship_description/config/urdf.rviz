@@ -6,6 +6,7 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
+        - /TF1/Frames1
         - /OverlayImage2
       Splitter Ratio: 0.572222233
     Tree Height: 843
@@ -27,7 +28,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: PointCloud2
+    SyncSource: ""
 Visualization Manager:
   Class: ""
   Displays:
@@ -68,46 +69,6 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        camera_l:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        camera_r:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        motor_l:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        motor_r:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        propeller_l:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        propeller_r:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        velodyne:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        velodyne_base_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
       Name: RobotModel
       Robot Description: robot_description
       TF Prefix: ""
@@ -118,26 +79,12 @@ Visualization Manager:
       Enabled: true
       Frame Timeout: 15
       Frames:
-        All Enabled: true
+        All Enabled: false
         base_footprint:
-          Value: true
+          Value: false
         base_link:
           Value: true
-        camera_l:
-          Value: true
-        camera_r:
-          Value: true
-        motor_l:
-          Value: true
-        motor_r:
-          Value: true
-        propeller_l:
-          Value: true
-        propeller_r:
-          Value: true
-        velodyne:
-          Value: true
-        velodyne_base_link:
+        gazebo_world:
           Value: true
       Marker Scale: 1
       Name: TF
@@ -145,21 +92,10 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        base_footprint:
-          base_link:
-            camera_l:
+        gazebo_world:
+          base_footprint:
+            base_link:
               {}
-            camera_r:
-              {}
-            motor_l:
-              propeller_l:
-                {}
-            motor_r:
-              propeller_r:
-                {}
-            velodyne_base_link:
-              velodyne:
-                {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -177,9 +113,9 @@ Visualization Manager:
       Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
-      Max Intensity: 1.57456263e-36
+      Max Intensity: 1.23061574e-36
       Min Color: 0; 0; 0
-      Min Intensity: 8.62190919e-38
+      Min Intensity: 0
       Name: PointCloud2
       Position Transformer: XYZ
       Queue Size: 10
@@ -214,10 +150,18 @@ Visualization Manager:
       left: 32
       top: 32
       width: 320
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /base_footprint/bounding_box
+      Name: Marker
+      Namespaces:
+        "": true
+      Queue Size: 100
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: base_link
+    Fixed Frame: gazebo_world
     Frame Rate: 30
   Name: root
   Tools:
@@ -238,7 +182,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 5.69536114
+      Distance: 3.99931002
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
@@ -253,10 +197,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.409797192
+      Pitch: 0.594796777
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.06000233
+      Yaw: 0.665044665
     Saved: ~
 Window Geometry:
   Displays:

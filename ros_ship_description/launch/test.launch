@@ -3,10 +3,12 @@
 
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find ros_ship_description)/config/urdf.rviz" required="true" />
 
-    <!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
+<!--
+    <include file="$(find uuv_descriptions)/launch/empty_underwater_world.launch"/>
+-->
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
+      <arg name="paused" value="true"/>
       <arg name="use_sim_time" value="true"/>
-      <arg name="paused" value="false"/>
     </include>
 
     <!-- Run a python script to the send a service call to gazebo_ros to spawn a URDF robot -->
