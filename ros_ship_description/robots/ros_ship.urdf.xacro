@@ -36,7 +36,6 @@
     </inertial>
   </link>
 
-<!--
   <xacro:include filename="$(find velodyne_description)/urdf/VLP-16.urdf.xacro"/>
   <VLP-16 parent="base_link" name="velodyne" topic="/velodyne_points">
     <origin xyz="1.4 0 0.55" rpy="0 0 0" />
@@ -60,7 +59,7 @@
       </geometry>
     </collision>
     <inertial>
-      <mass value="0.01"/>
+      <mass value="0.0"/>
       <inertia ixx="0.00" ixy="0.00" ixz="0.00" iyy="0.00" iyz="0.00" izz="0.00"/>
     </inertial>
   </link>
@@ -83,7 +82,7 @@
       </geometry>
     </collision>
     <inertial>
-      <mass value="0.01"/>
+      <mass value="0.0"/>
       <inertia ixx="0.00" ixy="0.00" ixz="0.00" iyy="0.00" iyz="0.00" izz="0.00"/>
     </inertial>
   </link>
@@ -106,7 +105,7 @@
       </geometry>
     </collision>
     <inertial>
-      <mass value="0.28"/>
+      <mass value="0.0001"/>
       <inertia ixx="0.0001" ixy="0.00" ixz="0.00" iyy="0.0001" iyz="0.00" izz="0.0001"/>
     </inertial>
   </link>
@@ -129,7 +128,7 @@
       </geometry>
     </collision>
     <inertial>
-      <mass value="0.28"/>
+      <mass value="0.0001"/>
       <inertia ixx="0.00086" ixy="0.00" ixz="0.00" iyy="0.00086" iyz="0.00" izz="0.0017"/>
     </inertial>
   </link>
@@ -152,7 +151,7 @@
       </geometry>
     </collision>
     <inertial>
-      <mass value="0.28"/>
+      <mass value="0.0001"/>
       <inertia ixx="0.00" ixy="0.00" ixz="0.00" iyy="0.00" iyz="0.00" izz="0.00"/>
     </inertial>
   </link>
@@ -175,7 +174,7 @@
       </geometry>
     </collision>
     <inertial>
-      <mass value="0.28"/>
+      <mass value="0.0001"/>
       <inertia ixx="0.00086" ixy="0.00" ixz="0.00" iyy="0.00086" iyz="0.00" izz="0.0017"/>
     </inertial>
   </link>
@@ -281,7 +280,7 @@
       </plugin>
     </sensor>
   </gazebo>
--->
+
   <gazebo>
     <plugin name="simple_buoyancy" filename="libsimple_buoyancy_plugin.so">
       <target_link>base_footprint</target_link>
@@ -291,6 +290,26 @@
       <bbox_x>2.75</bbox_x>
       <bbox_y>1.0</bbox_y>
       <bbox_z>0.5</bbox_z>
+      <publish_data>true</publish_data>
+    </plugin>
+    <plugin name="simple_buoyancy" filename="libsimple_buoyancy_plugin.so">
+      <target_link>propeller_r</target_link>
+      <cob_x>0.1</cob_x>
+      <cob_y>0.0</cob_y>
+      <cob_z>0.0</cob_z>
+      <bbox_x>0.1</bbox_x>
+      <bbox_y>0.2</bbox_y>
+      <bbox_z>0.2</bbox_z>
+      <publish_data>true</publish_data>
+    </plugin>
+    <plugin name="simple_buoyancy" filename="libsimple_buoyancy_plugin.so">
+      <target_link>propeller_l</target_link>
+      <cob_x>0.1</cob_x>
+      <cob_y>0.0</cob_y>
+      <cob_z>0.0</cob_z>
+      <bbox_x>0.1</bbox_x>
+      <bbox_y>0.2</bbox_y>
+      <bbox_z>0.2</bbox_z>
       <publish_data>true</publish_data>
     </plugin>
     <plugin name="simple_buoyancy" filename="libworld_frame_publisher_plugin.so">

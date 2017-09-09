@@ -1,0 +1,16 @@
+<?xml version='1.0'?>
+<sdf version="1.4">
+<model name="water_surface">
+  <pose>0 0 0 0 0 0</pose>
+  <static>true</static>
+    <link name="link">
+      <visual name="visual">
+        <geometry>
+          <mesh>
+            <uri>model://ros_ship_description/world/buoy/mesh/WATER_SURFACE.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+  </model>
+</sdf>

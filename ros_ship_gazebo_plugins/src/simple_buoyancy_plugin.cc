@@ -1,3 +1,5 @@
+//headers for stl
+#include <sstream>
 //headers for gazebo
 #include <gazebo/gazebo.hh>
 #include <gazebo/physics/Model.hh>
@@ -70,6 +72,7 @@ namespace gazebo
       {
         buoyancy.data = (this->water_surface_height-(link_pose.pos.z+this->cob_z-this->bbox_z/2))*9.8*1000*this->bbox_x*this->bbox_y;
         this->link->AddForce(math::Vector3(0, 0, buoyancy.data));
+        //this->link->AddForceAtWorldPosition(math::Vector3(0, 0, buoyancy.data),link_pose.pos);
       }
       if(this->publish_data == true)
       {
@@ -109,7 +112,7 @@ namespace gazebo
       }
       catch(boost::bad_lexical_cast &)
       {
-        ROS_WARN_STREAM("failed to get " << key);
+        ROS_WARN_STREAM("failed to casting " << key);
         param = 0;
       }
       return true;
@@ -134,7 +137,7 @@ namespace gazebo
       }
       catch(boost::bad_lexical_cast &)
       {
-        ROS_WARN_STREAM("failed to get " << key);
+        ROS_WARN_STREAM("failed to casting " << key);
         param = default_param;
       }
       return true;
@@ -152,15 +155,7 @@ namespace gazebo
       {
         param_str = sdf->GetElement(key)->GetValue()->GetAsString();
       }
-      try
-      {
-        param = boost::lexical_cast<bool>(param_str);
-      }
-      catch(boost::bad_lexical_cast &)
-      {
-        ROS_WARN_STREAM("failed to get " << key);
-        param = false;
-      }
+      std::istringstream(param_str) >> std::boolalpha >> param;
       return true;
     }
 
