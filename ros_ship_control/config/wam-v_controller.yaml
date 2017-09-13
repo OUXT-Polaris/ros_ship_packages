@@ -1,0 +1,14 @@
+wam_v:
+  # Publish all joint states -----------------------------------
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 50
+  # Controllers ------------------------------------------------
+  right_motor_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: right_motor_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  left_motor_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: left_motor_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}

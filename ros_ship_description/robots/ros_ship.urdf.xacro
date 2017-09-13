@@ -128,7 +128,7 @@
       </geometry>
     </collision>
     <inertial>
-      <mass value="0.0001"/>
+      <mass value="0.001"/>
       <inertia ixx="0.00086" ixy="0.00" ixz="0.00" iyy="0.00086" iyz="0.00" izz="0.0017"/>
     </inertial>
   </link>
@@ -184,7 +184,7 @@
     <joint name="propeller_r_joint">
       <hardwareInterface>VelocityJointInterface</hardwareInterface>
     </joint>
-    <actuator name="motor_r_actuator">
+    <actuator name="right_motor_actuator">
       <hardwareInterface>VelocityJointInterface</hardwareInterface>
       <mechanicalReduction>30</mechanicalReduction>
     </actuator>

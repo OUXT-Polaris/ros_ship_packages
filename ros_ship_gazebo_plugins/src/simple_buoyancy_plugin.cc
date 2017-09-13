@@ -32,7 +32,6 @@ namespace gazebo
       {
         this->link = this->model->GetLink(target_link);
         nh.param<float>("water_surface_height", this->water_surface_height,1.0);
-        //this->LoadParams(sdf,"water_surface_height",this->water_surface_height,0);
         this->LoadParams(sdf,"cob_x",this->cob_x);
         this->LoadParams(sdf,"cob_y",this->cob_y);
         this->LoadParams(sdf,"cob_z",this->cob_z);
@@ -40,6 +39,8 @@ namespace gazebo
         this->LoadParams(sdf,"bbox_y",this->bbox_y);
         this->LoadParams(sdf,"bbox_z",this->bbox_z);
         this->LoadParams(sdf,"publish_data",this->publish_data);
+        std::string default_prefix = "";
+        this->LoadParams(sdf,"bbox_prefix",this->bbox_prefix,default_prefix);
 
         if(!this->link)
         {
@@ -49,9 +50,18 @@ namespace gazebo
         {
           if(this->publish_data = true)
           {
-            this->bounding_box_pub = nh.advertise<visualization_msgs::Marker>("/"+target_link+"/bounding_box", 1);
-            this->buoyancy_pub = nh.advertise<std_msgs::Float32>("/"+target_link+"/buoyancy", 1);
+            if(this->bbox_prefix == "")
+            {
+              this->bounding_box_pub = nh.advertise<visualization_msgs::Marker>("/"+target_link+"/bounding_box", 1);
+              this->buoyancy_pub = nh.advertise<std_msgs::Float32>("/"+target_link+"/buoyancy", 1);
+            }
+            else
+            {
+              this->bounding_box_pub = nh.advertise<visualization_msgs::Marker>("/"+this->bbox_prefix+"/"+target_link+"/bounding_box", 1);
+              this->buoyancy_pub = nh.advertise<std_msgs::Float32>("/"+this->bbox_prefix+"/"+target_link+"/buoyancy", 1);
+            }
           }
+          //this->links = this->model->GetLinks();
           this->target_link_bounding_box = this->link->GetBoundingBox();
           this->updateConnection = event::Events::ConnectWorldUpdateBegin(boost::bind(&simple_buoyancy_plugin::OnUpdate, this, _1));
         }
@@ -61,18 +71,16 @@ namespace gazebo
     // Called by the world update start event
     public: void OnUpdate(const common::UpdateInfo & /*_info*/)
     {
-      link_pose = this->link->GetWorldPose();
+      this->link_pose = this->link->GetWorldPose();
       std_msgs::Float32 buoyancy;
       if((link_pose.pos.z+this->cob_z-this->bbox_z/2) >= this->water_surface_height)
       {
         buoyancy.data = 0;
-        this->link->AddForce(math::Vector3(0, 0, 0));
       }
       else
       {
         buoyancy.data = (this->water_surface_height-(link_pose.pos.z+this->cob_z-this->bbox_z/2))*9.8*1000*this->bbox_x*this->bbox_y;
         this->link->AddForce(math::Vector3(0, 0, buoyancy.data));
-        //this->link->AddForceAtWorldPosition(math::Vector3(0, 0, buoyancy.data),link_pose.pos);
       }
       if(this->publish_data == true)
       {
@@ -81,20 +89,8 @@ namespace gazebo
       }
     }
 
-    public: bool LoadParams(sdf::ElementPtr sdf,std::string key,std::string& param)
-    {
-      if(!sdf->HasElement(key))
-      {
-          return false;
-      }
-      else
-      {
-          param = sdf->GetElement(key)->GetValue()->GetAsString();
-      }
-      return true;
-    }
-
-    public: bool LoadParams(sdf::ElementPtr sdf,std::string key,float& param)
+    template <typename T>
+    bool LoadParams(sdf::ElementPtr sdf,std::string key,T& param)
     {
       std::string param_str;
       if(!sdf->HasElement(key))
@@ -108,23 +104,23 @@ namespace gazebo
       }
       try
       {
-        param = boost::lexical_cast<float>(param_str);
+        param = boost::lexical_cast<T>(param_str);
       }
       catch(boost::bad_lexical_cast &)
       {
         ROS_WARN_STREAM("failed to casting " << key);
-        param = 0;
       }
       return true;
     }
 
-    public: bool LoadParams(sdf::ElementPtr sdf,std::string key,float& param, float default_param)
+    template <typename T>
+    bool LoadParams(sdf::ElementPtr sdf,std::string key,T& param, T default_param)
     {
       std::string param_str;
       if(!sdf->HasElement(key))
       {
-        ROS_WARN_STREAM("failed to get " << key);
         param = default_param;
+        ROS_INFO_STREAM("unavle to get " << key << " ,set default_value = " << default_param);
         return false;
       }
       else
@@ -133,29 +129,13 @@ namespace gazebo
       }
       try
       {
-        param = boost::lexical_cast<float>(param_str);
+        param = boost::lexical_cast<T>(param_str);
       }
       catch(boost::bad_lexical_cast &)
       {
         ROS_WARN_STREAM("failed to casting " << key);
         param = default_param;
       }
-      return true;
-    }
-
-    public: bool LoadParams(sdf::ElementPtr sdf,std::string key,bool& param)
-    {
-      std::string param_str;
-      if(!sdf->HasElement(key))
-      {
-        ROS_WARN_STREAM("failed to get " << key);
-        return false;
-      }
-      else
-      {
-        param_str = sdf->GetElement(key)->GetValue()->GetAsString();
-      }
-      std::istringstream(param_str) >> std::boolalpha >> param;
       return true;
     }
 
@@ -189,6 +169,7 @@ namespace gazebo
 
     //Pointer to the link
     private: physics::LinkPtr link;
+
     private: math::Pose link_pose;
 
     //bounding box of target link
@@ -198,7 +179,7 @@ namespace gazebo
     private: event::ConnectionPtr updateConnection;
 
     //parameters
-    private: std::string target_link;
+    private: std::string target_link,bbox_prefix;
     private: float water_surface_height;
     private: float cob_x,cob_y,cob_z,bbox_x,bbox_y,bbox_z;
     private: bool publish_data;

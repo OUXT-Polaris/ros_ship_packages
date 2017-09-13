@@ -1,0 +1,18 @@
+<launch>
+  <param name="robot_description" command="$(find xacro)/xacro --check-order $(find ros_ship_description)/robots/wam-v.urdf.xacro" />
+  <param name="water_surface_height" value="0.0" type="double"/>
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find ros_ship_description)/config/wam-v.rviz" required="true" />
+
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+    args="-urdf -model wam-v -param robot_description -x 0 -y 0 -z 1.5"/>
+
+  <include file="$(find ros_ship_control)/launch/wam-v_control.launch"/>
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="world_name" value="$(find ros_ship_description)/world/open_water.world"/>
+  </include>
+
+</launch>
