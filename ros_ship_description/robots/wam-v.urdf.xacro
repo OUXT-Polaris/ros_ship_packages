@@ -13,6 +13,8 @@
   <xacro:property name="motor_size_y" value="0.2" />
   <xacro:property name="motor_size_z" value="0.2" />
 
+  <xacro:property name="rotational_speed_effort" value="1" />
+  <xacro:property name="joint_state_topic" value="/wam_v/joint_states" />
 
   <link name="base_link">
     <visual>
@@ -85,6 +87,14 @@
     <child link="left_motor"/>
   </joint>
 
+  <link name="gps"/>
+
+  <joint name="gps_joint" type="fixed">
+    <origin xyz="0.8 0 0"/>
+    <parent link="base_link"/>
+    <child link="gps"/>
+  </joint>
+
   <transmission name="right_motor_trans">
     <type>transmission_interface/SimpleTransmission</type>
     <joint name="right_motor_joint">
@@ -112,7 +122,7 @@
       <robotNamespace>/wam_v</robotNamespace>
     </plugin>
 
-    <plugin name="simple_buoyancy" filename="libsimple_buoyancy_plugin.so">
+    <plugin name="simple_buoyancy_base_right" filename="libsimple_buoyancy_plugin.so">
       <target_link>base_link</target_link>
       <cob_x>${hal_position_x}</cob_x>
       <cob_y>-${hal_position_y}</cob_y>
@@ -124,7 +134,7 @@
       <bbox_prefix>right_bbox</bbox_prefix>
     </plugin>
 
-    <plugin name="simple_buoyancy" filename="libsimple_buoyancy_plugin.so">
+    <plugin name="simple_buoyancy_base_left" filename="libsimple_buoyancy_plugin.so">
       <target_link>base_link</target_link>
       <cob_x>${hal_position_x}</cob_x>
       <cob_y>${hal_position_y}</cob_y>
@@ -136,7 +146,7 @@
       <bbox_prefix>left_bbox</bbox_prefix>
     </plugin>
 
-    <plugin name="simple_buoyancy" filename="libsimple_buoyancy_plugin.so">
+    <plugin name="simple_buoyancy_motor_right" filename="libsimple_buoyancy_plugin.so">
       <target_link>right_motor</target_link>
       <cob_x>0</cob_x>
       <cob_y>0</cob_y>
@@ -147,7 +157,7 @@
       <publish_data>true</publish_data>
     </plugin>
 
-    <plugin name="simple_buoyancy" filename="libsimple_buoyancy_plugin.so">
+    <plugin name="simple_buoyancy_motor_left" filename="libsimple_buoyancy_plugin.so">
       <target_link>left_motor</target_link>
       <cob_x>0</cob_x>
       <cob_y>0</cob_y>
@@ -158,6 +168,33 @@
       <publish_data>true</publish_data>
     </plugin>
 
+    <plugin name="novatel_gps_sim" filename="libhector_gazebo_ros_gps.so">
+      <alwaysOn>1</alwaysOn>
+      <updateRate>10.0</updateRate>
+      <bodyName>gps</bodyName>
+      <topicName>fix</topicName>
+      <velocityTopicName>fix_velocity</velocityTopicName>
+      <drift>5.0 5.0 5.0</drift>
+      <gaussianNoise>0.1 0.1 0.1</gaussianNoise>
+      <velocityDrift>0 0 0</velocityDrift>
+      <velocityGaussianNoise>0.1 0.1 0.1</velocityGaussianNoise>
+    </plugin>
+  </gazebo>
+  
+  <gazebo>
+    <plugin name="simple_driving_force_left" filename="libsimple_driving_force_plugin.so">
+      <target_link>left_motor</target_link>
+      <target_joint>left_motor_joint</target_joint>
+      <rotational_speed_effort>${rotational_speed_effort}</rotational_speed_effort>
+      <joint_state_topic>${joint_state_topic}</joint_state_topic>
+    </plugin>
+
+    <plugin name="simple_driving_force_right" filename="libsimple_driving_force_plugin.so">
+      <target_link>right_motor</target_link>
+      <target_joint>right_motor_joint</target_joint>
+      <rotational_speed_effort>${rotational_speed_effort}</rotational_speed_effort>
+      <joint_state_topic>${joint_state_topic}</joint_state_topic>
+    </plugin>
   </gazebo>
 
 </robot>

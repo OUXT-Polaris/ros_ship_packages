@@ -15,4 +15,6 @@
     <arg name="world_name" value="$(find ros_ship_description)/world/open_water.world"/>
   </include>
 
+  <node name="utm_odometry_node" pkg="gps_common" type="utm_odometry_node">
+  </node>
 </launch>
