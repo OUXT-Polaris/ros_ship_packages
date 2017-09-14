@@ -180,7 +180,7 @@
       <velocityGaussianNoise>0.1 0.1 0.1</velocityGaussianNoise>
     </plugin>
   </gazebo>
-  
+
   <gazebo>
     <plugin name="simple_driving_force_left" filename="libsimple_driving_force_plugin.so">
       <target_link>left_motor</target_link>
@@ -195,6 +195,11 @@
       <rotational_speed_effort>${rotational_speed_effort}</rotational_speed_effort>
       <joint_state_topic>${joint_state_topic}</joint_state_topic>
     </plugin>
+    <!--
+    <plugin name="simple_driving_force_right" filename="libworld_frame_publisher_plugin.so">
+      <reference_link>base_link</reference_link>
+    </plugin>
+    -->
   </gazebo>
 
 </robot>

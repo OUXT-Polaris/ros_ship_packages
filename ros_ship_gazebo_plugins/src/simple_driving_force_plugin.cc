@@ -32,6 +32,7 @@ namespace gazebo
       this->LoadParams(sdf,"joint_state_topic",this->joint_state_topic,default_joint_states_topic);
       this->joint = this->model->GetJoint(this->target_joint);
       this->link = this->model->GetLink(target_link);
+      this->updateConnection = event::Events::ConnectWorldUpdateBegin(boost::bind(&simple_driving_force_plugin::OnUpdate, this, _1));
     }
 
     // Called by the world update start event
@@ -39,7 +40,6 @@ namespace gazebo
     {
       double velocity = this->joint->GetVelocity(0);
       this->link->AddForce(math::Vector3(1, 0, 0));
-      ROS_ERROR_STREAM(velocity);
     }
 
     template <typename T>
@@ -97,6 +97,9 @@ namespace gazebo
     private: physics::ModelPtr model;
     private: physics::LinkPtr link;
     private: ros::NodeHandle nh;
+
+    // Pointer to the update event connection
+    private: event::ConnectionPtr updateConnection;
   };
   // Register this plugin with the simulator
   GZ_REGISTER_MODEL_PLUGIN(simple_driving_force_plugin)

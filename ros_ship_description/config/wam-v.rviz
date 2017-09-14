@@ -151,106 +151,6 @@ Visualization Manager:
         "": true
       Queue Size: 100
       Value: true
-    - Buffer length: 100
-      Class: jsk_rviz_plugin/Plotter2D
-      Enabled: true
-      Name: buoyancy_right
-      Show Value: true
-      Topic: /right_bbox/base_link/buoyancy
-      Value: true
-      auto color change: false
-      auto scale: true
-      background color: 0; 0; 0
-      backround alpha: 0
-      border: true
-      foreground alpha: 0.699999988
-      foreground color: 25; 255; 240
-      height: 128
-      left: 128
-      linewidth: 1
-      max color: 255; 0; 0
-      max value: 1
-      min value: -1
-      show caption: true
-      text size: 12
-      top: 128
-      update interval: 0.0399999991
-      width: 128
-    - Buffer length: 100
-      Class: jsk_rviz_plugin/Plotter2D
-      Enabled: true
-      Name: buoyancy_left
-      Show Value: true
-      Topic: /left_bbox/base_link/buoyancy
-      Value: true
-      auto color change: false
-      auto scale: true
-      background color: 0; 0; 0
-      backround alpha: 0
-      border: true
-      foreground alpha: 0.699999988
-      foreground color: 25; 255; 240
-      height: 128
-      left: 320
-      linewidth: 1
-      max color: 255; 0; 0
-      max value: 1
-      min value: -1
-      show caption: true
-      text size: 12
-      top: 128
-      update interval: 0.0399999991
-      width: 128
-    - Buffer length: 100
-      Class: jsk_rviz_plugin/Plotter2D
-      Enabled: true
-      Name: buoyancy_right_motor
-      Show Value: true
-      Topic: /right_motor/buoyancy
-      Value: true
-      auto color change: false
-      auto scale: true
-      background color: 0; 0; 0
-      backround alpha: 0
-      border: true
-      foreground alpha: 0.699999988
-      foreground color: 25; 255; 240
-      height: 128
-      left: 128
-      linewidth: 1
-      max color: 255; 0; 0
-      max value: 1
-      min value: -1
-      show caption: true
-      text size: 12
-      top: 320
-      update interval: 0.0399999991
-      width: 128
-    - Buffer length: 100
-      Class: jsk_rviz_plugin/Plotter2D
-      Enabled: true
-      Name: buoyancy_left_motor
-      Show Value: true
-      Topic: /left_motor/buoyancy
-      Value: true
-      auto color change: false
-      auto scale: true
-      background color: 0; 0; 0
-      backround alpha: 0
-      border: true
-      foreground alpha: 0.699999988
-      foreground color: 25; 255; 240
-      height: 128
-      left: 320
-      linewidth: 1
-      max color: 255; 0; 0
-      max value: 1
-      min value: -1
-      show caption: true
-      text size: 12
-      top: 320
-      update interval: 0.0399999991
-      width: 128
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -275,7 +175,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 11.4783897
+      Distance: 8.88886452
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
@@ -290,10 +190,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.669797361
+      Pitch: 0.0397977456
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.84359694
+      Yaw: 3.11359525
     Saved: ~
 Window Geometry:
   Displays:

@@ -313,7 +313,7 @@
       <publish_data>true</publish_data>
     </plugin>
     <plugin name="simple_buoyancy" filename="libworld_frame_publisher_plugin.so">
-      <reference_link>base_footprint</reference_link>
+      <reference_link>base_link</reference_link>
     </plugin>
   </gazebo>
 </robot>
