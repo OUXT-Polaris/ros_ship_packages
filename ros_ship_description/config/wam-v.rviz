@@ -6,6 +6,7 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
+        - /Marker2
       Splitter Ratio: 0.5
     Tree Height: 775
   - Class: rviz/Selection
@@ -91,7 +92,7 @@ Visualization Manager:
       Enabled: true
       Frame Timeout: 15
       Frames:
-        All Enabled: true
+        All Enabled: false
         base_footprint:
           Value: true
         base_link:
@@ -100,7 +101,11 @@ Visualization Manager:
           Value: true
         left_motor:
           Value: true
+        odom_combined:
+          Value: true
         right_motor:
+          Value: true
+        world:
           Value: true
       Marker Scale: 1
       Name: TF
@@ -108,20 +113,22 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        base_link:
-          base_footprint:
-            {}
-          gps:
-            {}
-          left_motor:
-            {}
-          right_motor:
+        base_footprint:
+          base_link:
+            gps:
+              {}
+            left_motor:
+              {}
+            right_motor:
+              {}
+        world:
+          odom_combined:
             {}
       Update Interval: 0
       Value: true
     - Class: rviz/Marker
       Enabled: true
-      Marker Topic: /left_bbox/base_link/bounding_box
+      Marker Topic: /left_bbox/base_footprint/bounding_box
       Name: Marker
       Namespaces:
         "": true
@@ -129,7 +136,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/Marker
       Enabled: true
-      Marker Topic: /right_bbox/base_link/bounding_box
+      Marker Topic: /right_bbox/base_footprint/bounding_box
       Name: Marker
       Namespaces:
         "": true
@@ -175,7 +182,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 8.88886452
+      Distance: 6.67503881
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
@@ -190,10 +197,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.0397977456
+      Pitch: 0.704798281
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.11359525
+      Yaw: 2.95860744
     Saved: ~
 Window Geometry:
   Displays:

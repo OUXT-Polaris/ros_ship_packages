@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(ros_ship_gazebo_plugins)
+project(ros_ship_navigation)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-add_compile_options(-std=c++11)
+# add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -13,21 +13,12 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   sensor_msgs
   std_msgs
-  visualization_msgs
+  tf
   tf2_ros
 )
 
 ## System dependencies are found with CMake's conventions
-find_package(Boost REQUIRED COMPONENTS system)
-include_directories(${Boost_INCLUDE_DIRS})
-link_directories(${Boost_LIBRARY_DIRS})
-
-include (FindPkgConfig)
-if (PKG_CONFIG_FOUND)
-  pkg_check_modules(GAZEBO gazebo)
-endif()
-include_directories(${GAZEBO_INCLUDE_DIRS})
-link_directories(${GAZEBO_LIBRARY_DIRS})
+# find_package(Boost REQUIRED COMPONENTS system)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -117,8 +108,8 @@ link_directories(${GAZEBO_LIBRARY_DIRS})
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES ros_ship_gazebo_plugins
-#  CATKIN_DEPENDS gazebo geometry_msgs roscpp rospy sensor_msgs std_msgs
+#  LIBRARIES ros_ship_navigation
+#  CATKIN_DEPENDS geometry_msgs roscpp rospy sensor_msgs std_msgs tf tf2_ros
 #  DEPENDS system_lib
 )
 
@@ -129,19 +120,13 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-  include
+# include
   ${catkin_INCLUDE_DIRS}
 )
 
-add_library(simple_buoyancy_plugin SHARED src/simple_buoyancy_plugin.cc)
-target_link_libraries(simple_buoyancy_plugin ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES} ${catkin_LIBRARIES})
-
-add_library(simple_driving_force_plugin SHARED src/simple_driving_force_plugin.cc)
-target_link_libraries(simple_driving_force_plugin ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES} ${catkin_LIBRARIES})
-
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/ros_ship_gazebo_plugins.cpp
+#   src/${PROJECT_NAME}/ros_ship_navigation.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -152,7 +137,7 @@ target_link_libraries(simple_driving_force_plugin ${GAZEBO_LIBRARIES} ${Boost_LI
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/ros_ship_gazebo_plugins_node.cpp)
+# add_executable(${PROJECT_NAME}_node src/ros_ship_navigation_node.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -209,7 +194,7 @@ target_link_libraries(simple_driving_force_plugin ${GAZEBO_LIBRARIES} ${Boost_LI
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_ros_ship_gazebo_plugins.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_ros_ship_navigation.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()

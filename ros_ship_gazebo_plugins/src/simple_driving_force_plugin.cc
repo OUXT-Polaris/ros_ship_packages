@@ -39,7 +39,7 @@ namespace gazebo
     public: void OnUpdate(const common::UpdateInfo & /*_info*/)
     {
       double velocity = this->joint->GetVelocity(0);
-      this->link->AddForce(math::Vector3(1, 0, 0));
+      //this->link->AddForce(math::Vector3(1, 0, 0));
     }
 
     template <typename T>

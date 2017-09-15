@@ -5,7 +5,7 @@
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find ros_ship_description)/config/wam-v.rviz" required="true" />
 
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
-    args="-urdf -model wam-v -param robot_description -x 0 -y 0 -z 1.5"/>
+    args="-urdf -model wam-v -param robot_description -x 0 -y 0 -z 0.0"/>
 
   <include file="$(find ros_ship_control)/launch/wam-v_control.launch"/>
 
@@ -15,6 +15,26 @@
     <arg name="world_name" value="$(find ros_ship_description)/world/open_water.world"/>
   </include>
 
-  <node name="utm_odometry_node" pkg="gps_common" type="utm_odometry_node">
+  <node name="utm_odometry_node" pkg="gps_common" type="utm_odometry_node" args="" output="screen" respawn="true">
+    <param name="child_frame_id" value="odom" type="str"/>
+    <remap from="/odom" to="/gps_odom" />
   </node>
+
+  <node name="world_frame_publisher" pkg="ros_ship_navigation" type="world_frame_publisher.py" args="" output="screen" respawn="true">
+    <remap from="/odom" to="/gps_odom" />
+  </node>
+
+  <node pkg="robot_pose_ekf" type="robot_pose_ekf" name="robot_pose_ekf">
+    <param name="output_frame" value="odom"/>
+    <param name="freq" value="30.0"/>
+    <param name="sensor_timeout" value="1.0"/>
+    <param name="odom_used" value="false"/>
+    <param name="imu_used" value="true"/>
+    <param name="vo_used" value="true"/>
+    <param name="debug" value="false"/>
+    <param name="self_diagnose" value="false"/>
+    <remap from="/imu_data" to="/imu" />
+    <remap from="/vo" to="/gps_odom" />
+  </node>
+
 </launch>
