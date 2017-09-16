@@ -38,6 +38,10 @@ namespace gazebo
         this->LoadParams(sdf,"bbox_x",this->bbox_x);
         this->LoadParams(sdf,"bbox_y",this->bbox_y);
         this->LoadParams(sdf,"bbox_z",this->bbox_z);
+        float default_offset_value = 0;
+        this->LoadParams(sdf,"force_offset_x",this->force_offset_x,default_offset_value);
+        this->LoadParams(sdf,"force_offset_y",this->force_offset_y,default_offset_value);
+        this->LoadParams(sdf,"force_offset_z",this->force_offset_z,default_offset_value);
         this->LoadParams(sdf,"publish_data",this->publish_data);
         std::string default_prefix = "";
         this->LoadParams(sdf,"bbox_prefix",this->bbox_prefix,default_prefix);
@@ -81,7 +85,8 @@ namespace gazebo
       else
       {
         buoyancy.data = (this->water_surface_height-(link_pose.pos.z+this->cob_z-this->bbox_z/2))*9.8*1000*this->bbox_x*this->bbox_y;
-        this->target_link->AddForce(math::Vector3(0, 0, buoyancy.data));
+        //this->target_link->AddForce(math::Vector3(0, 0, buoyancy.data));
+        this->target_link->AddForceAtRelativePosition(math::Vector3(0, 0, buoyancy.data),math::Vector3(this->force_offset_x,this->force_offset_y,this->force_offset_z));
       }
       if(this->publish_data == true)
       {
@@ -183,6 +188,7 @@ namespace gazebo
     private: std::string position_reference_link_name,target_link_name,bbox_prefix;
     private: float water_surface_height;
     private: float cob_x,cob_y,cob_z,bbox_x,bbox_y,bbox_z;
+    private: float force_offset_x,force_offset_y,force_offset_z;
     private: bool publish_data;
 
     //publishers

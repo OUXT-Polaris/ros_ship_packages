@@ -10,8 +10,8 @@
   <xacro:property name="motor_position_z" value="-1.705" />
 
   <xacro:property name="motor_size_x" value="0.1" />
-  <xacro:property name="motor_size_y" value="0.5" />
-  <xacro:property name="motor_size_z" value="0.5" />
+  <xacro:property name="motor_size_y" value="0.2" />
+  <xacro:property name="motor_size_z" value="0.2" />
 
   <xacro:property name="rotational_speed_effort" value="1" />
   <xacro:property name="joint_state_topic" value="/wam_v/joint_states" />
@@ -134,6 +134,7 @@
       <bbox_z>${hal_size_z}</bbox_z>
       <publish_data>true</publish_data>
       <bbox_prefix>right_bbox</bbox_prefix>
+      <force_offset_x>0.01</force_offset_x>
     </plugin>
 
     <plugin name="simple_buoyancy_base_left" filename="libsimple_buoyancy_plugin.so">
@@ -146,6 +147,7 @@
       <bbox_z>${hal_size_z}</bbox_z>
       <publish_data>true</publish_data>
       <bbox_prefix>left_bbox</bbox_prefix>
+      <force_offset_x>0.01</force_offset_x>
     </plugin>
 
     <plugin name="simple_buoyancy_motor_right" filename="libsimple_buoyancy_plugin.so">
@@ -153,7 +155,7 @@
       <position_reference_link>base_footprint</position_reference_link>
       <cob_x>-1.5</cob_x>
       <cob_y>-1</cob_y>
-      <cob_z>0.5</cob_z>
+      <cob_z>0.2</cob_z>
       <bbox_x>${motor_size_x}</bbox_x>
       <bbox_y>${motor_size_y}</bbox_y>
       <bbox_z>${motor_size_z}</bbox_z>
@@ -165,7 +167,7 @@
       <position_reference_link>base_footprint</position_reference_link>
       <cob_x>-1.5</cob_x>
       <cob_y>1</cob_y>
-      <cob_z>0.5</cob_z>
+      <cob_z>0.2</cob_z>
       <bbox_x>${motor_size_x}</bbox_x>
       <bbox_y>${motor_size_y}</bbox_y>
       <bbox_z>${motor_size_z}</bbox_z>
