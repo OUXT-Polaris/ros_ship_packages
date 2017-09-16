@@ -1,0 +1,9 @@
+<library path="lib/ship_controller">
+
+  <class name="ship_controller/ShipController" type="ship_controller::ShipController" base_class_type="controller_interface::ControllerBase">
+    <description>
+      Ros ship controller. It recieves /cmd_vel and /twist topic
+    </description>
+  </class>
+
+</library>

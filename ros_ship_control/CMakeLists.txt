@@ -16,7 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 ## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost REQUIRED COMPONENTS system)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -105,9 +105,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES ros_ship_control
-#  CATKIN_DEPENDS geometry_msgs roscpp rospy sensor_msgs std_msgs
+  INCLUDE_DIRS include
+  LIBRARIES ship_controller
+  CATKIN_DEPENDS geometry_msgs roscpp rospy sensor_msgs std_msgs realtime_tools hardware_interface pluginlib controller_interface
 #  DEPENDS system_lib
 )
 
@@ -118,9 +118,22 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+  include
   ${catkin_INCLUDE_DIRS}
+  ${Boost_INCLUDE_DIR}
 )
+
+add_library(ship_controller src/ship_controller.cpp)
+target_link_libraries(ship_controller ${catkin_LIBRARIES})
+
+install(TARGETS ship_controller
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(FILES ship_controller_plugins.xml
+DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}

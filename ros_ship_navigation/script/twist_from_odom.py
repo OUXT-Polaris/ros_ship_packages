@@ -5,7 +5,7 @@ from nav_msgs.msg import Odometry
 
 class twist_calculator:
     def __init__(self):
-        self.twist_pub = rospy.Publisher("/robot_velocity", Twist, queue_size=1)
+        self.twist_pub = rospy.Publisher("/twist", Twist, queue_size=1)
         self.pose_sub = rospy.Subscriber("/odom", Odometry, self.odom_callback,queue_size=1)
         self.publish_enable = False
         self.last_elapsed_time = rospy.Time.now()
