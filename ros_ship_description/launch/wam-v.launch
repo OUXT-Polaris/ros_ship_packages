@@ -41,6 +41,7 @@
   </node>
 
   <node name="joy_to_cmd_node" pkg="ros_ship_navigation" type="joy_to_cmd.py" args="" output="screen" respawn="true">
+    <param name="max_value" value="2" type="double"/>
   </node>
 
 </launch>
