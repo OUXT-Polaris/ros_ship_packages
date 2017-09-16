@@ -139,6 +139,9 @@ target_link_libraries(simple_buoyancy_plugin ${GAZEBO_LIBRARIES} ${Boost_LIBRARI
 add_library(simple_driving_force_plugin SHARED src/simple_driving_force_plugin.cc)
 target_link_libraries(simple_driving_force_plugin ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES} ${catkin_LIBRARIES})
 
+add_library(water_surface_friction_plugin SHARED src/water_surface_friction_plugin.cc)
+target_link_libraries(water_surface_friction_plugin ${GAZEBO_LIBRARIES} ${Boost_LIBRARIES} ${catkin_LIBRARIES})
+
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/ros_ship_gazebo_plugins.cpp

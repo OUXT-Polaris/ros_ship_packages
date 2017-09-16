@@ -135,6 +135,7 @@
       <publish_data>true</publish_data>
       <bbox_prefix>right_bbox</bbox_prefix>
       <force_offset_x>0.01</force_offset_x>
+      <force_offset_y>-${hal_position_y}</force_offset_y>
     </plugin>
 
     <plugin name="simple_buoyancy_base_left" filename="libsimple_buoyancy_plugin.so">
@@ -148,6 +149,7 @@
       <publish_data>true</publish_data>
       <bbox_prefix>left_bbox</bbox_prefix>
       <force_offset_x>0.01</force_offset_x>
+      <force_offset_y>${hal_position_y}</force_offset_y>
     </plugin>
 
     <plugin name="simple_buoyancy_motor_right" filename="libsimple_buoyancy_plugin.so">
@@ -207,6 +209,12 @@
       <serviceName>imu_service</serviceName>
       <gaussianNoise>0.0</gaussianNoise>
       <updateRate>20.0</updateRate>
+    </plugin>
+
+    <plugin name="imu_plugin" filename="libwater_surface_friction_plugin.so">
+      <target_link>base_footprint</target_link>
+      <mu_linear>5</mu_linear>
+      <mu_angular>5</mu_angular>
     </plugin>
   </gazebo>
 
