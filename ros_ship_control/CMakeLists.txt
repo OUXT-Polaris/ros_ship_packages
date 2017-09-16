@@ -123,7 +123,7 @@ include_directories(
   ${Boost_INCLUDE_DIR}
 )
 
-add_library(ship_controller src/ship_controller.cpp)
+add_library(ship_controller src/ship_controller.cpp src/speed_limiter.cpp)
 target_link_libraries(ship_controller ${catkin_LIBRARIES})
 
 install(TARGETS ship_controller
