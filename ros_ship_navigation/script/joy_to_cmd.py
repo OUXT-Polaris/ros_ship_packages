@@ -12,7 +12,7 @@ class joy_controlelr:
         self.left_motor_cmd = Float64()
         self.right_motor_cmd = Float64()
         self.left_motor_cmd.data = data.axes[1]
-        self.right_motor_cmd.data = data.axes[5]
+        self.right_motor_cmd.data = data.axes[4]
         self.left_motor_cmd_pub.publish(self.left_motor_cmd)
         self.right_motor_cmd_pub.publish(self.right_motor_cmd)
 

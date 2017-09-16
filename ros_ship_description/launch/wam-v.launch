@@ -10,7 +10,7 @@
   <include file="$(find ros_ship_control)/launch/wam-v_control.launch"/>
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="paused" value="true"/>
+    <arg name="paused" value="false"/>
     <arg name="use_sim_time" value="true"/>
     <arg name="world_name" value="$(find ros_ship_description)/world/open_water.world"/>
   </include>

@@ -6,6 +6,7 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
+        - /left_motor1
       Splitter Ratio: 0.5
     Tree Height: 775
   - Class: rviz/Selection
@@ -160,7 +161,7 @@ Visualization Manager:
     - Class: jsk_rviz_plugin/PieChart
       Enabled: true
       Name: left_motor
-      Topic: /right_motor/driving_force
+      Topic: /left_motor/driving_force
       Value: true
       auto color change: false
       background color: 0; 0; 0
@@ -219,7 +220,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 7.39547491
+      Distance: 5.03980923
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
@@ -234,10 +235,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: -0.125202343
+      Pitch: -0.00520230085
       Target Frame: base_link
       Value: Orbit (rviz)
-      Yaw: 4.27361488
+      Yaw: 2.99862909
     Saved: ~
 Window Geometry:
   Displays:
