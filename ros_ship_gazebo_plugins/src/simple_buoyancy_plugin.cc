@@ -28,9 +28,9 @@ namespace gazebo
       this->model = _parent;
       // Listen to the update event. This event is broadcast every
       // simulation iteration.
-      if(this->LoadParams(sdf,"target_link",target_link))
+      if(this->LoadParams(sdf,"target_link",target_link_name))
       {
-        this->link = this->model->GetLink(target_link);
+        this->target_link = this->model->GetLink(target_link_name);
         nh.param<float>("water_surface_height", this->water_surface_height,1.0);
         this->LoadParams(sdf,"cob_x",this->cob_x);
         this->LoadParams(sdf,"cob_y",this->cob_y);
@@ -41,8 +41,10 @@ namespace gazebo
         this->LoadParams(sdf,"publish_data",this->publish_data);
         std::string default_prefix = "";
         this->LoadParams(sdf,"bbox_prefix",this->bbox_prefix,default_prefix);
+        this->LoadParams(sdf,"position_reference_link",this->position_reference_link_name,this->target_link_name);
+        this->position_reference_link = this->model->GetLink(this->target_link_name);
 
-        if(!this->link)
+        if(!this->target_link)
         {
           ROS_ERROR_STREAM("Cannot find target link!! Check your URDF and gzclient panels");
         }
@@ -52,17 +54,16 @@ namespace gazebo
           {
             if(this->bbox_prefix == "")
             {
-              this->bounding_box_pub = nh.advertise<visualization_msgs::Marker>("/"+target_link+"/bounding_box", 1);
-              this->buoyancy_pub = nh.advertise<std_msgs::Float32>("/"+target_link+"/buoyancy", 1);
+              this->bounding_box_pub = nh.advertise<visualization_msgs::Marker>("/"+target_link_name+"/bounding_box", 1);
+              this->buoyancy_pub = nh.advertise<std_msgs::Float32>("/"+target_link_name+"/buoyancy", 1);
             }
             else
             {
-              this->bounding_box_pub = nh.advertise<visualization_msgs::Marker>("/"+this->bbox_prefix+"/"+target_link+"/bounding_box", 1);
-              this->buoyancy_pub = nh.advertise<std_msgs::Float32>("/"+this->bbox_prefix+"/"+target_link+"/buoyancy", 1);
+              this->bounding_box_pub = nh.advertise<visualization_msgs::Marker>("/"+this->bbox_prefix+"/"+target_link_name+"/bounding_box", 1);
+              this->buoyancy_pub = nh.advertise<std_msgs::Float32>("/"+this->bbox_prefix+"/"+target_link_name+"/buoyancy", 1);
             }
           }
-          //this->links = this->model->GetLinks();
-          this->target_link_bounding_box = this->link->GetBoundingBox();
+          this->target_link_bounding_box = this->target_link->GetBoundingBox();
           this->updateConnection = event::Events::ConnectWorldUpdateBegin(boost::bind(&simple_buoyancy_plugin::OnUpdate, this, _1));
         }
       }
@@ -71,7 +72,7 @@ namespace gazebo
     // Called by the world update start event
     public: void OnUpdate(const common::UpdateInfo & /*_info*/)
     {
-      this->link_pose = this->link->GetWorldPose();
+      this->link_pose = this->position_reference_link->GetWorldPose();
       std_msgs::Float32 buoyancy;
       if((link_pose.pos.z+this->cob_z-this->bbox_z/2) >= this->water_surface_height)
       {
@@ -80,7 +81,7 @@ namespace gazebo
       else
       {
         buoyancy.data = (this->water_surface_height-(link_pose.pos.z+this->cob_z-this->bbox_z/2))*9.8*1000*this->bbox_x*this->bbox_y;
-        this->link->AddForce(math::Vector3(0, 0, buoyancy.data));
+        this->target_link->AddForce(math::Vector3(0, 0, buoyancy.data));
       }
       if(this->publish_data == true)
       {
@@ -120,7 +121,7 @@ namespace gazebo
       if(!sdf->HasElement(key))
       {
         param = default_param;
-        ROS_INFO_STREAM("unavle to get " << key << " ,set default_value = " << default_param);
+        ROS_INFO_STREAM("unable to get " << key << " ,set default_value = " << default_param);
         return false;
       }
       else
@@ -144,7 +145,7 @@ namespace gazebo
       visualization_msgs::Marker marker;
       marker.type = marker.CUBE;
       marker.header.stamp = ros::Time::now();
-      marker.header.frame_id = target_link;
+      marker.header.frame_id = position_reference_link_name;
       marker.action = marker.ADD;
       marker.color.r = 0;
       marker.color.g = 1;
@@ -168,7 +169,7 @@ namespace gazebo
     private: physics::ModelPtr model;
 
     //Pointer to the link
-    private: physics::LinkPtr link;
+    private: physics::LinkPtr target_link,position_reference_link;
 
     private: math::Pose link_pose;
 
@@ -179,7 +180,7 @@ namespace gazebo
     private: event::ConnectionPtr updateConnection;
 
     //parameters
-    private: std::string target_link,bbox_prefix;
+    private: std::string position_reference_link_name,target_link_name,bbox_prefix;
     private: float water_surface_height;
     private: float cob_x,cob_y,cob_z,bbox_x,bbox_y,bbox_z;
     private: bool publish_data;

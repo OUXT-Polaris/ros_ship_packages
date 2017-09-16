@@ -62,6 +62,7 @@
     <origin xyz="${motor_position_x} -${motor_position_y} ${motor_position_z}"/>
     <parent link="base_link"/>
     <child link="right_motor"/>
+    <limit effort="0.5293" velocity="100${pi}" />
   </joint>
 
   <link name="left_motor">
@@ -85,6 +86,7 @@
     <origin xyz="${motor_position_x} ${motor_position_y} ${motor_position_z}"/>
     <parent link="base_link"/>
     <child link="left_motor"/>
+    <limit effort="0.5293" velocity="100${pi}" />
   </joint>
 
   <link name="gps"/>
@@ -148,9 +150,10 @@
 
     <plugin name="simple_buoyancy_motor_right" filename="libsimple_buoyancy_plugin.so">
       <target_link>right_motor</target_link>
-      <cob_x>0</cob_x>
-      <cob_y>0</cob_y>
-      <cob_z>0.5</cob_z>
+      <position_reference_link>base_footprint</position_reference_link>
+      <cob_x>-1.5</cob_x>
+      <cob_y>-1</cob_y>
+      <cob_z>0.3</cob_z>
       <bbox_x>${motor_size_x}</bbox_x>
       <bbox_y>${motor_size_y}</bbox_y>
       <bbox_z>${motor_size_z}</bbox_z>
@@ -159,9 +162,10 @@
 
     <plugin name="simple_buoyancy_motor_left" filename="libsimple_buoyancy_plugin.so">
       <target_link>left_motor</target_link>
-      <cob_x>0</cob_x>
-      <cob_y>0</cob_y>
-      <cob_z>0.5</cob_z>
+      <position_reference_link>base_footprint</position_reference_link>
+      <cob_x>-1.5</cob_x>
+      <cob_y>1</cob_y>
+      <cob_z>0.3</cob_z>
       <bbox_x>${motor_size_x}</bbox_x>
       <bbox_y>${motor_size_y}</bbox_y>
       <bbox_z>${motor_size_z}</bbox_z>

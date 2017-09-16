@@ -6,7 +6,6 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
-        - /Marker2
       Splitter Ratio: 0.5
     Tree Height: 775
   - Class: rviz/Selection
@@ -101,7 +100,7 @@ Visualization Manager:
           Value: true
         left_motor:
           Value: true
-        odom_combined:
+        odom:
           Value: true
         right_motor:
           Value: true
@@ -122,7 +121,7 @@ Visualization Manager:
             right_motor:
               {}
         world:
-          odom_combined:
+          odom:
             {}
       Update Interval: 0
       Value: true
@@ -158,10 +157,48 @@ Visualization Manager:
         "": true
       Queue Size: 100
       Value: true
+    - Class: jsk_rviz_plugin/PieChart
+      Enabled: true
+      Name: left_motor
+      Topic: /right_motor/driving_force
+      Value: true
+      auto color change: false
+      background color: 0; 0; 0
+      backround alpha: 0
+      foreground alpha: 0.699999988
+      foreground alpha 2: 0.400000006
+      foreground color: 25; 255; 240
+      left: 128
+      max color: 255; 0; 0
+      max value: 1
+      min value: -1
+      show caption: true
+      size: 128
+      text size: 14
+      top: 640
+    - Class: jsk_rviz_plugin/PieChart
+      Enabled: true
+      Name: right_motor
+      Topic: /right_motor/driving_force
+      Value: true
+      auto color change: false
+      background color: 0; 0; 0
+      backround alpha: 0
+      foreground alpha: 0.699999988
+      foreground alpha 2: 0.400000006
+      foreground color: 25; 255; 240
+      left: 896
+      max color: 255; 0; 0
+      max value: 1
+      min value: -1
+      show caption: true
+      size: 128
+      text size: 14
+      top: 640
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: base_link
+    Fixed Frame: base_footprint
     Frame Rate: 30
   Name: root
   Tools:
@@ -182,7 +219,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 6.67503881
+      Distance: 7.39547491
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
@@ -197,10 +234,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.704798281
-      Target Frame: <Fixed Frame>
+      Pitch: -0.125202343
+      Target Frame: base_link
       Value: Orbit (rviz)
-      Yaw: 2.95860744
+      Yaw: 4.27361488
     Saved: ~
 Window Geometry:
   Displays:

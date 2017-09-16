@@ -5,12 +5,12 @@
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find ros_ship_description)/config/wam-v.rviz" required="true" />
 
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
-    args="-urdf -model wam-v -param robot_description -x 0 -y 0 -z 0.0"/>
+    args="-urdf -model wam-v -param robot_description -x 0 -y 0 -z -0.3"/>
 
   <include file="$(find ros_ship_control)/launch/wam-v_control.launch"/>
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="paused" value="false"/>
+    <arg name="paused" value="true"/>
     <arg name="use_sim_time" value="true"/>
     <arg name="world_name" value="$(find ros_ship_description)/world/open_water.world"/>
   </include>
@@ -35,6 +35,12 @@
     <param name="self_diagnose" value="false"/>
     <remap from="/imu_data" to="/imu" />
     <remap from="/vo" to="/gps_odom" />
+  </node>
+
+  <node name="joy_node" pkg="joy" type="joy_node" args="" output="screen" respawn="true">
+  </node>
+
+  <node name="joy_to_cmd_node" pkg="ros_ship_navigation" type="joy_to_cmd.py" args="" output="screen" respawn="true">
   </node>
 
 </launch>

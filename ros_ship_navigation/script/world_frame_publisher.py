@@ -23,6 +23,6 @@ class world_frame_pub:
         self.broadcaster.sendTransform(self.transform_msg)
 
 if __name__ == '__main__':
-    rospy.init_node('world_frame_publisher', anonymous=True)
+    rospy.init_node('world_frame_publisher', anonymous=False)
     publisher = world_frame_pub()
     rospy.spin()

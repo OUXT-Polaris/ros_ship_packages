@@ -32,14 +32,19 @@ namespace gazebo
       this->LoadParams(sdf,"joint_state_topic",this->joint_state_topic,default_joint_states_topic);
       this->joint = this->model->GetJoint(this->target_joint);
       this->link = this->model->GetLink(target_link);
+      driving_force_pub = nh.advertise<std_msgs::Float32>("/"+this->target_link+"/driving_force", 1);
       this->updateConnection = event::Events::ConnectWorldUpdateBegin(boost::bind(&simple_driving_force_plugin::OnUpdate, this, _1));
     }
 
     // Called by the world update start event
     public: void OnUpdate(const common::UpdateInfo & /*_info*/)
     {
+      std_msgs::Float32 driving_force_msg;
       double velocity = this->joint->GetVelocity(0);
-      //this->link->AddForce(math::Vector3(1, 0, 0));
+      double driving_force = std::pow(velocity,2)*velocity;
+      this->link->AddForce(math::Vector3(driving_force, 0, 0));
+      driving_force_msg.data = driving_force;
+      driving_force_pub.publish(driving_force_msg);
     }
 
     template <typename T>
@@ -73,7 +78,7 @@ namespace gazebo
       if(!sdf->HasElement(key))
       {
         param = default_param;
-        ROS_INFO_STREAM("unavle to get " << key << " ,set default_value = " << default_param);
+        ROS_INFO_STREAM("unable to get " << key << " ,set default_value = " << default_param);
         return false;
       }
       else
@@ -96,7 +101,10 @@ namespace gazebo
     private: physics::JointPtr joint;
     private: physics::ModelPtr model;
     private: physics::LinkPtr link;
+
+    //ros publishers
     private: ros::NodeHandle nh;
+    private: ros::Publisher driving_force_pub;
 
     // Pointer to the update event connection
     private: event::ConnectionPtr updateConnection;
