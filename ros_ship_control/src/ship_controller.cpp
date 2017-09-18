@@ -35,7 +35,7 @@
 /*
  * Author: Bence Magyar
  */
-
+#include <string>
 #include <ship_controller.h>
 
 namespace ship_controller
@@ -45,39 +45,11 @@ namespace ship_controller
 
   }
 
-  bool ShipController::init(hardware_interface::VelocityJointInterface* hw,ros::NodeHandle& root_nh,ros::NodeHandle& controller_nh)
+  bool ShipController::init(hardware_interface::VelocityJointInterface* hw,ros::NodeHandle& controller_nh)
   {
-    const std::string complete_ns = controller_nh.getNamespace();
-    double publish_rate;
-    controller_nh.param("publish_rate", publish_rate, 10.0);
-    std::size_t id = complete_ns.find_last_of("/");
-    name = complete_ns.substr(id + 1);
-    ROS_INFO_STREAM_NAMED(name, "Controller state will be published at " << publish_rate << "Hz.");
-    std::string left_motor_name,right_motor_name;
-    if(! getMotorName(controller_nh, "left_motor", left_motor_name) or ! getMotorName(controller_nh, "right_motor", right_motor_name))
-    {
-      return false;
-    }
-    // Velocity and acceleration limits:
-    controller_nh.param("linear/x/has_velocity_limits"      , limiter_lin.has_velocity_limits     , limiter_lin.has_velocity_limits     );
-    controller_nh.param("linear/x/has_acceleration_limits"  , limiter_lin.has_acceleration_limits , limiter_lin.has_acceleration_limits );
-    controller_nh.param("linear/x/has_jerk_limits"          , limiter_lin.has_jerk_limits         , limiter_lin.has_jerk_limits         );
-    controller_nh.param("linear/x/max_velocity"             , limiter_lin.max_velocity            ,  limiter_lin.max_velocity           );
-    controller_nh.param("linear/x/min_velocity"             , limiter_lin.min_velocity            , -limiter_lin.max_velocity           );
-    controller_nh.param("linear/x/max_acceleration"         , limiter_lin.max_acceleration        ,  limiter_lin.max_acceleration       );
-    controller_nh.param("linear/x/min_acceleration"         , limiter_lin.min_acceleration        , -limiter_lin.max_acceleration       );
-    controller_nh.param("linear/x/min_jerk"                 , limiter_lin.min_jerk                , -limiter_lin.max_jerk               );
-    controller_nh.param("linear/x/max_jerk"                 , limiter_lin.max_jerk                ,  limiter_lin.max_jerk               );
-
-    controller_nh.param("angular/z/has_velocity_limits"     , limiter_ang.has_velocity_limits    , limiter_ang.has_velocity_limits     );
-    controller_nh.param("angular/z/has_acceleration_limits" , limiter_ang.has_acceleration_limits, limiter_ang.has_acceleration_limits );
-    controller_nh.param("angular/z/has_jerk_limits"         , limiter_ang.has_jerk_limits        , limiter_ang.has_jerk_limits         );
-    controller_nh.param("angular/z/max_velocity"            , limiter_ang.max_velocity           ,  limiter_ang.max_velocity           );
-    controller_nh.param("angular/z/min_velocity"            , limiter_ang.min_velocity           , -limiter_ang.max_velocity           );
-    controller_nh.param("angular/z/max_acceleration"        , limiter_ang.max_acceleration       ,  limiter_ang.max_acceleration       );
-    controller_nh.param("angular/z/min_acceleration"        , limiter_ang.min_acceleration       , -limiter_ang.max_acceleration       );
-    controller_nh.param("angular/z/max_jerk"                , limiter_ang.max_jerk               ,  limiter_ang.max_jerk               );
-    controller_nh.param("angular/z/min_jerk"                , limiter_ang.min_jerk               , -limiter_ang.max_jerk               );
+    std::string left_motor_joint_name,right_motor_joint_name;
+    controller_nh.getParam("left_motor",left_motor_joint_name);
+    controller_nh.getParam("right_motor",right_motor_joint_name);
   }
 
   void ShipController::starting(const ros::Time& time)
@@ -93,15 +65,5 @@ namespace ship_controller
   void ShipController::stopping(const ros::Time& time)
   {
 
-  }
-
-  bool ShipController::getMotorName(ros::NodeHandle& controller_nh,const std::string& motor_param,std::string& motor_name)
-  {
-    if (!controller_nh.getParam(motor_param, motor_name))
-    {
-      ROS_ERROR_STREAM_NAMED(name,"Couldn't retrieve wheel param '" << motor_param << "'.");
-      return false;
-    }
-    return true;
   }
 }

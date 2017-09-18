@@ -65,13 +65,12 @@ namespace ship_controller
   public:
     ShipController();
 
-    virtual bool init(hardware_interface::VelocityJointInterface* hw,ros::NodeHandle& root_nh,ros::NodeHandle& controller_nh);
+    virtual bool init(hardware_interface::VelocityJointInterface* hw,ros::NodeHandle& controller_nh);
     virtual void starting(const ros::Time& time);
     virtual void update(const ros::Time& time, const ros::Duration& period);
     virtual void stopping(const ros::Time& time);
 
   private:
-    bool getMotorName(ros::NodeHandle& controller_nh,const std::string& motor_param,std::string& motor_name);
     hardware_interface::JointHandle left_motor_joint;
     hardware_interface::JointHandle right_motor_joint;
     ros::Subscriber sub_command;
@@ -85,9 +84,7 @@ namespace ship_controller
     };
     realtime_tools::RealtimeBuffer<Commands> command;
     Commands command_struct;
-    SpeedLimiter limiter_lin;
-    SpeedLimiter limiter_ang;
-    std::string name;
+    SpeedLimiter limiter_lin,limiter_ang;
     size_t motor_joints_size;
   };
   PLUGINLIB_EXPORT_CLASS(ship_controller::ShipController, controller_interface::ControllerBase);

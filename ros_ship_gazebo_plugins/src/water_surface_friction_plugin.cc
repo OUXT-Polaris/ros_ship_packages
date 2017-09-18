@@ -27,6 +27,8 @@ namespace gazebo
       this->LoadParams(sdf,"target_link",this->target_link_name);
       this->LoadParams(sdf,"mu_linear",this->mu_linear);
       this->LoadParams(sdf,"mu_angular",this->mu_angular);
+      this->LoadParams(sdf,"cruising_speed",this->cruising_speed,(float)1.0);
+      this->LoadParams(sdf,"cruising_speed_rot",this->cruising_speed_rot,(float)0.3);
       this->target_link = this->model->GetLink(target_link_name);
       this->updateConnection = event::Events::ConnectWorldUpdateBegin(boost::bind(&water_surface_friction_plugin::OnUpdate, this, _1));
     }
@@ -36,10 +38,58 @@ namespace gazebo
     {
       math::Vector3 angular_vel = this->target_link->GetRelativeAngularVel();
       math::Vector3 linear_vel = this->target_link->GetRelativeLinearVel();
-      math::Vector3 linear_friction_force = math::Vector3(-1*linear_vel.x*this->mu_linear,-1*linear_vel.y*this->mu_linear,-1*linear_vel.z*this->mu_linear);
+      math::Vector3 linear_friction_force,angular_friction_torque;
+      if(linear_vel.x > this->cruising_speed)
+      {
+        linear_friction_force.x = -1*std::pow(linear_vel.x,2)*this->mu_linear;
+      }
+      else
+      {
+        linear_friction_force.x = -1*linear_vel.x*this->mu_linear;
+      }
+      if(linear_vel.y > this->cruising_speed)
+      {
+        linear_friction_force.y = -1*std::pow(linear_vel.y,2)*this->mu_linear;
+      }
+      else
+      {
+        linear_friction_force.y = -1*linear_vel.y*this->mu_linear;
+      }
+      if(linear_vel.z > this->cruising_speed)
+      {
+        linear_friction_force.z = -1*std::pow(linear_vel.z,2)*this->mu_linear;
+      }
+      else
+      {
+        linear_friction_force.z = -1*linear_vel.z*this->mu_linear;
+      }
+
+      if(angular_vel.x > this->cruising_speed)
+      {
+        angular_friction_torque.x = -1*std::pow(angular_vel.x,2)*this->mu_angular;
+      }
+      else
+      {
+        angular_friction_torque.x = -1*angular_vel.x*this->mu_angular;
+      }
+      if(angular_vel.x > this->cruising_speed)
+      {
+        angular_friction_torque.x = -1*std::pow(angular_vel.x,2)*this->mu_angular;
+      }
+      else
+      {
+        angular_friction_torque.z = -1*angular_vel.x*this->mu_angular;
+      }
+      if(angular_vel.z > this->cruising_speed)
+      {
+        angular_friction_torque.z = -1*std::pow(angular_vel.z,2)*this->mu_angular;
+      }
+      else
+      {
+        angular_friction_torque.z = -1*angular_vel.z*this->mu_angular;
+      }
       this->target_link->AddRelativeForce(linear_friction_force);
-      math::Vector3 angular_friction_force = math::Vector3(-1*angular_vel.x*this->mu_angular,-1*angular_vel.y*this->mu_angular,-1*angular_vel.z*this->mu_angular);
-      this->target_link->AddRelativeTorque(angular_friction_force);
+      this->target_link->AddRelativeTorque(angular_friction_torque);
     }
 
     template <typename T>
@@ -100,7 +150,7 @@ namespace gazebo
     private: physics::LinkPtr target_link;
     //parameters
     private: std::string target_link_name;
-    private: float mu_linear,mu_angular;
+    private: float mu_linear,mu_angular,cruising_speed,cruising_speed_rot;
   };
   // Register this plugin with the simulator
   GZ_REGISTER_MODEL_PLUGIN(water_surface_friction_plugin)

@@ -213,8 +213,8 @@
 
     <plugin name="imu_plugin" filename="libwater_surface_friction_plugin.so">
       <target_link>base_footprint</target_link>
-      <mu_linear>10</mu_linear>
-      <mu_angular>10</mu_angular>
+      <mu_linear>20</mu_linear>
+      <mu_angular>20</mu_angular>
     </plugin>
   </gazebo>
 
