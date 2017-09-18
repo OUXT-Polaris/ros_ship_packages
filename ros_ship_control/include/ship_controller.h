@@ -71,7 +71,7 @@ namespace ship_controller
     virtual void stopping(const ros::Time& time);
 
   private:
-    bool getMotorNames(ros::NodeHandle& controller_nh,const std::string& wheel_param,std::vector<std::string>& wheel_names);
+    bool getMotorName(ros::NodeHandle& controller_nh,const std::string& motor_param,std::string& motor_name);
     hardware_interface::JointHandle left_motor_joint;
     hardware_interface::JointHandle right_motor_joint;
     ros::Subscriber sub_command;
@@ -88,6 +88,7 @@ namespace ship_controller
     SpeedLimiter limiter_lin;
     SpeedLimiter limiter_ang;
     std::string name;
+    size_t motor_joints_size;
   };
 }
 

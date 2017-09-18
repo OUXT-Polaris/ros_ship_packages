@@ -53,6 +53,31 @@ namespace ship_controller
     std::size_t id = complete_ns.find_last_of("/");
     name = complete_ns.substr(id + 1);
     ROS_INFO_STREAM_NAMED(name, "Controller state will be published at " << publish_rate << "Hz.");
+    std::string left_motor_name,right_motor_name;
+    if(! getMotorName(controller_nh, "left_motor", left_motor_name) or ! getMotorName(controller_nh, "right_motor", right_motor_name))
+    {
+      return false;
+    }
+    // Velocity and acceleration limits:
+    controller_nh.param("linear/x/has_velocity_limits"      , limiter_lin.has_velocity_limits     , limiter_lin.has_velocity_limits     );
+    controller_nh.param("linear/x/has_acceleration_limits"  , limiter_lin.has_acceleration_limits , limiter_lin.has_acceleration_limits );
+    controller_nh.param("linear/x/has_jerk_limits"          , limiter_lin.has_jerk_limits         , limiter_lin.has_jerk_limits         );
+    controller_nh.param("linear/x/max_velocity"             , limiter_lin.max_velocity            ,  limiter_lin.max_velocity           );
+    controller_nh.param("linear/x/min_velocity"             , limiter_lin.min_velocity            , -limiter_lin.max_velocity           );
+    controller_nh.param("linear/x/max_acceleration"         , limiter_lin.max_acceleration        ,  limiter_lin.max_acceleration       );
+    controller_nh.param("linear/x/min_acceleration"         , limiter_lin.min_acceleration        , -limiter_lin.max_acceleration       );
+    controller_nh.param("linear/x/min_jerk"                 , limiter_lin.min_jerk                , -limiter_lin.max_jerk               );
+    controller_nh.param("linear/x/max_jerk"                 , limiter_lin.max_jerk                ,  limiter_lin.max_jerk               );
+
+    controller_nh.param("angular/z/has_velocity_limits"     , limiter_ang.has_velocity_limits    , limiter_ang.has_velocity_limits     );
+    controller_nh.param("angular/z/has_acceleration_limits" , limiter_ang.has_acceleration_limits, limiter_ang.has_acceleration_limits );
+    controller_nh.param("angular/z/has_jerk_limits"         , limiter_ang.has_jerk_limits        , limiter_ang.has_jerk_limits         );
+    controller_nh.param("angular/z/max_velocity"            , limiter_ang.max_velocity           ,  limiter_ang.max_velocity           );
+    controller_nh.param("angular/z/min_velocity"            , limiter_ang.min_velocity           , -limiter_ang.max_velocity           );
+    controller_nh.param("angular/z/max_acceleration"        , limiter_ang.max_acceleration       ,  limiter_ang.max_acceleration       );
+    controller_nh.param("angular/z/min_acceleration"        , limiter_ang.min_acceleration       , -limiter_ang.max_acceleration       );
+    controller_nh.param("angular/z/max_jerk"                , limiter_ang.max_jerk               ,  limiter_ang.max_jerk               );
+    controller_nh.param("angular/z/min_jerk"                , limiter_ang.min_jerk               , -limiter_ang.max_jerk               );
   }
 
   void ShipController::starting(const ros::Time& time)
@@ -70,48 +95,11 @@ namespace ship_controller
 
   }
 
-  bool ShipController::getMotorNames(ros::NodeHandle& controller_nh,const std::string& motor_param,std::vector<std::string>& motor_names)
+  bool ShipController::getMotorName(ros::NodeHandle& controller_nh,const std::string& motor_param,std::string& motor_name)
   {
-    XmlRpc::XmlRpcValue motor_list;
-    if (!controller_nh.getParam(motor_param, motor_list))
+    if (!controller_nh.getParam(motor_param, motor_name))
     {
-      ROS_ERROR_STREAM_NAMED(name,
-          "Couldn't retrieve wheel param '" << motor_param << "'.");
-      return false;
-    }
-    if (motor_list.getType() == XmlRpc::XmlRpcValue::TypeArray)
-    {
-      if (motor_list.size() == 0)
-      {
-        ROS_ERROR_STREAM_NAMED(name,
-            "Wheel param '" << motor_param << "' is an empty list");
-        return false;
-      }
-      for (int i = 0; i < motor_list.size(); ++i)
-      {
-        if (motor_list[i].getType() != XmlRpc::XmlRpcValue::TypeString)
-        {
-          ROS_ERROR_STREAM_NAMED(name,
-              "Wheel param '" << motor_param << "' #" << i <<
-              " isn't a string.");
-          return false;
-        }
-      }
-      motor_names.resize(motor_list.size());
-      for (int i = 0; i < motor_list.size(); ++i)
-      {
-        motor_names[i] = static_cast<std::string>(motor_list[i]);
-      }
-    }
-    else if (motor_list.getType() == XmlRpc::XmlRpcValue::TypeString)
-    {
-      motor_names.push_back(motor_list);
-    }
-    else
-    {
-      ROS_ERROR_STREAM_NAMED(name,
-          "Wheel param '" << motor_param <<
-          "' is neither a list of strings nor a string.");
+      ROS_ERROR_STREAM_NAMED(name,"Couldn't retrieve wheel param '" << motor_param << "'.");
       return false;
     }
     return true;

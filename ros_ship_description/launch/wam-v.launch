@@ -37,8 +37,9 @@
     <remap from="/vo" to="/gps_odom" />
   </node>
 
-  <node name="twist_from_odom_node" pkg="ros_ship_navigation" type="twist_from_odom.py" args="" output="screen" respawn="true">
-    <remap from="/odom" to="/gps_odom" />
+  <node name="twist_from_fix_velocity_node" pkg="ros_ship_navigation" type="twist_from_fix_velocity_node" args="" output="screen" respawn="true">
+    <remap from="/twist" to="/wam_v/twist" />
+    <param name="imu_frame" value="base_link" type="str"/>
   </node>
 
   <node name="joy_node" pkg="joy" type="joy_node" args="" output="screen" respawn="true">
