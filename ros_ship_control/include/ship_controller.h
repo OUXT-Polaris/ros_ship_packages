@@ -14,11 +14,17 @@
 #include <realtime_tools/realtime_publisher.h>
 #include <realtime_tools/realtime_buffer.h>
 
+//headers for control_toolbox
+#include <control_toolbox/pid.h>
+
 //headers for boost
 #include <boost/shared_ptr.hpp>
+#include <boost/scoped_ptr.hpp>
+#include <boost/thread/condition.hpp>
 
 //headers for ROS
 #include <geometry_msgs/Twist.h>
+#include <std_msgs/Float32.h>
 
 namespace ship_controller
 {
@@ -35,8 +41,8 @@ namespace ship_controller
   private:
     //callback functions
     void cmdVelCallback(const geometry_msgs::Twist& msg);
-    hardware_interface::JointHandle left_motor_joint;
-    hardware_interface::JointHandle right_motor_joint;
+    boost::scoped_ptr<realtime_tools::RealtimePublisher<std_msgs::Float32> > left_motor_joint_cmd_publisher;
+    boost::scoped_ptr<realtime_tools::RealtimePublisher<std_msgs::Float32> > right_motor_joint_cmd_publisher;
     ros::Subscriber sub_command;
     struct Commands
     {
@@ -49,8 +55,10 @@ namespace ship_controller
     realtime_tools::RealtimeBuffer<Commands> command;
     Commands command_struct;
     //parameters
+    std::string right_motor_command_topic,left_motor_command_topic;
     double max_linear_velocity,min_linear_velocity;
     double max_angular_velocity,min_angular_velocity;
+    double motor_distance,mass,izz;
   };
   PLUGINLIB_EXPORT_CLASS(ship_controller::ShipController, controller_interface::ControllerBase);
 }

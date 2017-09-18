@@ -14,15 +14,15 @@ wam_v:
     pid: {p: 100.0, i: 0.01, d: 10.0}
   ship_controller:
     type: ship_controller/ShipController
-    right_motor: right_motor_joint
-    left_motor: left_motor_joint
+    right_motor_command_topic: /wam_v/right_motor_controller/command
+    left_motor_command_topic:  /wam_v/left_motor_controller/command
     linear:
       max_velocity           : 0.5  # m/s
       min_velocity           : -0.5 # m/s
-      max_acceleration       : 0.1  # m/s^2
-      min_acceleration       : -0.1 # m/s^2
     angular:
       max_velocity           : 0.3  # rad/s
       min_velocity           : -0.3
-      max_acceleration       : 0.1  # rad/s^2
-      min_acceleration       : 0.1
+    mass: 247
+    izz: 165.39
+    motor_distance: 2.054
+    rotational_speed_effort: 1
