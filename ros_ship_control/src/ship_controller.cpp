@@ -1,46 +1,12 @@
-/*********************************************************************
- * Software License Agreement (BSD License)
- *
- *  Copyright (c) 2013, PAL Robotics, S.L.
- *  All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions
- *  are met:
- *
- *   * Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *   * Redistributions in binary form must reproduce the above
- *     copyright notice, this list of conditions and the following
- *     disclaimer in the documentation and/or other materials provided
- *     with the distribution.
- *   * Neither the name of the PAL Robotics nor the names of its
- *     contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission.
- *
- *  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- *  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- *  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
- *  FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- *  COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
- *  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- *  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- *  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- *  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- *  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
- *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- *  POSSIBILITY OF SUCH DAMAGE.
- *********************************************************************/
-
-/*
- * Author: Bence Magyar
- */
-#include <string>
+//headers in this package
 #include <ship_controller.h>
+
+//headers for ROS
+#include <geometry_msgs/Twist.h>
 
 namespace ship_controller
 {
-  ShipController::ShipController()
+  ShipController::ShipController():command_struct()
   {
 
   }
@@ -50,6 +16,11 @@ namespace ship_controller
     std::string left_motor_joint_name,right_motor_joint_name;
     controller_nh.getParam("left_motor",left_motor_joint_name);
     controller_nh.getParam("right_motor",right_motor_joint_name);
+    controller_nh.getParam("linear/max_velocity",max_linear_velocity);
+    controller_nh.getParam("linear/min_velocity",min_linear_velocity);
+    controller_nh.getParam("angular/max_velocity",max_angular_velocity);
+    controller_nh.getParam("angular/min_velocity",min_angular_velocity);
+    sub_command = controller_nh.subscribe("cmd_vel", 1, &ShipController::cmdVelCallback, this);
   }
 
   void ShipController::starting(const ros::Time& time)
@@ -65,5 +36,21 @@ namespace ship_controller
   void ShipController::stopping(const ros::Time& time)
   {
 
+  }
+
+  void ShipController::cmdVelCallback(const geometry_msgs::Twist& msg)
+  {
+    if (isRunning())
+    {
+      command_struct.ang   = msg.angular.z;
+      command_struct.lin   = msg.linear.x;
+      command_struct.stamp = ros::Time::now();
+      command.writeFromNonRT(command_struct);
+      ROS_INFO_STREAM("Added values to command. " << "Ang: "   << command_struct.ang << ", " << "Lin: "   << command_struct.lin << ", " << "Stamp: " << command_struct.stamp);
+    }
+    else
+    {
+      ROS_ERROR("Can't accept new commands. Controller is not running.");
+    }
   }
 }

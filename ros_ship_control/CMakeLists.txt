@@ -124,7 +124,7 @@ include_directories(
   ${Boost_INCLUDE_DIR}
 )
 
-add_library(ship_controller src/ship_controller.cpp src/speed_limiter.cpp)
+add_library(ship_controller src/ship_controller.cpp)
 target_link_libraries(ship_controller ${catkin_LIBRARIES})
 
 install(DIRECTORY include/ship_controller/ DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})
