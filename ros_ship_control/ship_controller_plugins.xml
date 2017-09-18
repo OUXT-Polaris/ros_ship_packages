@@ -1,4 +1,4 @@
-<library path="lib/ship_controller">
+<library path="lib/libship_controller">
 
   <class name="ship_controller/ShipController" type="ship_controller::ShipController" base_class_type="controller_interface::ControllerBase">
     <description>

@@ -90,6 +90,6 @@ namespace ship_controller
     std::string name;
     size_t motor_joints_size;
   };
+  PLUGINLIB_EXPORT_CLASS(ship_controller::ShipController, controller_interface::ControllerBase);
 }
-
 #endif

@@ -13,6 +13,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   sensor_msgs
   std_msgs
+  controller_manager
 )
 
 ## System dependencies are found with CMake's conventions
@@ -126,14 +127,15 @@ include_directories(
 add_library(ship_controller src/ship_controller.cpp src/speed_limiter.cpp)
 target_link_libraries(ship_controller ${catkin_LIBRARIES})
 
+install(DIRECTORY include/ship_controller/ DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})
+
 install(TARGETS ship_controller
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
-install(FILES ship_controller_plugins.xml
-DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+install(FILES ship_controller_plugins.xml DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
