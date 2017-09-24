@@ -55,10 +55,12 @@ namespace ship_controller
     realtime_tools::RealtimeBuffer<Commands> command;
     Commands command_struct;
     //parameters
+    std::string left_motor_joint_name,right_motor_joint_name;
     std::string right_motor_command_topic,left_motor_command_topic;
     double max_linear_velocity,min_linear_velocity;
     double max_angular_velocity,min_angular_velocity;
     double motor_distance,mass,izz;
+    double right_rotational_speed_effort,left_rotational_speed_effort;
   };
   PLUGINLIB_EXPORT_CLASS(ship_controller::ShipController, controller_interface::ControllerBase);
 }

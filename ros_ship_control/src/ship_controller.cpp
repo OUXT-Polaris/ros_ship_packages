@@ -10,7 +10,6 @@ namespace ship_controller
 
   bool ShipController::init(hardware_interface::VelocityJointInterface* hw,ros::NodeHandle& controller_nh)
   {
-    std::string left_motor_joint_name,right_motor_joint_name;
     controller_nh.getParam("right_motor_command_topic",right_motor_command_topic);
     controller_nh.getParam("left_motor_command_topic",left_motor_command_topic);
     controller_nh.getParam("linear/max_velocity",max_linear_velocity);
@@ -20,6 +19,10 @@ namespace ship_controller
     controller_nh.getParam("izz",izz);
     controller_nh.getParam("mass",mass);
     controller_nh.getParam("motor_distance",motor_distance);
+    controller_nh.getParam("right_motor_joint",right_motor_joint_name);
+    controller_nh.getParam("left_motor_joint",left_motor_joint_name);
+    controller_nh.getParam("/propeller/right_motor_joint/rotational_speed_effort",right_rotational_speed_effort);
+    controller_nh.getParam("/propeller/left_motor_joint/rotational_speed_effort",left_rotational_speed_effort);
     left_motor_joint_cmd_publisher.reset(new realtime_tools::RealtimePublisher<std_msgs::Float32>(controller_nh, left_motor_command_topic, 1));
     right_motor_joint_cmd_publisher.reset(new realtime_tools::RealtimePublisher<std_msgs::Float32>(controller_nh, right_motor_command_topic, 1));
     sub_command = controller_nh.subscribe("cmd_vel", 1, &ShipController::cmdVelCallback, this);
@@ -32,7 +35,14 @@ namespace ship_controller
 
   void ShipController::update(const ros::Time& time, const ros::Duration& period)
   {
+    if(left_motor_joint_cmd_publisher && left_motor_joint_cmd_publisher->trylock())
+    {
 
+    }
+    if(right_motor_joint_cmd_publisher && right_motor_joint_cmd_publisher->trylock())
+    {
+
+    }
   }
 
   void ShipController::stopping(const ros::Time& time)

@@ -16,6 +16,8 @@ wam_v:
     type: ship_controller/ShipController
     right_motor_command_topic: /wam_v/right_motor_controller/command
     left_motor_command_topic:  /wam_v/left_motor_controller/command
+    right_motor_joint: right_motor_joint
+    left_motor_joint: left_motor_joint
     linear:
       max_velocity           : 0.5  # m/s
       min_velocity           : -0.5 # m/s
@@ -25,4 +27,3 @@ wam_v:
     mass: 247
     izz: 165.39
     motor_distance: 2.054
-    rotational_speed_effort: 1

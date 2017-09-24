@@ -25,9 +25,9 @@ namespace gazebo
     {
       // Store the pointer to the model
       this->model = _parent;
-      this->LoadParams(sdf,"rotational_speed_effort",this->rotational_speed_effort,1.0);
       this->LoadParams(sdf,"target_link",this->target_link);
       this->LoadParams(sdf,"target_joint",this->target_joint);
+      nh.param<double>("/propeller/"+this->target_joint+"/rotational_speed_effort", this->rotational_speed_effort, 1.0);
       std::string default_joint_states_topic = "/joint_states";
       this->LoadParams(sdf,"joint_state_topic",this->joint_state_topic,default_joint_states_topic);
       this->joint = this->model->GetJoint(this->target_joint);
