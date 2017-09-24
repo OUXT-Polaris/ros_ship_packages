@@ -11,8 +11,6 @@ namespace ship_controller
   bool ShipController::init(hardware_interface::VelocityJointInterface* hw,ros::NodeHandle& controller_nh)
   {
     std::string left_motor_joint_name,right_motor_joint_name;
-    //controller_nh.getParam("left_motor",left_motor_joint_name);
-    //controller_nh.getParam("right_motor",right_motor_joint_name);
     controller_nh.getParam("right_motor_command_topic",right_motor_command_topic);
     controller_nh.getParam("left_motor_command_topic",left_motor_command_topic);
     controller_nh.getParam("linear/max_velocity",max_linear_velocity);
