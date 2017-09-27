@@ -14,6 +14,8 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   std_msgs
   controller_manager
+  control_toolbox
+  control_msgs
 )
 
 ## System dependencies are found with CMake's conventions

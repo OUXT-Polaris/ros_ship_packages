@@ -21,6 +21,7 @@ wam_v:
     linear:
       max_velocity           : 0.5  # m/s
       min_velocity           : -0.5 # m/s
+      pid: {p: 100.0, i: 0.01, d: 10.0}
     angular:
       max_velocity           : 0.3  # rad/s
       min_velocity           : -0.3

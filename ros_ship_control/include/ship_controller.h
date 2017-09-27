@@ -41,6 +41,7 @@ namespace ship_controller
   private:
     //callback functions
     void cmdVelCallback(const geometry_msgs::Twist& msg);
+    void setGains(double p, double i, double d, double i_max, double i_min,control_toolbox::Pid& target);
     boost::scoped_ptr<realtime_tools::RealtimePublisher<std_msgs::Float32> > left_motor_joint_cmd_publisher;
     boost::scoped_ptr<realtime_tools::RealtimePublisher<std_msgs::Float32> > right_motor_joint_cmd_publisher;
     ros::Subscriber sub_command;
@@ -61,6 +62,7 @@ namespace ship_controller
     double max_angular_velocity,min_angular_velocity;
     double motor_distance,mass,izz;
     double right_rotational_speed_effort,left_rotational_speed_effort;
+    control_toolbox::Pid pid_controller_linear,pid_controller_angular;
   };
   PLUGINLIB_EXPORT_CLASS(ship_controller::ShipController, controller_interface::ControllerBase);
 }
