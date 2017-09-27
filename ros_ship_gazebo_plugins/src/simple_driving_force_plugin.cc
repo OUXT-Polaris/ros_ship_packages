@@ -41,7 +41,15 @@ namespace gazebo
     {
       std_msgs::Float32 driving_force_msg;
       double velocity = this->joint->GetVelocity(0);
-      double driving_force = std::pow(velocity,2)*velocity;
+      double driving_force = 0;
+      if(velocity > 0)
+      {
+        driving_force = std::pow(velocity,2)*this->rotational_speed_effort;
+      }
+      else
+      {
+        driving_force = -std::pow(velocity,2)*this->rotational_speed_effort;
+      }
       this->link->AddForce(math::Vector3(driving_force, 0, 0));
       driving_force_msg.data = driving_force;
       driving_force_pub.publish(driving_force_msg);

@@ -47,13 +47,12 @@
   <node name="cmd_vel_publisher" pkg="rostopic" type="rostopic" args="pub /wam_v/ship_controller/cmd_vel geometry_msgs/Twist -r 1 -- '[0.5, 0.0, 0.0]' '[0.0, 0.0, 0.0]'" output="screen" respawn="true">
   </node>
 
-<!--
   <node name="joy_node" pkg="joy" type="joy_node" args="" output="screen" respawn="true">
   </node>
 
   <node name="joy_to_cmd_node" pkg="ros_ship_navigation" type="joy_to_cmd.py" args="" output="screen" respawn="true">
     <param name="max_value" value="2" type="double"/>
   </node>
--->
+
 
 </launch>
