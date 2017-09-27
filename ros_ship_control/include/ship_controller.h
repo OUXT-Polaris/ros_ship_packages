@@ -32,6 +32,7 @@ namespace ship_controller
   {
   public:
     ShipController();
+    ~ShipController();
     //controller functions
     virtual bool init(hardware_interface::VelocityJointInterface* hw,ros::NodeHandle& controller_nh);
     virtual void starting(const ros::Time& time);
@@ -41,10 +42,11 @@ namespace ship_controller
   private:
     //callback functions
     void cmdVelCallback(const geometry_msgs::Twist& msg);
+    void twistCallback(const geometry_msgs::Twist& msg);
     void setGains(double p, double i, double d, double i_max, double i_min,control_toolbox::Pid& target);
     boost::scoped_ptr<realtime_tools::RealtimePublisher<std_msgs::Float32> > left_motor_joint_cmd_publisher;
     boost::scoped_ptr<realtime_tools::RealtimePublisher<std_msgs::Float32> > right_motor_joint_cmd_publisher;
-    ros::Subscriber sub_command;
+    ros::Subscriber sub_command,sub_twist;
     struct Commands
     {
       double lin;
@@ -55,9 +57,22 @@ namespace ship_controller
     };
     realtime_tools::RealtimeBuffer<Commands> command;
     Commands command_struct;
+    struct Twist
+    {
+      double lin_x;
+      double lin_y;
+      double lin_z;
+      double ang_x;
+      double ang_y;
+      double ang_z;
+      ros::Time stamp;
+      Twist() : lin_x(0.0), lin_y(0.0), lin_z(0.0), ang_x(0.0), ang_y(0.0), ang_z(0.0), stamp(0.0) {}
+    };
+    realtime_tools::RealtimeBuffer<Twist> twist;
+    Twist twist_struct;
     //parameters
     std::string left_motor_joint_name,right_motor_joint_name;
-    std::string right_motor_command_topic,left_motor_command_topic;
+    std::string right_motor_command_topic,left_motor_command_topic,twist_topic;
     double max_linear_velocity,min_linear_velocity;
     double max_angular_velocity,min_angular_velocity;
     double motor_distance,mass,izz;

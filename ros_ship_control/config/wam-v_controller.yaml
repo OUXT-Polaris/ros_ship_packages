@@ -16,6 +16,7 @@ wam_v:
     type: ship_controller/ShipController
     right_motor_command_topic: /wam_v/right_motor_controller/command
     left_motor_command_topic:  /wam_v/left_motor_controller/command
+    twist_topic: /wam_v/twist
     right_motor_joint: right_motor_joint
     left_motor_joint: left_motor_joint
     linear:
