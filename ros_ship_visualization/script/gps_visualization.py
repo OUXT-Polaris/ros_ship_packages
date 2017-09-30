@@ -34,5 +34,5 @@ class map_downloader:
 if __name__ == '__main__':
     downloader = map_downloader()
     downloader.download()
-    print downloader.query_same_parameters_map_ID()
-    downloader.save()
+    if downloader.query_same_parameters_map_ID() != None:
+        downloader.save()
