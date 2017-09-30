@@ -16,6 +16,8 @@
   <xacro:property name="rotational_speed_effort" value="1" />
   <xacro:property name="joint_state_topic" value="/wam_v/joint_states" />
 
+  <xacro:property name="start_point_latitude" value="135.525" />
+  <xacro:property name="start_point_longitude" value="34.8235" />
   <link name="base_link">
     <visual>
      <geometry>
@@ -186,6 +188,8 @@
       <gaussianNoise>0.1 0.1 0.1</gaussianNoise>
       <velocityDrift>0 0 0</velocityDrift>
       <velocityGaussianNoise>0.1 0.1 0.1</velocityGaussianNoise>
+      <referenceLatitude>${start_point_latitude}</referenceLatitude>
+      <referenceLongitude>${start_point_longitude}</referenceLongitude>
     </plugin>
 
     <plugin name="simple_driving_force_left" filename="libsimple_driving_force_plugin.so">
