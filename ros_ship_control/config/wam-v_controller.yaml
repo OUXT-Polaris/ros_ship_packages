@@ -4,15 +4,24 @@ wam_v:
     type: joint_state_controller/JointStateController
     publish_rate: 50
   # Controllers ------------------------------------------------
-  
-  #right_motor_controller:
-    #type: velocity_controllers/JointVelocityController
-    #joint: right_motor_joint
-    #pid: {p: 100.0, i: 0.01, d: 10.0}
-  #left_motor_controller:
-    #type: velocity_controllers/JointVelocityController
-    #joint: left_motor_joint
-    #pid: {p: 100.0, i: 0.01, d: 10.0}
+  right_motor_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: right_motor_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  left_motor_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: left_motor_joint
+    pid: {p: 100.0, i: 0.01, d: 10.0}
+  right_driving_force_controller:
+    type: ship_controller/ShipController
+    twist_topic: /wam_v/twist
+    motor_command_topic: /wam_v/right_motor_controller/command
+    driving_force_command_topic: /wam_v/ship_controller/right_driving_force
+  left_driving_force_controller:
+    type: ship_controller/ShipController
+    twist_topic: /wam_v/twist
+    motor_command_topic:  /wam_v/left_motor_controller/command
+    driving_force_command_topic: /wam_v/ship_controller/left_driving_force
   #ship_controller:
     #type: ship_controller/ShipController
     #right_motor_command_topic: /wam_v/right_motor_controller/command

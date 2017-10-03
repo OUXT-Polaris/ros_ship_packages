@@ -5,7 +5,7 @@
 
   <!-- load the controllers -->
   <node name="controller_spawner" pkg="controller_manager" type="spawner" output="screen"
-    args="joint_state_controller" ns="wam_v">
+    args="joint_state_controller right_motor_controller left_motor_controller right_driving_force_controller left_driving_force_controller" ns="wam_v">
   </node>
 
   <!-- convert joint states to TF transforms for rviz, etc -->
