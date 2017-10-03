@@ -72,11 +72,21 @@ namespace driving_force_controller
 
   void DrivingForceController::starting(const ros::Time& time)
   {
-
+    twist_struct.ang_x = 0;
+    twist_struct.ang_y = 0;
+    twist_struct.ang_z = 0;
+    twist_struct.lin_x = 0;
+    twist_struct.lin_y = 0;
+    twist_struct.lin_z = 0;
+    twist.initRT(twist_struct);
+    driving_force_struct.value = 0;
+    driving_force.initRT(driving_force_struct);
   }
 
   void DrivingForceController::update(const ros::Time& time, const ros::Duration& period)
   {
+    driving_force_struct = *(driving_force.readFromRT());
+    twist_struct = *(twist.readFromRT());
     if(motor_command_publisher && motor_command_publisher->trylock())
     {
 
