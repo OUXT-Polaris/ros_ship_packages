@@ -109,7 +109,7 @@ find_package(Boost REQUIRED COMPONENTS system)
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES ship_controller
+  LIBRARIES ship_controller driving_force_controller
   CATKIN_DEPENDS geometry_msgs roscpp rospy sensor_msgs std_msgs realtime_tools hardware_interface pluginlib controller_interface
 #  DEPENDS system_lib
 )
@@ -126,7 +126,7 @@ include_directories(
   ${Boost_INCLUDE_DIR}
 )
 
-add_library(ship_controller src/ship_controller.cpp)
+add_library(ship_controller src/ship_controller.cpp src/driving_force_controller.cpp)
 target_link_libraries(ship_controller ${catkin_LIBRARIES})
 
 install(DIRECTORY include/ship_controller/ DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION})
@@ -138,6 +138,7 @@ install(TARGETS ship_controller
 )
 
 install(FILES ship_controller_plugins.xml DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
+
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}

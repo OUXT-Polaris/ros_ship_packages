@@ -10,7 +10,7 @@ class map_downloader:
         self.map_id = 1
     def download(self):
         cmd = "wget -O "+ self.osm_filename +" http://overpass-api.de/api/map?bbox="+str(self.left_lower_point[0])+","+str(self.left_lower_point[1])+","+str(self.right_upper_point[0])+","+str(self.right_upper_point[1])
-        #commands.getoutput(cmd)
+        commands.getoutput(cmd)
         self.bbox_points = {"left_lower_point":{"latitude":self.left_lower_point[0],"longitude":self.left_lower_point[1]},"right_upper_point":{"latitude":self.right_upper_point[0],"longitude":self.right_upper_point[1]}}
     def query_same_parameters_map_ID(self):
         f = open(self.map_index_filename, "r+")

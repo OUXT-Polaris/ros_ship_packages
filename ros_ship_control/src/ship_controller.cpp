@@ -137,3 +137,5 @@ namespace ship_controller
     }
   }
 }
+
+PLUGINLIB_EXPORT_CLASS(ship_controller::ShipController, controller_interface::ControllerBase);

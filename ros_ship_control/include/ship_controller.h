@@ -79,6 +79,5 @@ namespace ship_controller
     double right_rotational_speed_effort,left_rotational_speed_effort;
     control_toolbox::Pid pid_controller_linear,pid_controller_angular;
   };
-  PLUGINLIB_EXPORT_CLASS(ship_controller::ShipController, controller_interface::ControllerBase);
 }
 #endif
