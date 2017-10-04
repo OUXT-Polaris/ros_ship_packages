@@ -31,6 +31,7 @@ namespace driving_force_controller
   private:
     void twistCallback(const geometry_msgs::Twist& msg);
     void drivingForceCallback(const std_msgs::Float32& msg);
+    double get_thrust(double rotational_speed,double inflow_rate);
     bool init(hardware_interface::VelocityJointInterface* hw,ros::NodeHandle& controller_nh);
     void starting(const ros::Time& time);
     void update(const ros::Time& time, const ros::Duration& period);
@@ -65,6 +66,7 @@ namespace driving_force_controller
 
     //parameters
     std::string twist_topic,motor_command_topic,driving_force_command_topic;
+    double turning_radius,k2,k1,k0,fluid_density;
   };
 }
 #endif

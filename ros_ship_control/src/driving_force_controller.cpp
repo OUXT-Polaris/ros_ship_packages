@@ -60,11 +60,25 @@ namespace driving_force_controller
     }
   }
 
+  double DrivingForceController::get_thrust(double rotational_speed,double inflow_rate)
+  {
+    double Js = inflow_rate/rotational_speed*turning_radius;
+    double Kt = k2*Js*Js + k1*Js + k0;
+    double thrust = fluid_density*std::pow(rotational_speed,2)*std::pow(turning_radius,4)*Kt;
+    return thrust;
+  }
+
   bool DrivingForceController::init(hardware_interface::VelocityJointInterface* hw,ros::NodeHandle& controller_nh)
   {
     controller_nh.getParam("twist_topic",twist_topic);
     controller_nh.getParam("motor_command_topic",motor_command_topic);
     controller_nh.getParam("driving_force_command_topic",driving_force_command_topic);
+    controller_nh.getParam("propeller/turning_radius",turning_radius);
+    controller_nh.getParam("propeller/k2",k2);
+    controller_nh.getParam("propeller/k1",k1);
+    controller_nh.getParam("propeller/k0",k0);
+    controller_nh.getParam("propeller/fluid_density",  fluid_density);
+
     motor_command_publisher.reset(new realtime_tools::RealtimePublisher<std_msgs::Float32>(controller_nh, motor_command_topic, 1));
     sub_twist = controller_nh.subscribe(twist_topic, 1, &DrivingForceController::twistCallback, this);
     driving_force_sub = controller_nh.subscribe(driving_force_command_topic, 1, &DrivingForceController::drivingForceCallback, this);
@@ -89,7 +103,8 @@ namespace driving_force_controller
     twist_struct = *(twist.readFromRT());
     if(motor_command_publisher && motor_command_publisher->trylock())
     {
-
+      motor_command_publisher->msg_.data = 0;
+      motor_command_publisher->unlockAndPublish();
     }
   }
   void DrivingForceController::stopping(const ros::Time& time)
