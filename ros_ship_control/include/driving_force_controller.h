@@ -33,6 +33,7 @@ namespace driving_force_controller
     double get_thrust(double rotational_speed,double inflow_rate);
     void draw_characteristic_curve(double min_rotational_speed,double max_rotational_speed,double resolution_rotational_speed,
       double min_inflow_rate,double max_inflow_rate,double resolution_inflow_rate);
+    double get_rotational_speed(double thrust,double inflow_rate);
     bool init(hardware_interface::VelocityJointInterface* hw,ros::NodeHandle& controller_nh);
     void starting(const ros::Time& time);
     void update(const ros::Time& time, const ros::Duration& period);

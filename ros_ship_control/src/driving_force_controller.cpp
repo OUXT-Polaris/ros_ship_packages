@@ -69,10 +69,24 @@ namespace driving_force_controller
 
   double DrivingForceController::get_thrust(double rotational_speed,double inflow_rate)
   {
-    double Js = inflow_rate/rotational_speed*turning_radius;
-    double Kt = k2*Js*Js + k1*Js + k0;
-    double thrust = fluid_density*std::pow(rotational_speed,2)*std::pow(turning_radius,4)*Kt;
-    return thrust;
+    if(rotational_speed == 0)
+    {
+      return 0;
+    }
+    if(rotational_speed > 0)
+    {
+      double Js = inflow_rate/rotational_speed*turning_radius;
+      double Kt = k2*Js*Js + k1*Js + k0;
+      double thrust = fluid_density*std::pow(rotational_speed,2)*std::pow(turning_radius,4)*Kt;
+      return thrust;
+    }
+    if(rotational_speed < 0)
+    {
+      double Js = inflow_rate/rotational_speed*turning_radius;
+      double Kt = k2*Js*Js + k1*Js + k0;
+      double thrust = -fluid_density*std::pow(rotational_speed,2)*std::pow(turning_radius,4)*Kt;
+      return thrust;
+    }
   }
 
   bool DrivingForceController::init(hardware_interface::VelocityJointInterface* hw,ros::NodeHandle& controller_nh)
@@ -92,6 +106,19 @@ namespace driving_force_controller
     driving_force_sub = controller_nh.subscribe(driving_force_command_topic, 1, &DrivingForceController::drivingForceCallback, this);
   }
 
+  double DrivingForceController::get_rotational_speed(double thrust,double inflow_rate)
+  {
+    double rotational_speed = 0;
+    double error = 0;
+    error = thrust-get_thrust(rotational_speed,inflow_rate);
+    while(error > 0.001)
+    {
+      rotational_speed = rotational_speed+error*0.1;
+      error = thrust-get_thrust(rotational_speed,inflow_rate);
+    }
+    return rotational_speed;
+  }
+
   void DrivingForceController::draw_characteristic_curve(double min_rotational_speed,double max_rotational_speed,double resolution_rotational_speed,
     double min_inflow_rate,double max_inflow_rate,double resolution_inflow_rate)
   {
@@ -109,7 +136,7 @@ namespace driving_force_controller
       y_data.clear();
     }
     std::string package_path = ros::package::getPath("ros_ship_control");
-    matplotlibcpp::xlabel("Rotational speed [Hz]");
+    matplotlibcpp::xlabel("Rotational speed [rad/s]");
     matplotlibcpp::ylabel("Thrust [N]");
     matplotlibcpp::legend_upper_left();
     matplotlibcpp::grid(true);

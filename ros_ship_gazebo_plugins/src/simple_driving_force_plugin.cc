@@ -16,6 +16,7 @@
 //headers for ROS
 #include <ros/ros.h>
 #include <std_msgs/Float32.h>
+#include <geometry_msgs/Twist.h>
 
 namespace gazebo
 {
@@ -27,13 +28,47 @@ namespace gazebo
       this->model = _parent;
       this->LoadParams(sdf,"target_link",this->target_link);
       this->LoadParams(sdf,"target_joint",this->target_joint);
-      nh.param<double>("/propeller/"+this->target_joint+"/rotational_speed_effort", this->rotational_speed_effort, 1.0);
       std::string default_joint_states_topic = "/joint_states";
       this->LoadParams(sdf,"joint_state_topic",this->joint_state_topic,default_joint_states_topic);
+      this->LoadParams(sdf,"driving_force_controller",this->driving_force_controller);
+      nh.getParam(this->driving_force_controller+"/propeller/k0", k0);
+      nh.getParam(this->driving_force_controller+"/propeller/k1", k1);
+      nh.getParam(this->driving_force_controller+"/propeller/k2", k2);
+      nh.getParam(this->driving_force_controller+"/propeller/fluid_density",fluid_density);
+      nh.getParam(this->driving_force_controller+"/propeller/turning_radius", turning_radius);
+      nh.getParam(this->driving_force_controller+"/propeller/twist_topic",twist_topic);
       this->joint = this->model->GetJoint(this->target_joint);
       this->link = this->model->GetLink(target_link);
       driving_force_pub = nh.advertise<std_msgs::Float32>("/"+this->target_link+"/driving_force", 1);
+      twist_sub = nh.subscribe(twist_topic, 1, &simple_driving_force_plugin::twist_callback,this);
       this->updateConnection = event::Events::ConnectWorldUpdateBegin(boost::bind(&simple_driving_force_plugin::OnUpdate, this, _1));
+    }
+
+    void twist_callback(const geometry_msgs::Twist::ConstPtr& msg)
+    {
+      inflow_rate = msg->linear.x;
+    }
+
+    double get_thrust(double rotational_speed,double inflow_rate)
+    {
+      if(rotational_speed == 0)
+      {
+        return 0;
+      }
+      if(rotational_speed > 0)
+      {
+        double Js = inflow_rate/rotational_speed*turning_radius;
+        double Kt = k2*Js*Js + k1*Js + k0;
+        double thrust = fluid_density*std::pow(rotational_speed,2)*std::pow(turning_radius,4)*Kt;
+        return thrust;
+      }
+      if(rotational_speed < 0)
+      {
+        double Js = inflow_rate/rotational_speed*turning_radius;
+        double Kt = k2*Js*Js + k1*Js + k0;
+        double thrust = -fluid_density*std::pow(rotational_speed,2)*std::pow(turning_radius,4)*Kt;
+        return thrust;
+      }
     }
 
     // Called by the world update start event
@@ -41,15 +76,7 @@ namespace gazebo
     {
       std_msgs::Float32 driving_force_msg;
       double velocity = this->joint->GetVelocity(0);
-      double driving_force = 0;
-      if(velocity > 0)
-      {
-        driving_force = std::pow(velocity,2)*this->rotational_speed_effort;
-      }
-      else
-      {
-        driving_force = -std::pow(velocity,2)*this->rotational_speed_effort;
-      }
+      double driving_force = get_thrust(velocity,this->inflow_rate);
       this->link->AddForce(math::Vector3(driving_force, 0, 0));
       driving_force_msg.data = driving_force;
       driving_force_pub.publish(driving_force_msg);
@@ -113,9 +140,15 @@ namespace gazebo
     //ros publishers
     private: ros::NodeHandle nh;
     private: ros::Publisher driving_force_pub;
+    private: ros::Subscriber twist_sub;
 
     // Pointer to the update event connection
     private: event::ConnectionPtr updateConnection;
+
+    //propeller params
+    std::string driving_force_controller,twist_topic;
+    double k0,k1,k2;
+    double fluid_density,turning_radius,inflow_rate;
   };
   // Register this plugin with the simulator
   GZ_REGISTER_MODEL_PLUGIN(simple_driving_force_plugin)

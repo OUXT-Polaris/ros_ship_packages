@@ -55,5 +55,4 @@
     <param name="max_value" value="2" type="double"/>
   </node>
 -->
-
 </launch>
