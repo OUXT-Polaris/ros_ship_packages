@@ -18,22 +18,24 @@ wam_v:
     twist_topic: /wam_v/twist
     motor_command_topic: /wam_v/right_motor_controller/command
     driving_force_command_topic: /wam_v/ship_controller/right_driving_force
+    characteristic_curve_file_name: right_motor
     propeller:
       turning_radius: 0.2
-      k2: 1
-      k1: 1
-      k0: 1
+      k2: 0.01
+      k1: 0.01
+      k0: 0.01
       fluid_density: 998.233
   left_driving_force_controller:
     type: driving_force_controller/DrivingForceController
     twist_topic: /wam_v/twist
     motor_command_topic:  /wam_v/left_motor_controller/command
     driving_force_command_topic: /wam_v/ship_controller/left_driving_force
+    characteristic_curve_file_name: left_motor
     propeller:
       turning_radius: 0.2
-      k2: 1
-      k1: 1
-      k0: 1
+      k2: 0.01
+      k1: 0.01
+      k0: 0.01
       fluid_density: 998.233
   # ship controllers -------------------------------------------
   #ship_controller:

@@ -4,7 +4,6 @@
 //headers for controller_interface
 #include <controller_interface/controller.h>
 
-
 //headers for fardware_interface
 #include <hardware_interface/joint_command_interface.h>
 
@@ -32,6 +31,8 @@ namespace driving_force_controller
     void twistCallback(const geometry_msgs::Twist& msg);
     void drivingForceCallback(const std_msgs::Float32& msg);
     double get_thrust(double rotational_speed,double inflow_rate);
+    void draw_characteristic_curve(double min_rotational_speed,double max_rotational_speed,double resolution_rotational_speed,
+      double min_inflow_rate,double max_inflow_rate,double resolution_inflow_rate);
     bool init(hardware_interface::VelocityJointInterface* hw,ros::NodeHandle& controller_nh);
     void starting(const ros::Time& time);
     void update(const ros::Time& time, const ros::Duration& period);
@@ -65,7 +66,7 @@ namespace driving_force_controller
     ros::Subscriber driving_force_sub;
 
     //parameters
-    std::string twist_topic,motor_command_topic,driving_force_command_topic;
+    std::string twist_topic,motor_command_topic,driving_force_command_topic,characteristic_curve_file_name;
     double turning_radius,k2,k1,k0,fluid_density;
   };
 }
