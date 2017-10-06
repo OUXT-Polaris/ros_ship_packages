@@ -16,6 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
   controller_manager
   control_toolbox
   control_msgs
+  ros_ship_visualization
 )
 
 ## System dependencies are found with CMake's conventions

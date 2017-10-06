@@ -1,5 +1,6 @@
 //headers in this package
 #include <driving_force_controller.h>
+#include <ros_ship_visualization/PlotCharacteristicCurve.h>
 
 //headers for controller_interface
 #include <controller_interface/controller.h>
@@ -44,7 +45,7 @@ namespace driving_force_controller
     }
     else
     {
-      ROS_ERROR("Can't accept new commands. Controller is not running.");
+      ROS_WARN_STREAM("Can't accept new commands. Controller is not running.");
     }
   }
 
@@ -63,7 +64,7 @@ namespace driving_force_controller
     }
     else
     {
-      ROS_ERROR("Can't accept new commands. Controller is not running.");
+      ROS_WARN_STREAM("Can't accept new commands. Controller is not running.");
     }
   }
 
@@ -102,6 +103,21 @@ namespace driving_force_controller
     controller_nh.getParam("characteristic_curve_file_name",characteristic_curve_file_name);
     //plot_characteristic_curve(0,30,1,0,30,5);
     //boost::thread plot_thread(boost::bind(&DrivingForceController::plot_characteristic_curve,this,0,30,1,0,30,5));
+    plot_client = controller_nh.serviceClient<ros_ship_visualization::PlotCharacteristicCurve>("/plot_characteristic_curve");
+    ros_ship_visualization::PlotCharacteristicCurve plot_service_message;
+    plot_service_message.request.fluid_density = fluid_density;
+    plot_service_message.request.turning_radius = turning_radius;
+    plot_service_message.request.k0 = k0;
+    plot_service_message.request.k1 = k1;
+    plot_service_message.request.k2 = k2;
+    plot_service_message.request.file_name = characteristic_curve_file_name;
+    plot_service_message.request.min_inflow_rate = 0;
+    plot_service_message.request.max_inflow_rate = 30;
+    plot_service_message.request.resolution_inflow_rate = 5;
+    plot_service_message.request.min_rotational_speed = 0;
+    plot_service_message.request.max_rotational_speed = 30;
+    plot_service_message.request.resolution_rotational_speed = 1;
+    plot_client.call(plot_service_message);
     motor_command_publisher.reset(new realtime_tools::RealtimePublisher<std_msgs::Float32>(controller_nh, motor_command_topic, 1));
     sub_twist = controller_nh.subscribe(twist_topic, 1, &DrivingForceController::twistCallback, this);
     driving_force_sub = controller_nh.subscribe(driving_force_command_topic, 1, &DrivingForceController::drivingForceCallback, this);

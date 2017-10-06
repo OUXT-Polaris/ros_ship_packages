@@ -70,6 +70,7 @@ namespace driving_force_controller
     //parameters
     std::string twist_topic,motor_command_topic,driving_force_command_topic,characteristic_curve_file_name;
     double turning_radius,k2,k1,k0,fluid_density;
+    ros::ServiceClient plot_client;
   };
 }
 #endif

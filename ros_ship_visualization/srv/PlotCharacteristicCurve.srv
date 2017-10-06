@@ -1,0 +1,13 @@
+float32 k0
+float32 k1
+float32 k2
+float32 turning_radius
+float32 fluid_density
+float32 min_inflow_rate
+float32 max_inflow_rate
+float32 resolution_inflow_rate
+float32 min_rotational_speed
+float32 max_rotational_speed
+float32 resolution_rotational_speed
+string file_name
+---
