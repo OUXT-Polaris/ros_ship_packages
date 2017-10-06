@@ -1,6 +1,5 @@
 //headers in this package
 #include <driving_force_controller.h>
-#include <matplotlibcpp.h>
 
 //headers for controller_interface
 #include <controller_interface/controller.h>
@@ -16,6 +15,7 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/thread/condition.hpp>
+#include <boost/thread.hpp>
 
 //headers for ROS
 #include <ros/package.h>
@@ -100,7 +100,8 @@ namespace driving_force_controller
     controller_nh.getParam("propeller/k0",k0);
     controller_nh.getParam("propeller/fluid_density",  fluid_density);
     controller_nh.getParam("characteristic_curve_file_name",characteristic_curve_file_name);
-    draw_characteristic_curve(0,30,1,0,30,5);
+    //plot_characteristic_curve(0,30,1,0,30,5);
+    //boost::thread plot_thread(boost::bind(&DrivingForceController::plot_characteristic_curve,this,0,30,1,0,30,5));
     motor_command_publisher.reset(new realtime_tools::RealtimePublisher<std_msgs::Float32>(controller_nh, motor_command_topic, 1));
     sub_twist = controller_nh.subscribe(twist_topic, 1, &DrivingForceController::twistCallback, this);
     driving_force_sub = controller_nh.subscribe(driving_force_command_topic, 1, &DrivingForceController::drivingForceCallback, this);
@@ -119,7 +120,8 @@ namespace driving_force_controller
     return rotational_speed;
   }
 
-  void DrivingForceController::draw_characteristic_curve(double min_rotational_speed,double max_rotational_speed,double resolution_rotational_speed,
+/*
+  void DrivingForceController::plot_characteristic_curve(double min_rotational_speed,double max_rotational_speed,double resolution_rotational_speed,
     double min_inflow_rate,double max_inflow_rate,double resolution_inflow_rate)
   {
     std::vector<double> x_data,y_data;
@@ -143,6 +145,7 @@ namespace driving_force_controller
     matplotlibcpp::save(package_path+"/data/"+characteristic_curve_file_name+".eps");
     matplotlibcpp::save(package_path+"/data/"+characteristic_curve_file_name+".jpeg");
   }
+*/
 
   void DrivingForceController::starting(const ros::Time& time)
   {
