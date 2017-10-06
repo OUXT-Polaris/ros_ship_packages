@@ -19,7 +19,7 @@ class plot_characteristic_curve_server:
             thrusts = []
             for rotational_speed in rotational_speeds:
                 thrusts.append(self.get_thrust(rotational_speed,inflow_rate))
-            pyplot.plot(rotational_speeds, thrusts,label=("ship speed ="+str(inflow_rate)))
+            pyplot.plot(rotational_speeds, thrusts,label=("ship speed ="+str(inflow_rate)+"[m/s]"))
         pyplot.legend(loc='upper left')
         pyplot.xlabel("rotational speed [rad/s]")
         pyplot.ylabel("thrust [N]")
