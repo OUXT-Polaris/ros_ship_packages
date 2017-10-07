@@ -15,9 +15,10 @@ roslaunch ros_ship_description ros_ship.launch
 ## WAM-V
 ![simulation on gazebo](https://github.com/hakuturu583/ros_ship_packages/blob/master/images/wam-v_gazebo.png)  
 ![simulation result on rviz](https://github.com/hakuturu583/ros_ship_packages/blob/master/images/wam-v_rviz.png)  
+[![demo](https://www.youtube.com/watch?v=tQ_12pDbhCQ&feature=youtu.be/0.jpg)](https://www.youtube.com/watch?v=tQ_12pDbhCQ&feature=youtu.be)
 
 ### simulated sensors
-gps
+gps,imu,camera,VLP-16
 
 ### how to launch
 roslaunch ros_ship_description wam-v.launch
