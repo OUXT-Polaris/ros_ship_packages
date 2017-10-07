@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
 
-  <node name="buoy_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+<!--
+  <node name="buoy_spawner_red_01" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
     args="-file $(find ros_ship_description)/world/buoy/urdf/red_buoy.urdf -model red_buoy_01 -urdf -x 10 -y 0 -z 0" ns="red_buoy_01"/>
 
-  <node name="buoy_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+  <node name="buoy_spawner_green_01" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
     args="-file $(find ros_ship_description)/world/buoy/urdf/green_buoy.urdf -model green_buoy_01 -urdf -x 10 -y 3 -z 0" ns="green_buoy_01"/>
+-->
+  <node name="dock_spwner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+    args="-file $(find ros_ship_description)/world/others/urdf/dock.urdf -model dock_01 -urdf -x 30 -y 0 -z 0 -R 0 -P 0 -Y -1.57079632679" ns="dock_01"/>
 </launch>

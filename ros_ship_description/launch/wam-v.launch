@@ -11,6 +11,7 @@
 
   <include file="$(find ros_ship_control)/launch/wam-v_control.launch"/>
   <include file="$(find ros_ship_description)/launch/environment.launch"/>
+  <include file="$(find ros_ship_description)/launch/mapping.launch"/>
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="paused" value="false"/>

@@ -15,7 +15,7 @@
    </collision>
    <inertial>
      <mass value="247.07"/>
-     <inertia ixx="200" ixy="0.03" ixz="3.09" iyy="181.69" iyz="-0.05" izz="165.39"/>
+     <inertia ixx="200" ixy="0.03" ixz="3.09" iyy="500" iyz="-0.05" izz="165.39"/>
    </inertial>
   </link>
 
@@ -50,6 +50,13 @@
     <origin xyz="-0.5 0 0" rpy="0 0 ${pi}"/>
     <parent link="base_link"/>
     <child link="rear_camera_link"/>
+  </joint>
+
+  <link name="scan"/>
+  <joint name="scan_joint" type="fixed">
+    <origin xyz="1.5 0 -1" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="scan"/>
   </joint>
 
   <link name="right_motor">
@@ -239,6 +246,35 @@
 
   <xacro:include filename="$(find velodyne_description)/urdf/VLP-16.urdf.xacro"/>
   <VLP-16 parent="base_link" name="velodyne" topic="/velodyne_points">
-    <origin xyz="0.9 0 0.3" rpy="0 0 0" />
+    <origin xyz="0.8 0 0.3" rpy="0 0 0" />
   </VLP-16>
+
+  <gazebo reference="scan">
+    <material>Gazebo/Blue</material>
+    <turnGravityOff>false</turnGravityOff>
+    <sensor type="ray" name="scan_sensor">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>false</visualize>
+      <update_rate>40</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>720</samples>
+            <resolution>1</resolution>
+            <min_angle>-1.570796</min_angle>
+            <max_angle>1.570796</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>1</min>
+          <max>30.0</max>
+          <resolution>0.001</resolution>
+        </range>
+      </ray>
+      <plugin name="gazebo_ros_head_hokuyo_controller" filename="libgazebo_ros_laser.so">
+        <topicName>/scan</topicName>
+        <frameName>scan</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
 </robot>
