@@ -3,8 +3,7 @@ Panels:
     Help Height: 78
     Name: Displays
     Property Tree Widget:
-      Expanded:
-        - /Global Options1
+      Expanded: ~
       Splitter Ratio: 0.5
     Tree Height: 775
   - Class: rviz/Selection
@@ -25,7 +24,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: ""
+    SyncSource: PointCloud2
 Visualization Manager:
   Class: ""
   Displays:
@@ -66,7 +65,15 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        front_camera_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         gps:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        left_camera_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -75,7 +82,25 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        rear_camera_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        right_camera_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         right_motor:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        velodyne:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        velodyne_base_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -87,43 +112,19 @@ Visualization Manager:
       Value: true
       Visual Enabled: true
     - Class: rviz/TF
-      Enabled: true
+      Enabled: false
       Frame Timeout: 15
       Frames:
         All Enabled: false
-        base_footprint:
-          Value: true
-        base_link:
-          Value: true
-        gps:
-          Value: true
-        left_motor:
-          Value: true
-        odom:
-          Value: true
-        right_motor:
-          Value: true
-        world:
-          Value: true
       Marker Scale: 1
       Name: TF
       Show Arrows: true
       Show Axes: true
       Show Names: true
       Tree:
-        base_footprint:
-          base_link:
-            gps:
-              {}
-            left_motor:
-              {}
-            right_motor:
-              {}
-        world:
-          odom:
-            {}
+        {}
       Update Interval: 0
-      Value: true
+      Value: false
     - Class: rviz/Marker
       Enabled: false
       Marker Topic: /left_bbox/base_footprint/bounding_box
@@ -224,6 +225,80 @@ Visualization Manager:
       Topic: /robot_pose_ekf/odom_combined
       Unreliable: false
       Value: true
+    - Class: jsk_rviz_plugin/OverlayImage
+      Enabled: true
+      Name: OverlayImage
+      Topic: /wam_v/camera/front/image_raw
+      Value: true
+      alpha: 0.800000012
+      height: 128
+      keep aspect ratio: true
+      left: 260
+      top: 10
+      width: 240
+    - Class: jsk_rviz_plugin/OverlayImage
+      Enabled: true
+      Name: OverlayImage
+      Topic: /wam_v/camera/left/image_raw
+      Value: true
+      alpha: 0.800000012
+      height: 128
+      keep aspect ratio: true
+      left: 10
+      top: 10
+      width: 240
+    - Class: jsk_rviz_plugin/OverlayImage
+      Enabled: true
+      Name: OverlayImage
+      Topic: /wam_v/camera/right/image_raw
+      Value: true
+      alpha: 0.800000012
+      height: 128
+      keep aspect ratio: true
+      left: 510
+      top: 10
+      width: 240
+    - Class: jsk_rviz_plugin/OverlayImage
+      Enabled: true
+      Name: OverlayImage
+      Topic: /wam_v/camera/rear/image_raw
+      Value: true
+      alpha: 0.800000012
+      height: 128
+      keep aspect ratio: true
+      left: 260
+      top: 200
+      width: 240
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: Intensity
+      Decay Time: 0
+      Enabled: true
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 999999
+      Min Color: 0; 0; 0
+      Min Intensity: 999999
+      Name: PointCloud2
+      Position Transformer: XYZ
+      Queue Size: 10
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.00999999978
+      Style: Flat Squares
+      Topic: /velodyne_points
+      Unreliable: false
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -248,7 +323,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 10.3159275
+      Distance: 22.8890705
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
@@ -263,10 +338,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.519797325
+      Pitch: 0.319797546
       Target Frame: base_link
       Value: Orbit (rviz)
-      Yaw: 3.49365211
+      Yaw: 3.41047502
     Saved: ~
 Window Geometry:
   Displays:

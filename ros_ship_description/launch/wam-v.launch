@@ -10,6 +10,7 @@
     args="-urdf -model wam-v -param robot_description -x 0 -y 0 -z -0.3"/>
 
   <include file="$(find ros_ship_control)/launch/wam-v_control.launch"/>
+  <include file="$(find ros_ship_description)/launch/environment.launch"/>
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="paused" value="false"/>

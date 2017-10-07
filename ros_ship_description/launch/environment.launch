@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+  <node name="buoy_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+    args="-file $(find ros_ship_description)/world/buoy/urdf/red_buoy.urdf -model red_buoy_01 -urdf -x 10 -y 0 -z 0" ns="red_buoy_01"/>
+
+  <node name="buoy_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+    args="-file $(find ros_ship_description)/world/buoy/urdf/green_buoy.urdf -model green_buoy_01 -urdf -x 10 -y 3 -z 0" ns="green_buoy_01"/>
+</launch>

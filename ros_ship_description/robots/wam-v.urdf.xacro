@@ -1,23 +1,7 @@
+<?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro" name="wam-v">
-  <xacro:property name="hal_position_x" value="0.5" />
-  <xacro:property name="hal_position_y" value="1.05" />
-  <xacro:property name="hal_position_z" value="0.5" />
-  <xacro:property name="hal_size_x" value="4.0" />
-  <xacro:property name="hal_size_y" value="0.5" />
-  <xacro:property name="hal_size_z" value="0.5" />
-  <xacro:property name="motor_position_x" value="-1.5" />
-  <xacro:property name="motor_position_y" value="1.027" />
-  <xacro:property name="motor_position_z" value="-1.705" />
+  <xacro:include filename="properties.urdf.xacro"/>
 
-  <xacro:property name="motor_size_x" value="0.1" />
-  <xacro:property name="motor_size_y" value="0.2" />
-  <xacro:property name="motor_size_z" value="0.2" />
-
-  <xacro:property name="rotational_speed_effort" value="1" />
-  <xacro:property name="joint_state_topic" value="/wam_v/joint_states" />
-
-  <xacro:property name="start_point_latitude" value="135.525" />
-  <xacro:property name="start_point_longitude" value="34.8235" />
   <link name="base_link">
     <visual>
      <geometry>
@@ -42,6 +26,31 @@
   </joint>
 
   <link name="base_footprint"/>
+
+  <link name="front_camera_link"/>
+  <joint name="front_camera_joint" type="fixed">
+    <origin xyz="1.2 0 0"/>
+    <parent link="base_link"/>
+    <child link="front_camera_link"/>
+  </joint>
+  <link name="left_camera_link"/>
+  <joint name="left_camera_joint" type="fixed">
+    <origin xyz="0 0.5 0" rpy="0 0 ${pi/2}"/>
+    <parent link="base_link"/>
+    <child link="left_camera_link"/>
+  </joint>
+  <link name="right_camera_link"/>
+  <joint name="right_camera_joint" type="fixed">
+    <origin xyz="0 -0.5 0" rpy="0 0 ${-pi/2}"/>
+    <parent link="base_link"/>
+    <child link="right_camera_link"/>
+  </joint>
+  <link name="rear_camera_link"/>
+  <joint name="rear_camera_joint" type="fixed">
+    <origin xyz="-0.5 0 0" rpy="0 0 ${pi}"/>
+    <parent link="base_link"/>
+    <child link="rear_camera_link"/>
+  </joint>
 
   <link name="right_motor">
     <visual>
@@ -123,7 +132,7 @@
 
   <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-      <robotNamespace>/wam_v</robotNamespace>
+      <robotNamespace>${robot}</robotNamespace>
     </plugin>
 
     <plugin name="simple_buoyancy_base_right" filename="libsimple_buoyancy_plugin.so">
@@ -195,14 +204,14 @@
     <plugin name="simple_driving_force_left" filename="libsimple_driving_force_plugin.so">
       <target_link>left_motor</target_link>
       <target_joint>left_motor_joint</target_joint>
-      <driving_force_controller>/wam_v/right_driving_force_controller</driving_force_controller>
+      <driving_force_controller>/${robot}/right_driving_force_controller</driving_force_controller>
       <joint_state_topic>${joint_state_topic}</joint_state_topic>
     </plugin>
 
     <plugin name="simple_driving_force_right" filename="libsimple_driving_force_plugin.so">
       <target_link>right_motor</target_link>
       <target_joint>right_motor_joint</target_joint>
-      <driving_force_controller>/wam_v/left_driving_force_controller</driving_force_controller>
+      <driving_force_controller>/${robot}/left_driving_force_controller</driving_force_controller>
       <joint_state_topic>${joint_state_topic}</joint_state_topic>
     </plugin>
 
@@ -222,4 +231,14 @@
     </plugin>
   </gazebo>
 
+  <xacro:include filename="camera.urdf.xacro"/>
+  <xacro:camera prefix="front"/>
+  <xacro:camera prefix="right"/>
+  <xacro:camera prefix="left"/>
+  <xacro:camera prefix="rear"/>
+
+  <xacro:include filename="$(find velodyne_description)/urdf/VLP-16.urdf.xacro"/>
+  <VLP-16 parent="base_link" name="velodyne" topic="/velodyne_points">
+    <origin xyz="0.9 0 0.3" rpy="0 0 0" />
+  </VLP-16>
 </robot>
