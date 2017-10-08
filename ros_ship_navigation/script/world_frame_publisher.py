@@ -6,10 +6,11 @@ from geometry_msgs.msg import TransformStamped
 
 class world_frame_pub:
     def __init__(self):
-        self.utm_odom_sub = rospy.Subscriber("/odom", Odometry, self.utm_odom_callback)
         self.broadcaster = tf2_ros.TransformBroadcaster()
         self.transform_msg = TransformStamped()
+        self.utm_odom_sub = rospy.Subscriber("/odom", Odometry, self.utm_odom_callback)
     def utm_odom_callback(self,data):
+        self.is_recieved = True
         self.transform_msg.header.stamp = rospy.Time.now()
         self.transform_msg.header.frame_id = data.header.frame_id
         self.transform_msg.child_frame_id = data.child_frame_id

@@ -1,3 +1,4 @@
 *.blend1
+*.pyc
 /ros_ship_visualization/data
 /ros_ship_control/data

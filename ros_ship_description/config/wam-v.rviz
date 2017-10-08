@@ -4,7 +4,7 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /LaserScan1
+        - /Global Options1
       Splitter Ratio: 0.5
     Tree Height: 775
   - Class: rviz/Selection
@@ -155,29 +155,30 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
+        base_footprint:
+          base_link:
+            front_camera_link:
+              {}
+            gps:
+              {}
+            left_camera_link:
+              {}
+            left_motor:
+              {}
+            rear_camera_link:
+              {}
+            right_camera_link:
+              {}
+            right_motor:
+              {}
+            scan:
+              {}
+            velodyne_base_link:
+              velodyne:
+                {}
         world:
           odom:
-            base_footprint:
-              base_link:
-                front_camera_link:
-                  {}
-                gps:
-                  {}
-                left_camera_link:
-                  {}
-                left_motor:
-                  {}
-                rear_camera_link:
-                  {}
-                right_camera_link:
-                  {}
-                right_motor:
-                  {}
-                scan:
-                  {}
-                velodyne_base_link:
-                  velodyne:
-                    {}
+            {}
       Update Interval: 0
       Value: true
     - Class: rviz/Marker
@@ -327,8 +328,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 6.84901857
-        Min Value: -0.480473757
+        Max Value: 6.29636431
+        Min Value: -1.71738172
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -384,6 +385,14 @@ Visualization Manager:
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
+    - Class: rviz/MarkerArray
+      Enabled: false
+      Marker Topic: /free_cells_vis_array
+      Name: MarkerArray
+      Namespaces:
+        {}
+      Queue Size: 100
+      Value: false
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -408,7 +417,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 7.6144805
+      Distance: 13.5051842
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
@@ -423,10 +432,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: -0.0752019286
+      Pitch: 0.0647976995
       Target Frame: base_link
       Value: Orbit (rviz)
-      Yaw: 0.0273157433
+      Yaw: 2.95550537
     Saved: ~
 Window Geometry:
   Displays:

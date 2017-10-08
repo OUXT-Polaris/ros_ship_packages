@@ -11,7 +11,6 @@
 
   <include file="$(find ros_ship_control)/launch/wam-v_control.launch"/>
   <include file="$(find ros_ship_description)/launch/environment.launch"/>
-  <include file="$(find ros_ship_description)/launch/mapping.launch"/>
 
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="paused" value="false"/>
@@ -21,10 +20,6 @@
 
   <node name="utm_odometry_node" pkg="gps_common" type="utm_odometry_node" args="" output="screen" respawn="true">
     <param name="child_frame_id" value="odom" type="str"/>
-    <remap from="/odom" to="/gps_odom" />
-  </node>
-
-  <node name="world_frame_publisher" pkg="ros_ship_navigation" type="world_frame_publisher.py" args="" output="screen" respawn="true">
     <remap from="/odom" to="/gps_odom" />
   </node>
 
@@ -46,10 +41,17 @@
     <param name="imu_frame" value="base_link" type="str"/>
   </node>
 
+  <node name="world_frame_publisher" pkg="ros_ship_navigation" type="world_frame_publisher.py" args="" output="screen" respawn="true">
+    <remap from="/odom" to="/gps_odom" />
+  </node>
+
   <node name="cmd_vel_publisher" pkg="rostopic" type="rostopic" args="pub /wam_v/ship_controller/cmd_vel geometry_msgs/Twist -r 1 -- '[0.5, 0.0, 0.0]' '[0.0, 0.0, 0.0]'" output="screen" respawn="true">
   </node>
 
-  <node name="plotter" pkg="ros_ship_visualization" type="plot_characteristic_curve.py" args="" output="screen" respawn="true">
+  <node name="plot_characteristic_curve_node" pkg="ros_ship_visualization" type="plot_characteristic_curve.py" args="" output="screen" respawn="true">
+  </node>
+
+  <node name="kml_plotter_node" pkg="ros_ship_visualization" type="kml_plotter.py" args="" output="screen" respawn="true">
   </node>
 
   <node name="joy_node" pkg="joy" type="joy_node" args="" output="screen" respawn="true">

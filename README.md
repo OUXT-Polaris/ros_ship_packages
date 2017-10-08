@@ -18,7 +18,7 @@ roslaunch ros_ship_description ros_ship.launch
 [demo](https://www.youtube.com/watch?v=tQ_12pDbhCQ&feature=youtu.be)
 
 ### simulated sensors
-gps,imu,camera,VLP-16
+gps,imu,camera,VLP-16,laser(2D)  
 
 ### how to launch
 roslaunch ros_ship_description wam-v.launch
@@ -32,7 +32,16 @@ ROS package for ros_ship_description(urdf,xacro,mesh,world files,etc..)
 
 ## ros_ship_gazebo_plugins  
 gazebo plugins for simlated USV  
-### simple_buoyancy_plugin  
+#### simple_buoyancy_plugin  
 gazebo plugin for calculating buoyancy in a very simple way.  
-### world_frame_publisher_plugin  
+#### world_frame_publisher_plugin  
 gazebo plugin for broadcast gazebo_world frame.  
+#### simple_driving_force_plugin  
+gazebo plugin for calculating driving force from joint speed and ship speed  
+## ros_ship_visualization  
+#### kml_plotter.py  
+plot gps data from /fix(sensor_msgs/NavSatFix) topic in kml format  
+![visualize simulated gps data in google earth](https://github.com/hakuturu583/ros_ship_packages/blob/master/images/kml-plotter-node.png)  
+#### plot_characteristic_curve.py  
+plot characteristic curve  in .eps and .jpeg format  
+![plotted characteristic curve](https://github.com/hakuturu583/ros_ship_packages/blob/master/images/characteristic_curve.jpg)  
