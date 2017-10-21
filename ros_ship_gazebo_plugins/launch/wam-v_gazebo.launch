@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <rosparam command="load" file="$(find ros_ship_description)/config/propeller_params.yaml"/>
+
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+    args="-urdf -model wam-v -param robot_description -x 0 -y 0 -z -0.3"/>
+
+  <include file="$(find ros_ship_gazebo_plugins)/launch/spawn_environment_model.launch"/>
+  <include file="$(find ros_ship_visualization)/launch/visualization.launch"/>
+  <include file="$(find ros_ship_navigation)/launch/navigation.launch"/>
+  <include file="$(find ros_ship_description)/launch/wam-v.launch"/>
+</launch>

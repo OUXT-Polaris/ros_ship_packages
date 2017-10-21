@@ -21,7 +21,7 @@ roslaunch ros_ship_description ros_ship.launch
 gps,imu,camera,VLP-16,laser(2D)  
 
 ### how to launch
-roslaunch ros_ship_description wam-v.launch
+roslaunch ros_ship_gazebo_plugins wam-v_gazebo.launch
 
 # packages
 ## ros_ship_control  
