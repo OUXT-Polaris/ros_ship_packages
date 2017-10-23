@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
-  <rosparam command="load" file="$(find ros_ship_visualization)/launch/google_statc_map_api_key"/>
-  <rosparam command="load" file="$(find ros_ship_visualization)/launch/gps_plotter_config"/>
+  <rosparam command="load" file="$(find ros_ship_visualization)/config/google_statc_map_api_key.yaml" ns="gps_plotter_node"/>
+  <rosparam command="load" file="$(find ros_ship_visualization)/config/gps_plotter_config.yaml" ns="gps_plotter_node"/>
 
   <node name="plot_characteristic_curve_node" pkg="ros_ship_visualization" type="plot_characteristic_curve.py" args="" output="screen" respawn="true">
   </node>
 
   <node name="kml_plotter_node" pkg="ros_ship_visualization" type="kml_plotter.py" args="" output="screen" respawn="true">
+  </node>
+
+  <node name="gps_plotter_node" pkg="ros_ship_visualization" type="gps_plotter.py" args="" output="screen" respawn="true">
   </node>
 
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find ros_ship_description)/config/wam-v.rviz" required="true" />

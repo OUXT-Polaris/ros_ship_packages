@@ -1,3 +1,8 @@
 size:
   x: 640
   y: 640
+zoom: 19
+maptype: "roadmap"
+marker_color: "red"
+path_color: "0xff0000ff"
+messages_per_plot: 10
