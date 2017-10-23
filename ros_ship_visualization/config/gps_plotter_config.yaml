@@ -3,6 +3,7 @@ size:
   y: 640
 zoom: 19
 maptype: "roadmap"
-marker_color: "red"
+wam_v_marker_color: "red"
+start_point_marker_color: "green"
 path_color: "0xff0000ff"
 messages_per_plot: 10

@@ -19,7 +19,8 @@ class plotter:
         self.zoom = rospy.get_param("~zoom")
         self.size_x = rospy.get_param("~size/x")
         self.size_y = rospy.get_param("~size/y")
-        self.marker_color = rospy.get_param("~marker_color")
+        self.wam_v_marker_color = rospy.get_param("~wam_v_marker_color")
+        self.start_point_marker_color = rospy.get_param("~start_point_marker_color")
         self.messages_per_plot = rospy.get_param("~messages_per_plot",10)
         self.path_color = rospy.get_param("~path_color","0xff0000ff")
         self.map_image_file = self.package_path + "/data/map_image.png"
@@ -40,10 +41,11 @@ class plotter:
         zoom_request = "&zoom=" + str(self.zoom)
         size_request = "&size=" + str(self.size_x) + "x" + str(self.size_y)
         maptype_request = "&maptype=" + self.maptype
-        #marker_request = "&markers=color:" + self.marker_color + "%7Clabel:WAM-V%7C" + str(self.longitudes[-1]) + "," + str(self.latitudes[-1])
+        wam_v_marker_request = "&markers=color:" + self.wam_v_marker_color + "%7Clabel:W%7C" + str(self.longitudes[-1]) + "," + str(self.latitudes[-1])
+        start_point_marker_request = "&markers=color:" + self.start_point_marker_color + "%7Clabel:S%7C" + str(self.longitudes[0]) + "," + str(self.latitudes[0])
         path_request = self.build_path_request()
         api_key_request = "&key=" + self.google_statc_map_api_key
-        request_url = url+center_request+zoom_request+size_request+maptype_request+path_request+api_key_request#marker_request
+        request_url = url+center_request+zoom_request+size_request+maptype_request+path_request+start_point_marker_request+wam_v_marker_request+api_key_request
         request_msg = String()
         request_msg.data = request_url
         self.google_statc_map_api_request_pub.publish(request_msg)
