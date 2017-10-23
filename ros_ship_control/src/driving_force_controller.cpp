@@ -17,13 +17,13 @@
 #include <boost/scoped_ptr.hpp>
 #include <boost/thread/condition.hpp>
 #include <boost/thread.hpp>
+#include <boost/algorithm/clamp.hpp>
 
 //headers for ROS
 #include <ros/package.h>
 
 //headers for STL
 #include <vector>
-#include <algorithm>
 
 namespace driving_force_controller
 {
@@ -188,6 +188,7 @@ namespace driving_force_controller
     if(motor_command_publisher && motor_command_publisher->trylock())
     {
       double target_rotational_speed = get_rotational_speed(driving_force_struct.value,twist_struct.lin_x);
+      target_rotational_speed = boost::algorithm::clamp(target_rotational_speed,min_rotational_speed,max_rotational_speed);
       motor_command_publisher->msg_.data = target_rotational_speed;
       motor_command_publisher->unlockAndPublish();
     }
