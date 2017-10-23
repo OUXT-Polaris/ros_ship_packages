@@ -44,6 +44,11 @@ gazebo plugin for broadcast gazebo_world frame.
 #### simple_driving_force_plugin  
 gazebo plugin for calculating driving force from joint speed and ship speed  
 ## ros_ship_visualization  
+#### gps_plotter.py  
+plot gps data from /fix(sensor_msgs/NavSatFix) and publish map image via google static map API  
+S is start point of ship  
+W is current position of WAM-V  
+![visualization in google map](https://github.com/hakuturu583/ros_ship_packages/blob/master/images/map_image.png)     
 #### kml_plotter.py  
 plot gps data from /fix(sensor_msgs/NavSatFix) topic in kml format  
 ![visualize simulated gps data in google earth](https://github.com/hakuturu583/ros_ship_packages/blob/master/images/kml-plotter-node.png)  
