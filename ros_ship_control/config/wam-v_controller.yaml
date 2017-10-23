@@ -19,6 +19,9 @@ wam_v:
     motor_command_topic: /wam_v/right_motor_controller/command
     driving_force_command_topic: /wam_v/ship_controller/right_driving_force
     characteristic_curve_file_name: right_motor
+    gradient_descent:
+      tolerance: 0.0001
+      alpha: 0.1
     propeller:
       turning_radius: 0.2
       k2: 1
@@ -31,6 +34,9 @@ wam_v:
     motor_command_topic:  /wam_v/left_motor_controller/command
     driving_force_command_topic: /wam_v/ship_controller/left_driving_force
     characteristic_curve_file_name: left_motor
+    gradient_descent:
+      tolerance: 0.0001
+      alpha: 0.1
     propeller:
       turning_radius: 0.2
       k2: 1

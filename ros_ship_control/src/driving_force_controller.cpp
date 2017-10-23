@@ -101,6 +101,8 @@ namespace driving_force_controller
     controller_nh.getParam("propeller/k0",k0);
     controller_nh.getParam("propeller/fluid_density",  fluid_density);
     controller_nh.getParam("characteristic_curve_file_name",characteristic_curve_file_name);
+    controller_nh.getParam("gradient_descent/tolerance",tolerance);
+    controller_nh.getParam("gradient_descent/alpha",alpha);
     //plot_characteristic_curve(0,30,1,0,30,5);
     //boost::thread plot_thread(boost::bind(&DrivingForceController::plot_characteristic_curve,this,0,30,1,0,30,5));
     plot_client = controller_nh.serviceClient<ros_ship_visualization::PlotCharacteristicCurve>("/plot_characteristic_curve");
@@ -128,9 +130,9 @@ namespace driving_force_controller
     double rotational_speed = 0;
     double error = 0;
     error = thrust-get_thrust(rotational_speed,inflow_rate);
-    while(error > 0.001)
+    while(error > tolerance)
     {
-      rotational_speed = rotational_speed+error*0.1;
+      rotational_speed = rotational_speed+error*alpha;
       error = thrust-get_thrust(rotational_speed,inflow_rate);
     }
     return rotational_speed;
