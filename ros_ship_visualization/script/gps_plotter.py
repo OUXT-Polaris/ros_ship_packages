@@ -40,10 +40,10 @@ class plotter:
         zoom_request = "&zoom=" + str(self.zoom)
         size_request = "&size=" + str(self.size_x) + "x" + str(self.size_y)
         maptype_request = "&maptype=" + self.maptype
-        marker_request = "&markers=color:" + self.marker_color + "%7Clabel:WAM-V%7C" + str(self.longitudes[-1]) + "," + str(self.latitudes[-1])
+        #marker_request = "&markers=color:" + self.marker_color + "%7Clabel:WAM-V%7C" + str(self.longitudes[-1]) + "," + str(self.latitudes[-1])
         path_request = self.build_path_request()
         api_key_request = "&key=" + self.google_statc_map_api_key
-        request_url = url+center_request+zoom_request+size_request+maptype_request+marker_request+path_request+api_key_request
+        request_url = url+center_request+zoom_request+size_request+maptype_request+path_request+api_key_request#marker_request
         request_msg = String()
         request_msg.data = request_url
         self.google_statc_map_api_request_pub.publish(request_msg)
