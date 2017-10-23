@@ -26,4 +26,11 @@
   <node name="world_frame_publisher" pkg="ros_ship_navigation" type="world_frame_publisher.py" args="" output="screen" respawn="true">
     <remap from="/odom" to="/gps_odom" />
   </node>
+
+  <node name="joy_node" pkg="joy" type="joy_node" args="" output="screen" respawn="true">
+  </node>
+
+  <node name="joy_to_cmd_node" pkg="ros_ship_navigation" type="joy_to_cmd.py" args="" output="screen" respawn="true">
+    <param name="max_value" value="2" type="double"/>
+  </node>
 </launch>

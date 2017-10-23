@@ -47,7 +47,7 @@ gazebo plugin for calculating driving force from joint speed and ship speed
 #### gps_plotter.py  
 plot gps data from /fix(sensor_msgs/NavSatFix) and publish map image via google static map API  
 S is start point of ship  
-W is current position of WAM-V  
+C is current position of the ship    
 ![visualization in google map](https://github.com/hakuturu583/ros_ship_packages/blob/master/images/map_image.png)     
 #### kml_plotter.py  
 plot gps data from /fix(sensor_msgs/NavSatFix) topic in kml format  

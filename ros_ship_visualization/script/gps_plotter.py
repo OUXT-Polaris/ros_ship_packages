@@ -41,7 +41,7 @@ class plotter:
         zoom_request = "&zoom=" + str(self.zoom)
         size_request = "&size=" + str(self.size_x) + "x" + str(self.size_y)
         maptype_request = "&maptype=" + self.maptype
-        wam_v_marker_request = "&markers=color:" + self.wam_v_marker_color + "%7Clabel:W%7C" + str(self.longitudes[-1]) + "," + str(self.latitudes[-1])
+        wam_v_marker_request = "&markers=color:" + self.wam_v_marker_color + "%7Clabel:C%7C" + str(self.longitudes[-1]) + "," + str(self.latitudes[-1])
         start_point_marker_request = "&markers=color:" + self.start_point_marker_color + "%7Clabel:S%7C" + str(self.longitudes[0]) + "," + str(self.latitudes[0])
         path_request = self.build_path_request()
         api_key_request = "&key=" + self.google_statc_map_api_key
