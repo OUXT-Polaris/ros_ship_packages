@@ -1,5 +1,0 @@
-propeller:
-  left_motor_joint:
-    rotational_speed_effort: 1.0
-  right_motor_joint:
-    rotational_speed_effort: 1.0

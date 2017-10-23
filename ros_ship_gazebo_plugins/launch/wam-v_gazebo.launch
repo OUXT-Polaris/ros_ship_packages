@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
-  <rosparam command="load" file="$(find ros_ship_description)/config/propeller_params.yaml"/>
-
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
     args="-urdf -model wam-v -param robot_description -x 0 -y 0 -z -0.3"/>
 

@@ -5,6 +5,7 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
+        - /VideoCapture1
       Splitter Ratio: 0.5
     Tree Height: 775
   - Class: rviz/Selection
@@ -155,30 +156,29 @@ Visualization Manager:
       Show Axes: true
       Show Names: true
       Tree:
-        base_footprint:
-          base_link:
-            front_camera_link:
-              {}
-            gps:
-              {}
-            left_camera_link:
-              {}
-            left_motor:
-              {}
-            rear_camera_link:
-              {}
-            right_camera_link:
-              {}
-            right_motor:
-              {}
-            scan:
-              {}
-            velodyne_base_link:
-              velodyne:
-                {}
         world:
           odom:
-            {}
+            base_footprint:
+              base_link:
+                front_camera_link:
+                  {}
+                gps:
+                  {}
+                left_camera_link:
+                  {}
+                left_motor:
+                  {}
+                rear_camera_link:
+                  {}
+                right_camera_link:
+                  {}
+                right_motor:
+                  {}
+                scan:
+                  {}
+                velodyne_base_link:
+                  velodyne:
+                    {}
       Update Interval: 0
       Value: true
     - Class: rviz/Marker
@@ -328,8 +328,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 6.29636431
-        Min Value: -1.71738172
+        Max Value: 1.95934224
+        Min Value: -0.413701534
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -393,6 +393,13 @@ Visualization Manager:
         {}
       Queue Size: 100
       Value: false
+    - Class: jsk_rviz_plugin/VideoCapture
+      Enabled: true
+      Name: VideoCapture
+      Value: true
+      filename: output.avi
+      fps: 30
+      start capture: false
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48

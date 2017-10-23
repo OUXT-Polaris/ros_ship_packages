@@ -23,7 +23,7 @@ wam_v:
       turning_radius: 0.2
       k2: 1
       k1: 1
-      k0: 1.2
+      k0: 1
       fluid_density: 998.233
   left_driving_force_controller:
     type: driving_force_controller/DrivingForceController
@@ -35,7 +35,7 @@ wam_v:
       turning_radius: 0.2
       k2: 1
       k1: 1
-      k0: 1.2
+      k0: 1
       fluid_density: 998.233
   # ship controllers -------------------------------------------
   #ship_controller:

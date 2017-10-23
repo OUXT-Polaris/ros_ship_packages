@@ -11,8 +11,8 @@
   <!-- convert joint states to TF transforms for rviz, etc -->
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" ns="wam_v">
   </node>
-<!--
+
   <node name="joy_node" pkg="joy" type="joy_node" args="" output="screen" respawn="true">
   </node>
--->
+
 </launch>
