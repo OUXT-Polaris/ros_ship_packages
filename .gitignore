@@ -1,4 +1,5 @@
 *.blend1
 *.pyc
 /ros_ship_visualization/data
+/ros_ship_visualization/config/google_statc_map_api_key.yaml
 /ros_ship_control/data
