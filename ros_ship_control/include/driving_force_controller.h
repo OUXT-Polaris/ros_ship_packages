@@ -13,7 +13,7 @@
 
 //headers for ROS
 #include <geometry_msgs/Twist.h>
-#include <std_msgs/Float32.h>
+#include <std_msgs/Float64.h>
 
 //headers for boost
 #include <boost/shared_ptr.hpp>
@@ -30,7 +30,7 @@ namespace driving_force_controller
     ~DrivingForceController();
   private:
     void twistCallback(const geometry_msgs::Twist& msg);
-    void drivingForceCallback(const std_msgs::Float32& msg);
+    void drivingForceCallback(const std_msgs::Float64& msg);
     double get_thrust(double rotational_speed,double inflow_rate);
     //void plot_characteristic_curve(double min_rotational_speed,double max_rotational_speed,double resolution_rotational_speed,
     //  double min_inflow_rate,double max_inflow_rate,double resolution_inflow_rate);
@@ -40,7 +40,7 @@ namespace driving_force_controller
     void update(const ros::Time& time, const ros::Duration& period);
     void stopping(const ros::Time& time);
 
-    boost::scoped_ptr<realtime_tools::RealtimePublisher<std_msgs::Float32> > motor_command_publisher;
+    boost::scoped_ptr<realtime_tools::RealtimePublisher<std_msgs::Float64> > motor_command_publisher;
 
     struct Twist
     {
@@ -55,7 +55,7 @@ namespace driving_force_controller
     };
     realtime_tools::RealtimeBuffer<Twist> twist;
     Twist twist_struct;
-    ros::Subscriber sub_twist;
+    ros::Subscriber twist_sub;
 
     struct DrivingForce
     {
@@ -72,6 +72,7 @@ namespace driving_force_controller
     double turning_radius,k2,k1,k0,fluid_density;
     ros::ServiceClient plot_client;
     double tolerance,alpha;
+    double max_rotational_speed,min_rotational_speed;
   };
 }
 #endif

@@ -23,6 +23,7 @@
 
 //headers for STL
 #include <vector>
+#include <algorithm>
 
 namespace driving_force_controller
 {
@@ -36,7 +37,7 @@ namespace driving_force_controller
 
   }
 
-  void DrivingForceController::drivingForceCallback(const std_msgs::Float32& msg)
+  void DrivingForceController::drivingForceCallback(const std_msgs::Float64& msg)
   {
     if (isRunning())
     {
@@ -103,6 +104,8 @@ namespace driving_force_controller
     controller_nh.getParam("characteristic_curve_file_name",characteristic_curve_file_name);
     controller_nh.getParam("gradient_descent/tolerance",tolerance);
     controller_nh.getParam("gradient_descent/alpha",alpha);
+    controller_nh.getParam("max_rotational_speed",max_rotational_speed);
+    controller_nh.getParam("min_rotational_speed",min_rotational_speed);
     //plot_characteristic_curve(0,30,1,0,30,5);
     //boost::thread plot_thread(boost::bind(&DrivingForceController::plot_characteristic_curve,this,0,30,1,0,30,5));
     plot_client = controller_nh.serviceClient<ros_ship_visualization::PlotCharacteristicCurve>("/plot_characteristic_curve");
@@ -120,8 +123,8 @@ namespace driving_force_controller
     plot_service_message.request.max_rotational_speed = 30;
     plot_service_message.request.resolution_rotational_speed = 1;
     plot_client.call(plot_service_message);
-    motor_command_publisher.reset(new realtime_tools::RealtimePublisher<std_msgs::Float32>(controller_nh, motor_command_topic, 1));
-    sub_twist = controller_nh.subscribe(twist_topic, 1, &DrivingForceController::twistCallback, this);
+    motor_command_publisher.reset(new realtime_tools::RealtimePublisher<std_msgs::Float64>(controller_nh, motor_command_topic, 1));
+    twist_sub = controller_nh.subscribe(twist_topic, 1, &DrivingForceController::twistCallback, this);
     driving_force_sub = controller_nh.subscribe(driving_force_command_topic, 1, &DrivingForceController::drivingForceCallback, this);
   }
 
@@ -184,7 +187,8 @@ namespace driving_force_controller
     twist_struct = *(twist.readFromRT());
     if(motor_command_publisher && motor_command_publisher->trylock())
     {
-      motor_command_publisher->msg_.data = 0;
+      double target_rotational_speed = get_rotational_speed(driving_force_struct.value,twist_struct.lin_x);
+      motor_command_publisher->msg_.data = target_rotational_speed;
       motor_command_publisher->unlockAndPublish();
     }
   }

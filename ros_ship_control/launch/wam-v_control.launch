@@ -12,7 +12,19 @@
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="true" output="screen" ns="wam_v">
   </node>
 
+  <!--
   <node name="joy_node" pkg="joy" type="joy_node" args="" output="screen" respawn="true">
+  </node>
+
+  <node name="joy_to_cmd_node" pkg="ros_ship_navigation" type="joy_to_cmd.py" args="" output="screen" respawn="true">
+    <param name="max_value" value="2" type="double"/>
+  </node>
+  -->
+
+  <node name="cmd_pub_left" pkg="rostopic" type="rostopic" args="pub -r 100 /wam_v/ship_controller/left_driving_force std_msgs/Float64 1" output="screen" respawn="true">
+  </node>
+
+  <node name="cmd_pub_right" pkg="rostopic" type="rostopic" args="pub -r 100 /wam_v/ship_controller/right_driving_force std_msgs/Float64 1" output="screen" respawn="true">
   </node>
 
 </launch>

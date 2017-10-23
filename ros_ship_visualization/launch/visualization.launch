@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
-  <node name="joy_to_cmd_node" pkg="ros_ship_navigation" type="joy_to_cmd.py" args="" output="screen" respawn="true">
-    <param name="max_value" value="2" type="double"/>
-  </node>
-
   <node name="plot_characteristic_curve_node" pkg="ros_ship_visualization" type="plot_characteristic_curve.py" args="" output="screen" respawn="true">
   </node>
 
