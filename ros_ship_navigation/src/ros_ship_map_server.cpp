@@ -8,6 +8,8 @@
 #include <pcl/point_types.h>
 #include <pcl/filters/passthrough.h>
 #include <pcl_conversions/pcl_conversions.h>
+#include <pcl/search/kdtree.h>
+#include <pcl/segmentation/extract_clusters.h>
 
 ros_ship_map_server::ros_ship_map_server()
 {
@@ -40,11 +42,30 @@ void ros_ship_map_server::pointcloud_callback(sensor_msgs::PointCloud2 input_clo
     ROS_WARN("%s",ex.what());
     return;
   }
-  tf2::doTransform (input_cloud, input_cloud, transform_stamped);
-  pcl::PointCloud<pcl::PointXYZ> pcl_input_cloud;
-  pcl::fromROSMsg(input_cloud, pcl_input_cloud);
-  //pcl::search::KdTree<pcl::PointXYZ>::Ptr tree(newpcl::search::KdTree<pcl::PointXYZ>);
-  //tree->setInputCloud(pcl_input_cloud);
+  tf2::doTransform(input_cloud, input_cloud, transform_stamped);
+
+  //clustring point clouds
+  pcl::PointCloud<pcl::PointXYZ>::Ptr pcl_input_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+  pcl::fromROSMsg(input_cloud, *pcl_input_cloud);
+  pcl::search::KdTree<pcl::PointXYZ>::Ptr tree(new pcl::search::KdTree<pcl::PointXYZ>);
+  tree->setInputCloud(pcl_input_cloud);
+  std::vector<pcl::PointIndices> cluster_indices;
+  pcl::EuclideanClusterExtraction<pcl::PointXYZ> ec;
+  ec.setClusterTolerance(0.3);
+  ec.setMinClusterSize(30);
+  ec.setMaxClusterSize(10000);
+  ec.setSearchMethod(tree);
+  ec.setInputCloud(pcl_input_cloud);
+  ec.extract(cluster_indices);
+  int i = 0;
+  for (auto it = cluster_indices.begin (); it != cluster_indices.end (); ++it)
+  {
+    i++;
+  }
+  ROS_INFO_STREAM(i << " clusters are found!!");
+
+
+  //input map data
   input_map_data();
   map_pub_.publish(map_data_);
   /*

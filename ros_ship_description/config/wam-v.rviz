@@ -5,8 +5,6 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
-        - /Map1
-        - /Map1/Status1
       Splitter Ratio: 0.5
     Tree Height: 775
   - Class: rviz/Selection
@@ -27,7 +25,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: LaserScan
+    SyncSource: ""
 Visualization Manager:
   Class: ""
   Displays:
@@ -133,23 +131,15 @@ Visualization Manager:
           Value: true
         left_camera_link:
           Value: true
-        left_motor:
-          Value: true
-        odom:
-          Value: true
         rear_camera_link:
           Value: true
         right_camera_link:
-          Value: true
-        right_motor:
           Value: true
         scan:
           Value: true
         velodyne:
           Value: true
         velodyne_base_link:
-          Value: true
-        world:
           Value: true
       Marker Scale: 1
       Name: TF
@@ -165,22 +155,15 @@ Visualization Manager:
               {}
             left_camera_link:
               {}
-            left_motor:
-              {}
             rear_camera_link:
               {}
             right_camera_link:
-              {}
-            right_motor:
               {}
             scan:
               {}
             velodyne_base_link:
               velodyne:
                 {}
-        world:
-          odom:
-            {}
       Update Interval: 0
       Value: true
     - Class: rviz/Marker
