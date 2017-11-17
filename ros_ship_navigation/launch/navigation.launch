@@ -27,6 +27,10 @@
     <remap from="/odom" to="/gps_odom" />
   </node>
 
+  <node name="ros_ship_map_server_node" pkg="ros_ship_navigation" type="ros_ship_map_server_node" args="" output="screen" respawn="true">
+    <remap from="/ros_ship_map_server_node/input_cloud" to="/velodyne_points" />
+  </node>
+
   <node name="joy_node" pkg="joy" type="joy_node" args="" output="screen" respawn="true">
   </node>
 

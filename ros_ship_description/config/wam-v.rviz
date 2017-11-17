@@ -5,8 +5,8 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
-        - /VideoCapture1
-        - /OverlayImage5
+        - /Map1
+        - /Map1/Status1
       Splitter Ratio: 0.5
     Tree Height: 775
   - Class: rviz/Selection
@@ -27,7 +27,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: PointCloud2
+    SyncSource: LaserScan
 Visualization Manager:
   Class: ""
   Displays:
@@ -330,8 +330,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 1.84129322
-        Min Value: -0.236945152
+        Max Value: 1.95924878
+        Min Value: -0.279208422
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -413,6 +413,16 @@ Visualization Manager:
       left: 800
       top: 50
       width: 320
+    - Alpha: 0.699999988
+      Class: rviz/Map
+      Color Scheme: map
+      Draw Behind: false
+      Enabled: true
+      Name: Map
+      Topic: /ros_ship_map_server_node/map
+      Unreliable: false
+      Use Timestamp: false
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48

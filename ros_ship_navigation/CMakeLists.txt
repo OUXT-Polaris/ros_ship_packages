@@ -15,6 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   tf
   tf2_ros
+  pcl_ros
 )
 
 ## System dependencies are found with CMake's conventions
@@ -141,6 +142,8 @@ include_directories(
 add_executable(twist_from_fix_velocity_node src/twist_from_fix_velocity_node.cpp src/twist_calculator.cpp)
 target_link_libraries(twist_from_fix_velocity_node ${catkin_LIBRARIES})
 
+add_executable(ros_ship_map_server_node src/ros_ship_map_server_node.cpp src/ros_ship_map_server.cpp)
+target_link_libraries(ros_ship_map_server_node ${catkin_LIBRARIES})
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
