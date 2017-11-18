@@ -7,9 +7,14 @@
 //headers in pcl
 #include <pcl/point_types.h>
 #include <pcl/filters/passthrough.h>
+#include <pcl/filters/extract_indices.h>
 #include <pcl_conversions/pcl_conversions.h>
 #include <pcl/search/kdtree.h>
 #include <pcl/segmentation/extract_clusters.h>
+#include <pcl/segmentation/sac_segmentation.h>
+#include <pcl/sample_consensus/method_types.h>
+#include <pcl/sample_consensus/model_types.h>
+#include <pcl/features/normal_3d.h>
 
 ros_ship_map_server::ros_ship_map_server()
 {
@@ -43,10 +48,41 @@ void ros_ship_map_server::pointcloud_callback(sensor_msgs::PointCloud2 input_clo
     return;
   }
   tf2::doTransform(input_cloud, input_cloud, transform_stamped);
-
-  //clustring point clouds
+  //convert to pcl pointcloud
   pcl::PointCloud<pcl::PointXYZ>::Ptr pcl_input_cloud(new pcl::PointCloud<pcl::PointXYZ>);
   pcl::fromROSMsg(input_cloud, *pcl_input_cloud);
+
+  /*
+    segment cylinder areas in the point cloud
+  */
+  pcl::SACSegmentationFromNormals<pcl::PointXYZ, pcl::Normal> cylinder_segmentation;
+  //Create the segmentation object for the planar model and set all the parameters
+  cylinder_segmentation.setOptimizeCoefficients(true);
+  cylinder_segmentation.setModelType(pcl::SACMODEL_CYLINDER);
+  cylinder_segmentation.setMethodType(pcl::SAC_RANSAC);
+  cylinder_segmentation.setNormalDistanceWeight(0.1);
+  cylinder_segmentation.setMaxIterations(10000);
+  cylinder_segmentation.setDistanceThreshold(0.05);
+  cylinder_segmentation.setRadiusLimits(0, 1.5);
+  cylinder_segmentation.setInputCloud(pcl_input_cloud);
+  //extract normals from the point clouds
+  pcl::PointCloud<pcl::Normal>::Ptr pcl_cloud_normals(new pcl::PointCloud<pcl::Normal>);
+  pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> normal_estimation;
+  pcl::search::KdTree<pcl::PointXYZ>::Ptr tree (new pcl::search::KdTree<pcl::PointXYZ> ());
+  normal_estimation.setSearchMethod(tree);
+  normal_estimation.setInputCloud(pcl_input_cloud);
+  normal_estimation.setKSearch(50);
+  normal_estimation.compute(*pcl_cloud_normals);
+  cylinder_segmentation.setInputNormals(pcl_cloud_normals);
+  //Obtain the plane inliers and coefficients
+  pcl::PointIndices::Ptr inliers_cylinder(new pcl::PointIndices);
+  pcl::ModelCoefficients::Ptr coefficients_cylinder(new pcl::ModelCoefficients);
+  cylinder_segmentation.segment(*inliers_cylinder, *coefficients_cylinder);
+
+  /*
+    clustring the point clouds
+  */
+  /*
   pcl::search::KdTree<pcl::PointXYZ>::Ptr tree(new pcl::search::KdTree<pcl::PointXYZ>);
   tree->setInputCloud(pcl_input_cloud);
   std::vector<pcl::PointIndices> cluster_indices;
@@ -58,13 +94,12 @@ void ros_ship_map_server::pointcloud_callback(sensor_msgs::PointCloud2 input_clo
   ec.setInputCloud(pcl_input_cloud);
   ec.extract(cluster_indices);
   int i = 0;
-  for (auto it = cluster_indices.begin (); it != cluster_indices.end (); ++it)
+  for (auto cluster_index = cluster_indices.begin (); cluster_index != cluster_indices.end (); ++cluster_index)
   {
     i++;
   }
   ROS_INFO_STREAM(i << " clusters are found!!");
-
-
+  */
   //input map data
   input_map_data();
   map_pub_.publish(map_data_);
