@@ -15,10 +15,11 @@ pcl_object_recognition::pcl_object_recognition()
 {
   nh_.getParam(ros::this_node::getName()+"/object_stl_file_path", stl_file_path_);
   pcl::PolygonMesh::Ptr mesh(new pcl::PolygonMesh());
+  object_pointcloud_ = pcl::PointCloud<pcl::PointXYZ>::Ptr(new pcl::PointCloud<pcl::PointXYZ>());
   if(check_file_existence(stl_file_path_) == true)
   {
     pcl::io::loadPolygonFileSTL(stl_file_path_, *mesh);
-    pcl::fromPCLPointCloud2(mesh->cloud, object_pointcloud_);
+    pcl::fromPCLPointCloud2(mesh->cloud, *object_pointcloud_);
     ROS_INFO_STREAM("load stl file from:" << stl_file_path_);
   }
   else
@@ -26,6 +27,7 @@ pcl_object_recognition::pcl_object_recognition()
     ROS_ERROR_STREAM("file is not exist:" << stl_file_path_);
     return;
   }
+  object_model_ = new object_model(object_pointcloud_);
   pointcloud_sub_ = nh_.subscribe(ros::this_node::getName()+"/input_cloud", 1, &pcl_object_recognition::pointcloud_callback, this);
 }
 
