@@ -42,6 +42,12 @@ object_model::object_model(pcl::PointCloud<pcl::PointXYZ>::Ptr model)
   descr_est.setInputNormals(model_normals_);
   descr_est.setSearchSurface(model_);
   descr_est.compute(*model_descriptors_);
+  ROS_INFO_STREAM("model description succeed.");
+}
+
+pcl::PointCloud<pcl::SHOT352>::Ptr object_model::get_model_descriptors()
+{
+  return model_descriptors_;
 }
 
 object_model::~object_model()
