@@ -7,4 +7,5 @@
   <include file="$(find ros_ship_visualization)/launch/visualization.launch"/>
   <include file="$(find ros_ship_navigation)/launch/navigation.launch"/>
   <include file="$(find ros_ship_description)/launch/wam-v.launch"/>
+  <include file="$(find ros_ship_recognition)/launch/recognition.launch"/>
 </launch>
