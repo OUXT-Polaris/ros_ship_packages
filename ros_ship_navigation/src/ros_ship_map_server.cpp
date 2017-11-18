@@ -54,20 +54,38 @@ void ros_ship_map_server::pointcloud_callback(sensor_msgs::PointCloud2 input_clo
   coefficients_buoy_.clear();
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_buoy(new pcl::PointCloud<pcl::PointXYZ> ());
   //detect and segment bouys
-  cloud_buoy = add_buoy_segment(pcl_input_cloud,coefficients_buoy_);
   /*
-  if (cloud_buoy->points.empty())
+  do
   {
-    ROS_INFO_STREAM("No buoys are detected.");
-  }
-  else
-  {
-    while()
+    // = segment_buoy(pcl_input_cloud);
+    if(coefficients_buoy_.size() != 0)
     {
-
+      pcl::PassThrough<pcl::PointXYZ> pass;
+      double r = coefficients_buoy_[-1]->values[6];
+      double x = coefficients_buoy_[-1]->values[0];
+      double y = coefficients_buoy_[-1]->values[1];
+      pass.setInputCloud(pcl_input_cloud);
+      pass.setFilterFieldName("x");
+      pass.setFilterLimits(x-r, x+r);
+      pass.setFilterFieldName("y");
+      pass.setFilterLimits(y-r, y+r);
+      pass.filter(*pcl_input_cloud);
     }
   }
+  while(cloud_buoy->points.empty());
   */
+  pcl::ModelCoefficients::Ptr coefficients_cylinder(new pcl::ModelCoefficients);
+  try
+  {
+    coefficients_cylinder = segment_buoy(pcl_input_cloud);
+    coefficients_buoy_.push_back(coefficients_cylinder);
+    ROS_INFO_STREAM(coefficients_buoy_.size() << " buoys are found!!");
+  }
+  catch(...)
+  {
+    ROS_ERROR_STREAM("hi");
+  }
+
   //input map data
   input_map_data(coefficients_buoy_);
   map_pub_.publish(map_data_);
@@ -90,8 +108,7 @@ void ros_ship_map_server::create_map_meta_data()
   //map_data_.data.push_back(0);
 }
 
-pcl::PointCloud<pcl::PointXYZ>::Ptr ros_ship_map_server::add_buoy_segment(pcl::PointCloud<pcl::PointXYZ>::Ptr pcl_input_cloud,
-  std::vector<pcl::ModelCoefficients::Ptr>& coefficients_buoy)
+pcl::ModelCoefficients::Ptr ros_ship_map_server::segment_buoy(pcl::PointCloud<pcl::PointXYZ>::Ptr pcl_input_cloud)
 {
   pcl::SACSegmentationFromNormals<pcl::PointXYZ, pcl::Normal> cylinder_segmentation;
   //Create the segmentation object for the planar model and set all the parameters
@@ -116,8 +133,9 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr ros_ship_map_server::add_buoy_segment(pcl::P
   pcl::PointIndices::Ptr inliers_cylinder(new pcl::PointIndices);
   pcl::ModelCoefficients::Ptr coefficients_cylinder(new pcl::ModelCoefficients);
   cylinder_segmentation.segment(*inliers_cylinder, *coefficients_cylinder);
-  //ROS_INFO_STREAM(*coefficients_cylinder);
+  ROS_INFO_STREAM(*coefficients_cylinder);
   //extract cylinder segmented point cloud
+  /*
   pcl::ExtractIndices<pcl::PointXYZ> extract;
   extract.setInputCloud(pcl_input_cloud);
   extract.setIndices(inliers_cylinder);
@@ -125,6 +143,8 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr ros_ship_map_server::add_buoy_segment(pcl::P
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_cylinder (new pcl::PointCloud<pcl::PointXYZ> ());
   extract.filter(*cloud_cylinder);
   return cloud_cylinder;
+  */
+  return coefficients_cylinder;
 }
 
 void ros_ship_map_server::input_map_data(std::vector<pcl::ModelCoefficients::Ptr> coefficients_buoy)

@@ -45,7 +45,6 @@ private:
   double map_resolution_;
   //buoy detection related members
   std::vector<pcl::ModelCoefficients::Ptr> coefficients_buoy_;
-  pcl::PointCloud<pcl::PointXYZ>::Ptr add_buoy_segment(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud,
-    std::vector<pcl::ModelCoefficients::Ptr>& coefficients_buoy);
+  pcl::ModelCoefficients::Ptr segment_buoy(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud);
 };
 #endif //ROS_SHIP_MAP_SERVER
