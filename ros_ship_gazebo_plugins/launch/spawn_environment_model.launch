@@ -2,8 +2,10 @@
 <launch>
   <param name="water_surface_height" value="0.0" type="double"/>
 
+<!--
   <node name="buoy_spawner_red_01" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
     args="-file $(find ros_ship_description)/world/buoy/urdf/red_buoy.urdf -model red_buoy_01 -urdf -x 10 -y -4 -z 0" ns="red_buoy_01"/>
+-->
 
   <node name="buoy_spawner_green_01" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
     args="-file $(find ros_ship_description)/world/buoy/urdf/green_buoy.urdf -model green_buoy_01 -urdf -x 10 -y 4 -z 0" ns="green_buoy_01"/>
