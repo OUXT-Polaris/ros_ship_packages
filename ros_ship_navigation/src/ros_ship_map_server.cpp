@@ -52,9 +52,24 @@ void ros_ship_map_server::pointcloud_callback(sensor_msgs::PointCloud2 input_clo
   pcl::PointCloud<pcl::PointXYZ>::Ptr pcl_input_cloud(new pcl::PointCloud<pcl::PointXYZ>);
   pcl::fromROSMsg(input_cloud, *pcl_input_cloud);
   coefficients_buoy_.clear();
-  add_buoy_segment(pcl_input_cloud,coefficients_buoy_);
+  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_buoy(new pcl::PointCloud<pcl::PointXYZ> ());
+  //detect and segment bouys
+  cloud_buoy = add_buoy_segment(pcl_input_cloud,coefficients_buoy_);
+  /*
+  if (cloud_buoy->points.empty())
+  {
+    ROS_INFO_STREAM("No buoys are detected.");
+  }
+  else
+  {
+    while()
+    {
+
+    }
+  }
+  */
   //input map data
-  input_map_data();
+  input_map_data(coefficients_buoy_);
   map_pub_.publish(map_data_);
 }
 
@@ -76,7 +91,7 @@ void ros_ship_map_server::create_map_meta_data()
 }
 
 pcl::PointCloud<pcl::PointXYZ>::Ptr ros_ship_map_server::add_buoy_segment(pcl::PointCloud<pcl::PointXYZ>::Ptr pcl_input_cloud,
-  std::vector<pcl::ModelCoefficients::Ptr> coefficients_buoy)
+  std::vector<pcl::ModelCoefficients::Ptr>& coefficients_buoy)
 {
   pcl::SACSegmentationFromNormals<pcl::PointXYZ, pcl::Normal> cylinder_segmentation;
   //Create the segmentation object for the planar model and set all the parameters
@@ -112,7 +127,7 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr ros_ship_map_server::add_buoy_segment(pcl::P
   return cloud_cylinder;
 }
 
-void ros_ship_map_server::input_map_data()
+void ros_ship_map_server::input_map_data(std::vector<pcl::ModelCoefficients::Ptr> coefficients_buoy)
 {
   map_data_.header.frame_id = "base_footprint";
   map_data_.header.stamp = ros::Time::now();

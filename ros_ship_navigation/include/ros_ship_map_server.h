@@ -34,7 +34,7 @@ private:
   //boost::circular_buffer
   void pointcloud_callback(sensor_msgs::PointCloud2 pcl_input_cloud);
   void create_map_meta_data();
-  void input_map_data();
+  void input_map_data(std::vector<pcl::ModelCoefficients::Ptr> coefficients_buoy);
   //transform related members
   tf2_ros::Buffer* tf_buffer_;
   tf2_ros::TransformListener* tf_listener_;
@@ -46,6 +46,6 @@ private:
   //buoy detection related members
   std::vector<pcl::ModelCoefficients::Ptr> coefficients_buoy_;
   pcl::PointCloud<pcl::PointXYZ>::Ptr add_buoy_segment(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud,
-    std::vector<pcl::ModelCoefficients::Ptr> coefficients_buoy);
+    std::vector<pcl::ModelCoefficients::Ptr>& coefficients_buoy);
 };
 #endif //ROS_SHIP_MAP_SERVER
