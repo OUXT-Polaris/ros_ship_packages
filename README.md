@@ -22,6 +22,7 @@ roslaunch ros_ship_description ros_ship.launch
 ![simulation on gazebo](https://github.com/hakuturu583/ros_ship_packages/blob/master/images/wam-v_gazebo.png)  
 ![simulation result on rviz](https://github.com/hakuturu583/ros_ship_packages/blob/master/images/wam-v_rviz.png)  
 [demo](https://www.youtube.com/watch?v=tQ_12pDbhCQ&feature=youtu.be)
+[buoy recognition demo](https://youtu.be/tgicLday-1E)
 
 ### simulated sensors
 gps,imu,camera,VLP-16,laser(2D)  
