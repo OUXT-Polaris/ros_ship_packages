@@ -13,14 +13,16 @@
 #include <pcl/recognition/cg/geometric_consistency.h>
 
 //headers in stl
-#include<string>
-#include<fstream>
-#include<iostream>
+#include <string>
+#include <fstream>
+#include <iostream>
 
 pcl_object_recognition::pcl_object_recognition()
 {
+  detected_object_pub = nh_.advertise<ros_ship_msgs::Objects>(ros::this_node::getName()+"/detected_objects", 1);
+  nh_.getParam(ros::this_node::getName()+"/object_type", object_type_);
   nh_.getParam(ros::this_node::getName()+"/object_stl_file_path", stl_file_path_);
-  nh_.param<bool>(ros::this_node::getName()+"/use_hough_", use_hough_, true);
+  nh_.param<bool>(ros::this_node::getName()+"/use_hough", use_hough_, true);
   pcl::PolygonMesh::Ptr mesh(new pcl::PolygonMesh());
   object_pointcloud_ = pcl::PointCloud<pcl::PointXYZ>::Ptr(new pcl::PointCloud<pcl::PointXYZ>());
   if(check_file_existence(stl_file_path_) == true)
@@ -124,16 +126,77 @@ void pcl_object_recognition::pointcloud_callback(sensor_msgs::PointCloud2 input_
   // Output results
   //
   ROS_INFO_STREAM("Model instances found: " << rototranslations.size ());
+
+  ros_ship_msgs::Objects objects_msg;
   for (size_t i = 0; i < rototranslations.size (); ++i)
   {
+    ros_ship_msgs::Object object_msg;
+    object_msg.type = object_type_;
     // Print the rotation matrix and translation vector
     Eigen::Matrix3f rotation = rototranslations[i].block<3,3>(0, 0);
     Eigen::Vector3f translation = rototranslations[i].block<3,1>(0, 3);
+    object_msg.pose.header = input_cloud.header;
+    object_msg.pose.pose.position.x = translation(0);
+    object_msg.pose.pose.position.y = translation(1);
+    object_msg.pose.pose.position.z = translation(2);
+    object_msg.pose.pose.orientation = rot_to_quat(rotation);
+    objects_msg.objects.push_back(object_msg);
   }
+  detected_object_pub.publish(objects_msg);
 }
 
 bool pcl_object_recognition::check_file_existence(std::string& str)
 {
     std::ifstream ifs(str);
     return ifs.is_open();
+}
+
+geometry_msgs::Quaternion pcl_object_recognition::rot_to_quat(Eigen::Matrix3f rotation)
+{
+  geometry_msgs::Quaternion quat;
+  float q0 = ( rotation(0,0)+rotation(1,1)+rotation(2,2)+1.0f)/4.0f;
+  float q1 = ( rotation(0,0)-rotation(1,1)-rotation(2,2)+1.0f)/4.0f;
+  float q2 = (-rotation(0,0)+rotation(1,1)-rotation(2,2)+1.0f)/4.0f;
+  float q3 = (-rotation(0,0)-rotation(1,1)+rotation(2,2)+1.0f)/4.0f;
+  if(q0 < 0.0f) q0 = 0.0f;
+  if(q1 < 0.0f) q1 = 0.0f;
+  if(q2 < 0.0f) q2 = 0.0f;
+  if(q3 < 0.0f) q3 = 0.0f;
+  q0 = sqrt(q0);
+  q1 = sqrt(q1);
+  q2 = sqrt(q2);
+  q3 = sqrt(q3);
+  if(q0 >= q1 && q0 >= q2 && q0 >= q3)
+  {
+    q0 *= +1.0f;
+    q1 *= sign(rotation(2,1)-rotation(1,2));
+    q2 *= sign(rotation(0,2)-rotation(2,0));
+    q3 *= sign(rotation(1,0)-rotation(0,1));
+  }
+  else if(q1 >= q0 && q1 >= q2 && q1 >= q3)
+  {
+      q0 *= sign(rotation(2,1)-rotation(1,2));
+      q1 *= +1.0f;
+      q2 *= sign(rotation(1,0)+rotation(0,1));
+      q3 *= sign(rotation(0,2)+rotation(2,0));
+  }
+  else if(q2 >= q0 && q2 >= q1 && q2 >= q3)
+  {
+      q0 *= sign(rotation(0,2)-rotation(2,0));
+      q1 *= sign(rotation(1,0)+rotation(0,1));
+      q2 *= +1.0f;
+      q3 *= sign(rotation(2,1)+rotation(1,2));
+  }
+  else if(q3 >= q0 && q3 >= q1 && q3 >= q2)
+  {
+      q0 *= sign(rotation(1,0)-rotation(0,1));
+      q1 *= sign(rotation(0,2)+rotation(2.0));
+      q2 *= sign(rotation(2,1)+rotation(1,2));
+      q3 *= +1.0f;
+  }
+  else
+  {
+      ROS_ERROR_STREAM("Failed to convert quaternion");
+  }
+  return quat;
 }

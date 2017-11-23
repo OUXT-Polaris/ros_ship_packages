@@ -3,5 +3,6 @@
   <node name="buoy_recoganizer" pkg="ros_ship_recognition" type="object_recognition_node" args="" output="screen" respawn="true">
     <remap from="/buoy_recoganizer/input_cloud" to="/velodyne_points" />
     <param name="/object_stl_file_path" value="$(find ros_ship_recognition)/data/BUOY.stl" type="str"/>
+    <param name="/object_type" value="BUOY" type="str"/>
   </node>
 </launch>

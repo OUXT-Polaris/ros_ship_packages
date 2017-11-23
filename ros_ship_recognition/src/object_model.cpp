@@ -32,7 +32,7 @@ object_model::object_model(pcl::PointCloud<pcl::PointXYZ>::Ptr model)
   voxelgrid_filter.setInputCloud(model);
   voxelgrid_filter.setLeafSize(0.01f, 0.01f, 0.01f);
   voxelgrid_filter.filter(*model_keypoints_);
-  ROS_INFO_STREAM(model_->size() << " keypoints detected");
+  //ROS_INFO_STREAM(model_->size() << " keypoints detected");
   //
   //  Compute Descriptor for keypoints
   //
@@ -44,7 +44,7 @@ object_model::object_model(pcl::PointCloud<pcl::PointXYZ>::Ptr model)
     descr_est.setInputNormals(model_normals_);
     descr_est.setSearchSurface(model_);
     descr_est.compute(*model_descriptors_);
-    ROS_INFO_STREAM("model description succeed.");
+    //ROS_INFO_STREAM("model description succeed.");
   }
   catch(...)
   {
