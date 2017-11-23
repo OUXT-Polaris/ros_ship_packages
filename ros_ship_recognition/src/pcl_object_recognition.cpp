@@ -10,6 +10,7 @@
 #include <pcl/kdtree/kdtree_flann.h>
 #include <pcl/features/board.h>
 #include <pcl/recognition/cg/hough_3d.h>
+#include <pcl/recognition/cg/geometric_consistency.h>
 
 //headers in stl
 #include<string>
@@ -98,7 +99,7 @@ void pcl_object_recognition::pointcloud_callback(sensor_msgs::PointCloud2 input_
 
     //  Clustering
     pcl::Hough3DGrouping<pcl::PointXYZ, pcl::PointXYZ, pcl::ReferenceFrame, pcl::ReferenceFrame> clusterer;
-    clusterer.setHoughBinSize(1);
+    clusterer.setHoughBinSize(1.0);
     clusterer.setHoughThreshold(5.0);
     clusterer.setUseInterpolation(true);
     clusterer.setUseDistanceWeight(false);
@@ -112,7 +113,12 @@ void pcl_object_recognition::pointcloud_callback(sensor_msgs::PointCloud2 input_
   }
   else
   {
-
+    pcl::GeometricConsistencyGrouping<pcl::PointXYZ, pcl::PointXYZ> gc_clusterer;
+    gc_clusterer.setGCSize(1.0);
+    gc_clusterer.setGCThreshold(5.0);
+    gc_clusterer.setInputCloud(object_model_->get_model_keypoints());
+    gc_clusterer.setSceneCloud(scene_model_->get_model_keypoints());
+    gc_clusterer.setModelSceneCorrespondences(model_scene_corrs);
   }
   //
   // Output results
