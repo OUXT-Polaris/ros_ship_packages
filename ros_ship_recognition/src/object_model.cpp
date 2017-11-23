@@ -37,17 +37,39 @@ object_model::object_model(pcl::PointCloud<pcl::PointXYZ>::Ptr model)
   //  Compute Descriptor for keypoints
   //
   pcl::SHOTEstimationOMP<pcl::PointXYZ, pcl::Normal, pcl::SHOT352> descr_est;
-  descr_est.setRadiusSearch(1);
-  descr_est.setInputCloud(model_);
-  descr_est.setInputNormals(model_normals_);
-  descr_est.setSearchSurface(model_);
-  descr_est.compute(*model_descriptors_);
-  ROS_INFO_STREAM("model description succeed.");
+  try
+  {
+    descr_est.setRadiusSearch(15);
+    descr_est.setInputCloud(model_);
+    descr_est.setInputNormals(model_normals_);
+    descr_est.setSearchSurface(model_);
+    descr_est.compute(*model_descriptors_);
+    ROS_INFO_STREAM("model description succeed.");
+  }
+  catch(...)
+  {
+    ROS_WARN_STREAM("model description failed.");
+  }
 }
 
 pcl::PointCloud<pcl::SHOT352>::Ptr object_model::get_model_descriptors()
 {
   return model_descriptors_;
+}
+
+pcl::PointCloud<pcl::PointXYZ>::Ptr object_model::get_model_keypoints()
+{
+  return model_keypoints_;
+}
+
+pcl::PointCloud<pcl::Normal>::Ptr object_model::get_model_normals()
+{
+  return model_normals_;
+}
+
+pcl::PointCloud<pcl::PointXYZ>::Ptr object_model::get_model()
+{
+  return model_;
 }
 
 object_model::~object_model()

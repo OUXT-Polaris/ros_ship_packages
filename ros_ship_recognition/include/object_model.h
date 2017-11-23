@@ -11,6 +11,9 @@ class object_model
 public:
   object_model(pcl::PointCloud<pcl::PointXYZ>::Ptr model);
   ~object_model();
+  pcl::PointCloud<pcl::PointXYZ>::Ptr get_model();
+  pcl::PointCloud<pcl::Normal>::Ptr get_model_normals();
+  pcl::PointCloud<pcl::PointXYZ>::Ptr get_model_keypoints();
   pcl::PointCloud<pcl::SHOT352>::Ptr get_model_descriptors();
 private:
   pcl::PointCloud<pcl::PointXYZ>::Ptr model_;
