@@ -8,6 +8,7 @@
 //headers in ROS
 #include <ros/ros.h>
 #include <sensor_msgs/PointCloud2.h>
+#include <visualization_msgs/MarkerArray.h>
 
 //headers in pcl
 #include <pcl/point_cloud.h>
@@ -22,8 +23,8 @@ public:
 private:
   ros::NodeHandle nh_;
   ros::Subscriber pointcloud_sub_;
-  ros::Publisher detected_object_pub;
-  std::string stl_file_path_;
+  ros::Publisher detected_object_pub_,object_marker_pub_;
+  std::string stl_file_path_,marker_mesh_path_;
   pcl::PointCloud<pcl::PointXYZ>::Ptr object_pointcloud_;
   void pointcloud_callback(sensor_msgs::PointCloud2 input_cloud);
   inline bool check_file_existence(std::string& str);

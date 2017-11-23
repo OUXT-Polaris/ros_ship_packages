@@ -19,9 +19,11 @@
 
 pcl_object_recognition::pcl_object_recognition()
 {
-  detected_object_pub = nh_.advertise<ros_ship_msgs::Objects>(ros::this_node::getName()+"/detected_objects", 1);
+  detected_object_pub_ = nh_.advertise<ros_ship_msgs::Objects>(ros::this_node::getName()+"/detected_objects", 1);
+  object_marker_pub_ = nh_.advertise<visualization_msgs::MarkerArray>(ros::this_node::getName()+"/detected_objects/marker", 1);
   nh_.getParam(ros::this_node::getName()+"/object_type", object_type_);
   nh_.getParam(ros::this_node::getName()+"/object_stl_file_path", stl_file_path_);
+  nh_.getParam(ros::this_node::getName()+"/marker_mesh_path", marker_mesh_path_);
   nh_.param<bool>(ros::this_node::getName()+"/use_hough", use_hough_, true);
   pcl::PolygonMesh::Ptr mesh(new pcl::PolygonMesh());
   object_pointcloud_ = pcl::PointCloud<pcl::PointXYZ>::Ptr(new pcl::PointCloud<pcl::PointXYZ>());
@@ -128,8 +130,11 @@ void pcl_object_recognition::pointcloud_callback(sensor_msgs::PointCloud2 input_
   ROS_INFO_STREAM("Model instances found: " << rototranslations.size ());
 
   ros_ship_msgs::Objects objects_msg;
+  visualization_msgs::MarkerArray marker_array_msg;
   for (size_t i = 0; i < rototranslations.size (); ++i)
   {
+    visualization_msgs::Marker marker_msg;
+    marker_msg.type = marker_msg.MESH_RESOURCE;
     ros_ship_msgs::Object object_msg;
     object_msg.type = object_type_;
     // Print the rotation matrix and translation vector
@@ -141,8 +146,21 @@ void pcl_object_recognition::pointcloud_callback(sensor_msgs::PointCloud2 input_
     object_msg.pose.pose.position.z = translation(2);
     object_msg.pose.pose.orientation = rot_to_quat(rotation);
     objects_msg.objects.push_back(object_msg);
+    marker_msg.header = input_cloud.header;
+    marker_msg.pose = object_msg.pose.pose;
+    marker_msg.scale.x = 1;
+    marker_msg.scale.y = 1;
+    marker_msg.scale.z = 1;
+    marker_msg.frame_locked = true;
+    marker_msg.mesh_resource = "file://"+marker_mesh_path_;
+    marker_msg.color.r = 1;
+    marker_msg.color.g = 1;
+    marker_msg.color.b = 1;
+    marker_msg.color.a = 0.5;
+    marker_array_msg.markers.push_back(marker_msg);
   }
-  detected_object_pub.publish(objects_msg);
+  detected_object_pub_.publish(objects_msg);
+  object_marker_pub_.publish(marker_array_msg);
 }
 
 bool pcl_object_recognition::check_file_existence(std::string& str)
