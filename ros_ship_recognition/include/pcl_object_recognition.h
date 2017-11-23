@@ -22,9 +22,11 @@ private:
   ros::Subscriber pointcloud_sub_;
   std::string stl_file_path_;
   pcl::PointCloud<pcl::PointXYZ>::Ptr object_pointcloud_;
-  void pointcloud_callback(sensor_msgs::PointCloud2 pcl_input_cloud);
+  void pointcloud_callback(sensor_msgs::PointCloud2 input_cloud);
   inline bool check_file_existence(std::string& str);
   object_model* object_model_;
+  object_model* scene_model_;
+  bool use_hough_;
 };
 
 #endif
