@@ -4,9 +4,5 @@
   <rosparam command="load" file="$(find ros_ship_recognition)/config/ros_ship_recognition.yaml" ns="object_recognition_node"/>
 
   <node name="object_recognition_node" pkg="ros_ship_recognition" type="object_recognition_node" args="" output="screen" respawn="true">
-    <remap from="/object_recognition_node/input_cloud" to="/velodyne_points" />
-    <param name="/object_stl_file_path" value="$(find ros_ship_recognition)/data/BUOY.stl" type="str"/>
-    <param name="/marker_mesh_path" value="$(find ros_ship_recognition)/data/BUOY.dae" type="str"/>
-    <param name="/object_type" value="BUOY" type="str"/>
   </node>
 </launch>

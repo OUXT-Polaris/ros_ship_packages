@@ -21,7 +21,7 @@ roslaunch ros_ship_description ros_ship.launch
 ## WAM-V
 ![simulation on gazebo](https://github.com/hakuturu583/ros_ship_packages/blob/master/images/wam-v_gazebo.png)  
 ![simulation result on rviz](https://github.com/hakuturu583/ros_ship_packages/blob/master/images/wam-v_rviz.png)  
-[demo](https://www.youtube.com/watch?v=tQ_12pDbhCQ&feature=youtu.be)
+[demo](https://www.youtube.com/watch?v=tQ_12pDbhCQ&feature=youtu.be)  
 [buoy recognition demo](https://youtu.be/tgicLday-1E)
 
 ### simulated sensors
@@ -45,6 +45,20 @@ gazebo plugin for calculating buoyancy in a very simple way.
 gazebo plugin for broadcast gazebo_world frame.  
 #### simple_driving_force_plugin  
 gazebo plugin for calculating driving force from joint speed and ship speed  
+
+## ros_ship_msgs
+messages for ros_ship_packages  
+
+## ros_ship_navigation  
+navigation package for ros_ship  
+
+## ros_ship_recognition  
+recognition package for ros_ship
+### object_recognition_node
+object recognition node by using PCL(point cloud library)  
+set rosparams like below  
+![sample yaml file](https://github.com/hakuturu583/ros_ship_packages/blob/master/images/ros_ship_recognition_yaml.png)  
+
 ## ros_ship_visualization  
 #### gps_plotter.py  
 plot gps data from /fix(sensor_msgs/NavSatFix) and publish map image via google static map API  
