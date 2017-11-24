@@ -73,6 +73,8 @@ void pcl_object_recognition::publish_messages(std::vector<std::vector<Eigen::Mat
       object_msg.pose.pose.position.y = translation(1);
       object_msg.pose.pose.position.z = translation(2);
       object_msg.pose.pose.orientation = rot_to_quat(rotation);
+      object_msg.mesh_resouce_path = object_models_[i]->get_marker_mesh_path();
+      object_msg.stl_file_path = object_models_[i]->get_stl_file_path();
       objects_msg.objects.push_back(object_msg);
       marker_msg.header = header;
       marker_msg.pose = object_msg.pose.pose;
