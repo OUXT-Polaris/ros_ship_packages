@@ -1,5 +1,8 @@
 #include <pcl_object_recognition.h>
 
+//headers in ROS
+#include <ros/package.h>
+
 //headers in pcl
 #include <pcl/PolygonMesh.h>
 #include <pcl/io/vtk_lib_io.h>
@@ -19,27 +22,10 @@
 
 pcl_object_recognition::pcl_object_recognition()
 {
+  read_parameters();
   detected_object_pub_ = nh_.advertise<ros_ship_msgs::Objects>(ros::this_node::getName()+"/detected_objects", 1);
   object_marker_pub_ = nh_.advertise<visualization_msgs::MarkerArray>(ros::this_node::getName()+"/detected_objects/marker", 1);
-  nh_.getParam(ros::this_node::getName()+"/object_type", object_type_);
-  nh_.getParam(ros::this_node::getName()+"/object_stl_file_path", stl_file_path_);
-  nh_.getParam(ros::this_node::getName()+"/marker_mesh_path", marker_mesh_path_);
-  nh_.param<bool>(ros::this_node::getName()+"/use_hough", use_hough_, true);
-  pcl::PolygonMesh::Ptr mesh(new pcl::PolygonMesh());
-  object_pointcloud_ = pcl::PointCloud<pcl::PointXYZ>::Ptr(new pcl::PointCloud<pcl::PointXYZ>());
-  if(check_file_existence(stl_file_path_) == true)
-  {
-    pcl::io::loadPolygonFileSTL(stl_file_path_, *mesh);
-    pcl::fromPCLPointCloud2(mesh->cloud, *object_pointcloud_);
-    ROS_INFO_STREAM("load stl file from:" << stl_file_path_);
-  }
-  else
-  {
-    ROS_ERROR_STREAM("file is not exist:" << stl_file_path_);
-    return;
-  }
-  object_model_ = new object_model(object_pointcloud_);
-  pointcloud_sub_ = nh_.subscribe(ros::this_node::getName()+"/input_cloud", 1, &pcl_object_recognition::pointcloud_callback, this);
+  pointcloud_sub_ = nh_.subscribe(pointcloud_topic_, 1, &pcl_object_recognition::pointcloud_callback, this);
 }
 
 pcl_object_recognition::~pcl_object_recognition()
@@ -51,13 +37,69 @@ void pcl_object_recognition::pointcloud_callback(sensor_msgs::PointCloud2 input_
 {
   pcl::PointCloud<pcl::PointXYZ>::Ptr scene_pointcloud = pcl::PointCloud<pcl::PointXYZ>::Ptr(new pcl::PointCloud<pcl::PointXYZ>());
   pcl::fromROSMsg(input_cloud,*scene_pointcloud);
-  scene_model_ = new object_model(scene_pointcloud);
+  scene_model_ = new object_model(scene_pointcloud,"scene");
+  std::vector<std::vector<Eigen::Matrix4f, Eigen::aligned_allocator<Eigen::Matrix4f> > > results;
+  for(auto object_model_itr = object_models_.begin(); object_model_itr != object_models_.end(); ++object_model_itr)
+  {
+    results.push_back(recognize(*object_model_itr));
+  }
+  publish_messages(results,input_cloud.header);
+}
+
+bool pcl_object_recognition::check_file_existence(std::string& str)
+{
+    std::ifstream ifs(str);
+    return ifs.is_open();
+}
+
+void pcl_object_recognition::publish_messages(std::vector<std::vector<Eigen::Matrix4f, Eigen::aligned_allocator<Eigen::Matrix4f> > > results, std_msgs::Header header)
+{
+  ros_ship_msgs::Objects objects_msg;
+  visualization_msgs::MarkerArray marker_array_msg;
+  for(int i = 0; i < results.size(); i++)
+  {
+    std::vector<Eigen::Matrix4f, Eigen::aligned_allocator<Eigen::Matrix4f> > rototranslations = results[i];
+    for (size_t m = 0; m < rototranslations.size(); ++m)
+    {
+      visualization_msgs::Marker marker_msg;
+      marker_msg.type = marker_msg.MESH_RESOURCE;
+      ros_ship_msgs::Object object_msg;
+      object_msg.type = object_models_[i]->get_name();
+      // Print the rotation matrix and translation vector
+      Eigen::Matrix3f rotation = rototranslations[m].block<3,3>(0, 0);
+      Eigen::Vector3f translation = rototranslations[m].block<3,1>(0, 3);
+      object_msg.pose.header = header;
+      object_msg.pose.pose.position.x = translation(0);
+      object_msg.pose.pose.position.y = translation(1);
+      object_msg.pose.pose.position.z = translation(2);
+      object_msg.pose.pose.orientation = rot_to_quat(rotation);
+      objects_msg.objects.push_back(object_msg);
+      marker_msg.header = header;
+      marker_msg.pose = object_msg.pose.pose;
+      marker_msg.scale.x = 1;
+      marker_msg.scale.y = 1;
+      marker_msg.scale.z = 1;
+      marker_msg.frame_locked = true;
+      marker_msg.mesh_resource = "file://"+object_models_[i]->get_marker_mesh_path();
+      marker_msg.color.r = 1;
+      marker_msg.color.g = 1;
+      marker_msg.color.b = 1;
+      marker_msg.color.a = 0.5;
+      marker_array_msg.markers.push_back(marker_msg);
+    }
+  }
+  detected_object_pub_.publish(objects_msg);
+  object_marker_pub_.publish(marker_array_msg);
+}
+
+std::vector<Eigen::Matrix4f, Eigen::aligned_allocator<Eigen::Matrix4f> > pcl_object_recognition::recognize(object_model* target_object_model)
+{
   //
   //  Find Model-Scene Correspondences with KdTree
   //
   pcl::CorrespondencesPtr model_scene_corrs(new pcl::Correspondences());
   pcl::KdTreeFLANN<pcl::SHOT352> match_search;
-  match_search.setInputCloud(object_model_->get_model_descriptors());
+  match_search.setInputCloud(target_object_model->get_model_descriptors());
   //  For each scene keypoint descriptor, find nearest neighbor into the model keypoints descriptor cloud and add it to the correspondences vector.
   for(size_t i = 0; i < scene_model_->get_model_descriptors()->size(); ++i)
   {
@@ -79,94 +121,40 @@ void pcl_object_recognition::pointcloud_callback(sensor_msgs::PointCloud2 input_
   //
   std::vector<Eigen::Matrix4f, Eigen::aligned_allocator<Eigen::Matrix4f> > rototranslations;
   std::vector<pcl::Correspondences> clustered_corrs;
-  if(use_hough_ == true)
-  {
-    //
-    //  Compute (Keypoints) Reference Frames only for Hough
-    //
-    pcl::PointCloud<pcl::ReferenceFrame>::Ptr model_rf(new pcl::PointCloud<pcl::ReferenceFrame> ());
-    pcl::PointCloud<pcl::ReferenceFrame>::Ptr scene_rf(new pcl::PointCloud<pcl::ReferenceFrame> ());
-
-    pcl::BOARDLocalReferenceFrameEstimation<pcl::PointXYZ, pcl::Normal, pcl::ReferenceFrame> rf_est;
-    rf_est.setFindHoles(true);
-    rf_est.setRadiusSearch(1);
-
-    rf_est.setInputCloud(object_model_->get_model_keypoints());
-    rf_est.setInputNormals(object_model_->get_model_normals());
-    rf_est.setSearchSurface(object_model_->get_model());
-    rf_est.compute(*model_rf);
-
-    rf_est.setInputCloud(scene_model_->get_model_keypoints());
-    rf_est.setInputNormals(scene_model_->get_model_normals());
-    rf_est.setSearchSurface(scene_model_->get_model());
-    rf_est.compute(*scene_rf);
-
-    //  Clustering
-    pcl::Hough3DGrouping<pcl::PointXYZ, pcl::PointXYZ, pcl::ReferenceFrame, pcl::ReferenceFrame> clusterer;
-    clusterer.setHoughBinSize(1.0);
-    clusterer.setHoughThreshold(5.0);
-    clusterer.setUseInterpolation(true);
-    clusterer.setUseDistanceWeight(false);
-
-    clusterer.setInputCloud(object_model_->get_model_keypoints());
-    clusterer.setInputRf(model_rf);
-    clusterer.setSceneCloud(scene_model_->get_model_keypoints());
-    clusterer.setSceneRf(scene_rf);
-    clusterer.setModelSceneCorrespondences(model_scene_corrs);
-    clusterer.recognize (rototranslations, clustered_corrs);
-  }
-  else
-  {
-    pcl::GeometricConsistencyGrouping<pcl::PointXYZ, pcl::PointXYZ> gc_clusterer;
-    gc_clusterer.setGCSize(1.0);
-    gc_clusterer.setGCThreshold(5.0);
-    gc_clusterer.setInputCloud(object_model_->get_model_keypoints());
-    gc_clusterer.setSceneCloud(scene_model_->get_model_keypoints());
-    gc_clusterer.setModelSceneCorrespondences(model_scene_corrs);
-  }
   //
-  // Output results
+  //  Compute (Keypoints) Reference Frames only for Hough
   //
-  ROS_INFO_STREAM("Model instances found: " << rototranslations.size ());
+  pcl::PointCloud<pcl::ReferenceFrame>::Ptr model_rf(new pcl::PointCloud<pcl::ReferenceFrame> ());
+  pcl::PointCloud<pcl::ReferenceFrame>::Ptr scene_rf(new pcl::PointCloud<pcl::ReferenceFrame> ());
 
-  ros_ship_msgs::Objects objects_msg;
-  visualization_msgs::MarkerArray marker_array_msg;
-  for (size_t i = 0; i < rototranslations.size (); ++i)
-  {
-    visualization_msgs::Marker marker_msg;
-    marker_msg.type = marker_msg.MESH_RESOURCE;
-    ros_ship_msgs::Object object_msg;
-    object_msg.type = object_type_;
-    // Print the rotation matrix and translation vector
-    Eigen::Matrix3f rotation = rototranslations[i].block<3,3>(0, 0);
-    Eigen::Vector3f translation = rototranslations[i].block<3,1>(0, 3);
-    object_msg.pose.header = input_cloud.header;
-    object_msg.pose.pose.position.x = translation(0);
-    object_msg.pose.pose.position.y = translation(1);
-    object_msg.pose.pose.position.z = translation(2);
-    object_msg.pose.pose.orientation = rot_to_quat(rotation);
-    objects_msg.objects.push_back(object_msg);
-    marker_msg.header = input_cloud.header;
-    marker_msg.pose = object_msg.pose.pose;
-    marker_msg.scale.x = 1;
-    marker_msg.scale.y = 1;
-    marker_msg.scale.z = 1;
-    marker_msg.frame_locked = true;
-    marker_msg.mesh_resource = "file://"+marker_mesh_path_;
-    marker_msg.color.r = 1;
-    marker_msg.color.g = 1;
-    marker_msg.color.b = 1;
-    marker_msg.color.a = 0.5;
-    marker_array_msg.markers.push_back(marker_msg);
-  }
-  detected_object_pub_.publish(objects_msg);
-  object_marker_pub_.publish(marker_array_msg);
-}
+  pcl::BOARDLocalReferenceFrameEstimation<pcl::PointXYZ, pcl::Normal, pcl::ReferenceFrame> rf_est;
+  rf_est.setFindHoles(true);
+  rf_est.setRadiusSearch(1);
 
-bool pcl_object_recognition::check_file_existence(std::string& str)
-{
-    std::ifstream ifs(str);
-    return ifs.is_open();
+  rf_est.setInputCloud(target_object_model->get_model_keypoints());
+  rf_est.setInputNormals(target_object_model->get_model_normals());
+  rf_est.setSearchSurface(target_object_model->get_model());
+  rf_est.compute(*model_rf);
+
+  rf_est.setInputCloud(scene_model_->get_model_keypoints());
+  rf_est.setInputNormals(scene_model_->get_model_normals());
+  rf_est.setSearchSurface(scene_model_->get_model());
+  rf_est.compute(*scene_rf);
+
+  //  Clustering
+  pcl::Hough3DGrouping<pcl::PointXYZ, pcl::PointXYZ, pcl::ReferenceFrame, pcl::ReferenceFrame> clusterer;
+  clusterer.setHoughBinSize(1.0);
+  clusterer.setHoughThreshold(5.0);
+  clusterer.setUseInterpolation(true);
+  clusterer.setUseDistanceWeight(false);
+
+  clusterer.setInputCloud(target_object_model->get_model_keypoints());
+  clusterer.setInputRf(model_rf);
+  clusterer.setSceneCloud(scene_model_->get_model_keypoints());
+  clusterer.setSceneRf(scene_rf);
+  clusterer.setModelSceneCorrespondences(model_scene_corrs);
+  clusterer.recognize (rototranslations, clustered_corrs);
+  return rototranslations;
 }
 
 geometry_msgs::Quaternion pcl_object_recognition::rot_to_quat(Eigen::Matrix3f rotation)
@@ -217,4 +205,38 @@ geometry_msgs::Quaternion pcl_object_recognition::rot_to_quat(Eigen::Matrix3f ro
       ROS_ERROR_STREAM("Failed to convert quaternion");
   }
   return quat;
+}
+
+object_model* pcl_object_recognition::load_object_model(std::string object_name, std::string stl_file_path, std::string marker_mesh_path)
+{
+  pcl::PolygonMesh::Ptr mesh(new pcl::PolygonMesh());
+  pcl::PointCloud<pcl::PointXYZ>::Ptr object_pointcloud = pcl::PointCloud<pcl::PointXYZ>::Ptr(new pcl::PointCloud<pcl::PointXYZ>());
+  if(check_file_existence(stl_file_path) == true)
+  {
+    pcl::io::loadPolygonFileSTL(stl_file_path, *mesh);
+    pcl::fromPCLPointCloud2(mesh->cloud, *object_pointcloud);
+    ROS_INFO_STREAM("load stl file from:" << stl_file_path);
+  }
+  else
+  {
+    ROS_ERROR_STREAM("file is not exist:" << stl_file_path);
+    //return;
+  }
+  object_model* obj_model = new object_model(object_pointcloud,object_name,stl_file_path,marker_mesh_path);
+  return obj_model;
+}
+
+void pcl_object_recognition::read_parameters()
+{
+  XmlRpc::XmlRpcValue parameters;
+  nh_.getParam(ros::this_node::getName(), parameters);
+  pointcloud_topic_ = std::string(parameters["input_cloud"]);
+  XmlRpc::XmlRpcValue target_objects_params = parameters["target_objects"];
+  std::string resource_path = ros::package::getPath("ros_ship_recognition") + "/data/";
+  for(auto object_param_itr = target_objects_params.begin(); object_param_itr != target_objects_params.end(); ++object_param_itr)
+  {
+    std::string stl_path = resource_path+std::string(object_param_itr->second["stl_filename"]);
+    std::string mesh_path = resource_path+std::string(object_param_itr->second["marker_filename"]);
+    object_models_.push_back(load_object_model(object_param_itr->first,stl_path,mesh_path));
+  }
 }

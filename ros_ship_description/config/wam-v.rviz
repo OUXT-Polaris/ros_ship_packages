@@ -329,8 +329,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 1.95955384
-        Min Value: -0.301728487
+        Max Value: 2.02129412
+        Min Value: -0.310130119
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -388,7 +388,7 @@ Visualization Manager:
       Value: true
     - Class: rviz/MarkerArray
       Enabled: true
-      Marker Topic: /buoy_recoganizer/detected_objects/marker
+      Marker Topic: /object_recognition_node/detected_objects/marker
       Name: MarkerArray
       Namespaces:
         "": true
@@ -446,7 +446,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 16.339016
+      Distance: 19.0618668
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
@@ -461,10 +461,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.119796246
+      Pitch: 0.214796245
       Target Frame: base_link
       Value: Orbit (rviz)
-      Yaw: 3.02870464
+      Yaw: 2.36870289
     Saved: ~
 Window Geometry:
   Displays:
