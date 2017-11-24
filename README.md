@@ -58,6 +58,7 @@ recognition package for ros_ship
 object recognition node by using PCL(point cloud library)  
 set rosparams like below  
 ![sample yaml file](https://github.com/hakuturu583/ros_ship_packages/blob/master/images/ros_ship_recognition_yaml.png)  
+stl and mesh file must be puted on (ros_ship_packages)/data/  
 
 ## ros_ship_visualization  
 #### gps_plotter.py  
