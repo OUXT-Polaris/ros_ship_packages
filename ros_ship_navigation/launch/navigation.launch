@@ -39,4 +39,8 @@
   <node name="joy_to_cmd_node" pkg="ros_ship_navigation" type="joy_to_cmd.py" args="" output="screen" respawn="true">
     <param name="max_value" value="2" type="double"/>
   </node>
+
+  <node name="geographic_map_server_node" pkg="ros_ship_navigation" type="geographic_map_server_node" args="" output="screen" respawn="true">
+    <param name="osm_filepath" value="$(find ros_ship_navigation)/data/field.osm" type="str"/>
+  </node>
 </launch>
