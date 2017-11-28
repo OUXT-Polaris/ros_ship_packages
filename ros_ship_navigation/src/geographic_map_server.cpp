@@ -7,12 +7,16 @@
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
+//headers in tf
+#include <tf/transform_datatypes.h>
+
 geographic_map_server::geographic_map_server()
 {
+  is_fix_velocity_recieved_ = false;
   nh_.getParam(ros::this_node::getName()+"/osm_filepath", osm_filepath_);
   nh_.param<double>(ros::this_node::getName()+"/earth_radius", earth_radius_, 6378137);
   parse_osm();
-  imu_sub_ = nh_.subscribe("/imu", 1, &geographic_map_server::imu_callback, this);
+  imu_sub_ = nh_.subscribe("/fix_velocity", 1, &geographic_map_server::fix_velocity_callback, this);
   fix_sub_ = nh_.subscribe("/fix", 1, &geographic_map_server::fix_callback, this);
 }
 
@@ -23,12 +27,16 @@ geographic_map_server::~geographic_map_server()
 
 void geographic_map_server::fix_callback(sensor_msgs::NavSatFix msg)
 {
+  if(is_fix_velocity_recieved_ == true)
+  {
 
+  }
 }
 
-void geographic_map_server::imu_callback(sensor_msgs::Imu msg)
+void geographic_map_server::fix_velocity_callback(geometry_msgs::Vector3Stamped msg)
 {
-
+  is_fix_velocity_recieved_ = true;
+  //ship_direction = 
 }
 
 void geographic_map_server::parse_osm()
