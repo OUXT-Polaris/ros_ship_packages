@@ -117,11 +117,11 @@ namespace driving_force_controller
     plot_service_message.request.k2 = k2;
     plot_service_message.request.file_name = characteristic_curve_file_name;
     plot_service_message.request.min_inflow_rate = 0;
-    plot_service_message.request.max_inflow_rate = 30;
-    plot_service_message.request.resolution_inflow_rate = 5;
-    plot_service_message.request.min_rotational_speed = 0;
-    plot_service_message.request.max_rotational_speed = 30;
-    plot_service_message.request.resolution_rotational_speed = 1;
+    plot_service_message.request.max_inflow_rate = 3;
+    plot_service_message.request.resolution_inflow_rate = 1;
+    plot_service_message.request.min_rotational_speed = min_rotational_speed;
+    plot_service_message.request.max_rotational_speed = max_rotational_speed;
+    plot_service_message.request.resolution_rotational_speed = 0.01;
     plot_client.call(plot_service_message);
     motor_command_publisher.reset(new realtime_tools::RealtimePublisher<std_msgs::Float64>(controller_nh, motor_command_topic, 1));
     twist_sub = controller_nh.subscribe(twist_topic, 1, &DrivingForceController::twistCallback, this);
@@ -133,40 +133,13 @@ namespace driving_force_controller
     double rotational_speed = 0;
     double error = 0;
     error = thrust-get_thrust(rotational_speed,inflow_rate);
-    while(error > tolerance)
+    while(std::fabs(error) > tolerance)
     {
       rotational_speed = rotational_speed+error*alpha;
       error = thrust-get_thrust(rotational_speed,inflow_rate);
     }
     return rotational_speed;
   }
-
-/*
-  void DrivingForceController::plot_characteristic_curve(double min_rotational_speed,double max_rotational_speed,double resolution_rotational_speed,
-    double min_inflow_rate,double max_inflow_rate,double resolution_inflow_rate)
-  {
-    std::vector<double> x_data,y_data;
-    for(double inflow_rate = min_inflow_rate;inflow_rate<=max_inflow_rate;inflow_rate=inflow_rate+resolution_inflow_rate)
-    {
-      for(double rotational_speed = min_rotational_speed;rotational_speed<=max_rotational_speed;rotational_speed=rotational_speed+resolution_rotational_speed)
-      {
-        double thrust = get_thrust(rotational_speed,inflow_rate);
-        x_data.push_back(rotational_speed);
-        y_data.push_back(thrust);
-      }
-      matplotlibcpp::named_plot("ship speed:"+std::to_string(inflow_rate)+"[m/s]",x_data, y_data);
-      x_data.clear();
-      y_data.clear();
-    }
-    std::string package_path = ros::package::getPath("ros_ship_control");
-    matplotlibcpp::xlabel("Rotational speed [rad/s]");
-    matplotlibcpp::ylabel("Thrust [N]");
-    matplotlibcpp::legend_upper_left();
-    matplotlibcpp::grid(true);
-    matplotlibcpp::save(package_path+"/data/"+characteristic_curve_file_name+".eps");
-    matplotlibcpp::save(package_path+"/data/"+characteristic_curve_file_name+".jpeg");
-  }
-*/
 
   void DrivingForceController::starting(const ros::Time& time)
   {

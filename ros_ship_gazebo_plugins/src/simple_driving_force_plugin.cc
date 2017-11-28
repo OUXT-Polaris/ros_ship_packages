@@ -44,11 +44,6 @@ namespace gazebo
       this->updateConnection = event::Events::ConnectWorldUpdateBegin(boost::bind(&simple_driving_force_plugin::OnUpdate, this, _1));
     }
 
-    void twist_callback(const geometry_msgs::Twist::ConstPtr& msg)
-    {
-      inflow_rate = msg->linear.x;
-    }
-
     double get_thrust(double rotational_speed,double inflow_rate)
     {
       if(rotational_speed == 0)
