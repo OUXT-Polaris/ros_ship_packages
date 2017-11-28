@@ -1,4 +1,4 @@
 <launch>
-  <param name="robot_description" command="$(find xacro)/xacro --check-order $(find ros_ship_description)/robots/wam-v.urdf.xacro" />
+  <param name="robot_description" command="$(find xacro)/xacro --check-order $(find ros_ship_description)/robots/wam-v.urdf.xacro"/>
   <include file="$(find ros_ship_control)/launch/wam-v_control.launch"/>
 </launch>

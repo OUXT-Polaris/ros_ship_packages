@@ -5,8 +5,9 @@ USV simulator for ROS
 1.cd ~/catkin_ws/src  
 2.git@github.com:hakuturu583/ros_ship_packages.git  
 3.cd ../  
-4.sudo apt install ros-kinetic-jsk-*  
-5.catkin_make  
+4.sudo apt install ros-kinetic-jsk-*    
+5.ros-kinetic-hector-gazebo*  
+6.catkin_make  
 # robot model
 ## ros_ship
 ![simulation on gazebo](https://github.com/hakuturu583/ros_ship_packages/blob/master/images/gazebo.png)  

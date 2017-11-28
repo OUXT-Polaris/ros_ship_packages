@@ -19,6 +19,7 @@
 
   <xacro:property name="start_point_latitude" value="135.524910" />
   <xacro:property name="start_point_longitude" value="34.822634" />
+  <xacro:property name="start_point_heading" value="0" />
 
   <xacro:property name="robot" value="wam_v" />
 </robot>

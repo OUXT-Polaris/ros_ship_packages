@@ -206,6 +206,7 @@
       <velocityGaussianNoise>0.1 0.1 0.1</velocityGaussianNoise>
       <referenceLatitude>${start_point_latitude}</referenceLatitude>
       <referenceLongitude>${start_point_longitude}</referenceLongitude>
+      <referenceHeading>${start_point_heading}</referenceHeading>
     </plugin>
 
     <plugin name="simple_driving_force_left" filename="libsimple_driving_force_plugin.so">

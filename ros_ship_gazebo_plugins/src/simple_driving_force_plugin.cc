@@ -36,11 +36,11 @@ namespace gazebo
       nh.getParam(this->driving_force_controller+"/propeller/k2", k2);
       nh.getParam(this->driving_force_controller+"/propeller/fluid_density",fluid_density);
       nh.getParam(this->driving_force_controller+"/propeller/turning_radius", turning_radius);
-      nh.getParam(this->driving_force_controller+"/propeller/twist_topic",twist_topic);
+      //nh.getParam(this->driving_force_controller+"/propeller/twist_topic",twist_topic);
       this->joint = this->model->GetJoint(this->target_joint);
       this->link = this->model->GetLink(target_link);
       driving_force_pub = nh.advertise<std_msgs::Float32>("/"+this->target_link+"/driving_force", 1);
-      twist_sub = nh.subscribe(twist_topic, 1, &simple_driving_force_plugin::twist_callback,this);
+      //twist_sub = nh.subscribe(twist_topic, 1, &simple_driving_force_plugin::twist_callback,this);
       this->updateConnection = event::Events::ConnectWorldUpdateBegin(boost::bind(&simple_driving_force_plugin::OnUpdate, this, _1));
     }
 
@@ -74,6 +74,7 @@ namespace gazebo
     // Called by the world update start event
     public: void OnUpdate(const common::UpdateInfo & /*_info*/)
     {
+      inflow_rate = model->GetWorldLinearVel().x;
       std_msgs::Float32 driving_force_msg;
       double velocity = this->joint->GetVelocity(0);
       double driving_force = get_thrust(velocity,this->inflow_rate);
@@ -140,13 +141,13 @@ namespace gazebo
     //ros publishers
     private: ros::NodeHandle nh;
     private: ros::Publisher driving_force_pub;
-    private: ros::Subscriber twist_sub;
+    //private: ros::Subscriber twist_sub;
 
     // Pointer to the update event connection
     private: event::ConnectionPtr updateConnection;
 
     //propeller params
-    std::string driving_force_controller,twist_topic;
+    std::string driving_force_controller;//,twist_topic;
     double k0,k1,k2;
     double fluid_density,turning_radius,inflow_rate;
   };

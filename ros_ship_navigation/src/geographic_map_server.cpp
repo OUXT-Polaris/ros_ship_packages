@@ -1,5 +1,7 @@
+//headers in this package
 #include <geographic_map_server.h>
 
+//headers in boost
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/foreach.hpp>
@@ -8,10 +10,23 @@
 geographic_map_server::geographic_map_server()
 {
   nh_.getParam(ros::this_node::getName()+"/osm_filepath", osm_filepath_);
+  nh_.param<double>(ros::this_node::getName()+"/earth_radius", earth_radius_, 6378137);
   parse_osm();
+  imu_sub_ = nh_.subscribe("/imu", 1, &geographic_map_server::imu_callback, this);
+  fix_sub_ = nh_.subscribe("/fix", 1, &geographic_map_server::fix_callback, this);
 }
 
 geographic_map_server::~geographic_map_server()
+{
+
+}
+
+void geographic_map_server::fix_callback(sensor_msgs::NavSatFix msg)
+{
+
+}
+
+void geographic_map_server::imu_callback(sensor_msgs::Imu msg)
 {
 
 }
