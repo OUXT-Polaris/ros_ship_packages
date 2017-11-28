@@ -4,7 +4,7 @@
 class osm_node
 {
 public:
-  osm_node(double latitude,double longitude,double id):latitude_(latitude),longitude_(longitude),id_(id){}
+  osm_node(double latitude,double longitude,long id):latitude_(latitude),longitude_(longitude),id_(id){}
   ~osm_node();
   const double latitude_;
   const double longitude_;

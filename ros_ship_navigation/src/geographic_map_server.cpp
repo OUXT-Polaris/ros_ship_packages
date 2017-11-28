@@ -35,22 +35,42 @@ void geographic_map_server::parse_osm()
     //parse osm file and get osm_way infomation
     if(itr.first == "way")
     {
+      std::vector<long> node_ids;
+      std::vector<osm_node*> way_nodes;
+      bool is_water = false;
       for(auto way_data_itr : itr.second )
       {
+        if(way_data_itr.first == "nd")
+        {
+          long id = way_data_itr.second.get<long>("<xmlattr>.ref");
+          node_ids.push_back(id);
+        }
         //parse tag
         if(way_data_itr.first == "tag")
         {
           //get areas of natural = water
           if(way_data_itr.second.get<std::string>("<xmlattr>.k") == "natural" && way_data_itr.second.get<std::string>("<xmlattr>.v") == "water")
           {
-            
+            is_water = true;
           }
         }
-        if(way_data_itr.first == "nd")
+        //check if the area is water or not
+        if(is_water == true)
         {
-          long id = way_data_itr.second.get<long>("<xmlattr>.ref");
+          //std::vector<*osm_node> node_list;
+          for(auto node_id = node_ids.begin(); node_id != node_ids.end(); ++node_id)
+          {
+            for(int i = 0; i<osm_nodes_.size() ;i++)
+            {
+              if(osm_nodes_[i]->id_ == *node_id)
+              {
+                way_nodes.push_back(osm_nodes_[i]);
+              }
+            }
+          }
         }
       }
+      osm_ways_.push_back(new osm_way(way_nodes));
     }
   }
 }
