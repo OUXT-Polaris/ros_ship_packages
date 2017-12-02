@@ -6,6 +6,7 @@ Panels:
       Expanded:
         - /Global Options1
         - /MarkerArray1/Namespaces1
+        - /OverlayGpsDisplay1
       Splitter Ratio: 0.5
     Tree Height: 775
   - Class: rviz/Selection
@@ -329,8 +330,8 @@ Visualization Manager:
     - Alpha: 1
       Autocompute Intensity Bounds: true
       Autocompute Value Bounds:
-        Max Value: 2.17770004
-        Min Value: -0.275438547
+        Max Value: 2.6011157
+        Min Value: 0.0487861633
         Value: true
       Axis: Z
       Channel Name: intensity
@@ -394,34 +395,22 @@ Visualization Manager:
         "": true
       Queue Size: 100
       Value: true
-    - Class: jsk_rviz_plugin/VideoCapture
+    - Alpha: 0.800000012
+      Class: ros_ship_visualization/OverlayGpsDisplay
       Enabled: true
-      Name: VideoCapture
-      Value: true
-      filename: output.avi
-      fps: 30
-      start capture: false
-    - Class: jsk_rviz_plugin/OverlayImage
-      Enabled: true
-      Name: OverlayImage
-      Topic: /gps_plotter_nodemap_image
-      Value: true
-      alpha: 0.800000012
-      height: 128
-      keep aspect ratio: true
-      left: 800
-      top: 50
-      width: 320
-    - Alpha: 0.699999988
-      Class: rviz/Map
-      Color Scheme: map
-      Draw Behind: false
-      Enabled: true
-      Name: Map
-      Topic: /ros_ship_map_server_node/map
+      Height: 320
+      History Length: 15
+      Map Type: roadmap
+      Message per plot: 5
+      Name: OverlayGpsDisplay
+      Position X: 800
+      Position Y: 10
+      Scale: 1
+      Topic: /fix
       Unreliable: false
-      Use Timestamp: false
       Value: true
+      Width: 320
+      Zoom: 19
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48

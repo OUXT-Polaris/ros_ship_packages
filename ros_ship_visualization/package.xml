@@ -46,17 +46,27 @@
   <build_depend>sensor_msgs</build_depend>
   <build_depend>std_msgs</build_depend>
   <build_depend>message_generation</build_depend>
+  <build_depend>ros_ship_msgs</build_depend>
+  <build_depend>qtbase5-dev</build_depend>
+  <build_depend>pluginlib</build_depend>
+  <build_depend>rviz</build_depend>
 
+  <run_depend>libqt5-core</run_depend>
+  <run_depend>libqt5-gui</run_depend>
+  <run_depend>libqt5-widgets</run_depend>
   <run_depend>geometry_msgs</run_depend>
   <run_depend>roscpp</run_depend>
   <run_depend>rospy</run_depend>
   <run_depend>sensor_msgs</run_depend>
   <run_depend>std_msgs</run_depend>
   <run_depend>message_generation</run_depend>
+  <run_depend>ros_ship_msgs</run_depend>
+  <run_depend>pluginlib</run_depend>
+  <run_depend>rviz</run_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
     <!-- Other tools can request additional information be placed here -->
-
+    <rviz plugin="${prefix}/plugin_description.xml"/>
   </export>
 </package>

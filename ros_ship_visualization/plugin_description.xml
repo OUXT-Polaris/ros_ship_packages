@@ -1,0 +1,7 @@
+<library path="lib/libros_ship_visualization">
+  <class name="ros_ship_visualization/OverlayGpsDisplay" type="ros_ship_visualization::OverlayGpsDisplay" base_class_type="rviz::Display">
+    <description>
+      display sensor_msgs/NavSatFix message
+    </description>
+  </class>
+</library>
