@@ -156,6 +156,8 @@ std::vector<Eigen::Matrix4f, Eigen::aligned_allocator<Eigen::Matrix4f> > pcl_obj
   clusterer.setSceneRf(scene_rf);
   clusterer.setModelSceneCorrespondences(model_scene_corrs);
   clusterer.recognize (rototranslations, clustered_corrs);
+
+  //ROS_INFO_STREAM("Model instances found: " << rototranslations.size ());
   return rototranslations;
 }
 
