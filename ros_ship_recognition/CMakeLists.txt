@@ -139,6 +139,7 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 add_executable(object_recognition_node src/object_recognition_node.cpp src/pcl_object_recognition src/object_model.cpp)
+add_dependencies(object_recognition_node ros_ship_msgs_generate_messages_cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
