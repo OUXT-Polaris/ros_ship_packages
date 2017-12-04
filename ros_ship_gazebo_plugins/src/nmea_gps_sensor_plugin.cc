@@ -28,7 +28,10 @@
 
 #include <nmea_gps_sensor_plugin.h>
 #include <gazebo/physics/physics.hh>
-#include <nmea_msgs/Sentence.h>
+
+//headers in stl
+#include <sys/time.h>
+#include <vector>
 
 // WGS84 constants
 static const double equatorial_radius = 6378137.0;
@@ -243,6 +246,59 @@ namespace gazebo
 
     //fix_publisher_.publish(fix_);
     //velocity_publisher_.publish(velocity_);
+  }
+
+  nmea_msgs::Sentence nmea_gps_sensor_plugin::build_GPGGA_sentence()
+  {
+    nmea_msgs::Sentence sentence;
+    sentence.header = fix_.header;
+    struct timeval time_value;
+    struct tm *time_st;
+    gettimeofday(&time_value, NULL);
+    sentence.sentence = std::to_string(time_st->tm_hour) + std::to_string(time_st->tm_min) + std::to_string(time_st->tm_sec);
+    sentence.sentence = sentence.sentence + "." + std::to_string(time_value.tv_usec) + ",";
+    sentence.sentence = sentence.sentence + "A,";
+    if(fix_.latitude < 0)
+    {
+      int digree = std::floor(std::fabs(fix_.latitude));
+      double min = (std::fabs(fix_.latitude)-std::floor(std::fabs(fix_.latitude)))/60;
+      sentence.sentence = sentence.sentence + std::to_string(digree) + std::to_string(min) + ",";
+      sentence.sentence = sentence.sentence + "S,";
+    }
+    else
+    {
+      int digree = std::floor(std::fabs(fix_.latitude));
+      double min = (std::fabs(fix_.latitude)-std::floor(std::fabs(fix_.latitude)))/60;
+      sentence.sentence = sentence.sentence + std::to_string(digree) + std::to_string(min) + ",";
+      sentence.sentence = sentence.sentence + "N,";
+    }
+    if(fix_.longitude < 0)
+    {
+      int digree = std::floor(std::fabs(fix_.longitude));
+      double min = (std::fabs(fix_.longitude)-std::floor(std::fabs(fix_.longitude)))/60;
+      sentence.sentence = sentence.sentence + std::to_string(digree) + std::to_string(min) + ",";
+      sentence.sentence = sentence.sentence + "W,";
+    }
+    else
+    {
+      int digree = std::floor(std::fabs(fix_.longitude));
+      double min = (std::fabs(fix_.longitude)-std::floor(std::fabs(fix_.longitude)))/60;
+      sentence.sentence = sentence.sentence + std::to_string(digree) + std::to_string(min) + ",";
+      sentence.sentence = sentence.sentence + "E,";
+    }
+    sentence.sentence = sentence.sentence + "1,08,1.0,";
+    sentence.sentence = sentence.sentence + std::to_string(fix_.altitude) + ",";
+    sentence.sentence = sentence.sentence + "M,";
+    sentence.sentence = sentence.sentence + std::to_string(fix_.altitude) + ",";
+    sentence.sentence = sentence.sentence + "M,,0000";
+    sentence.sentence = sentence.sentence + "*" + get_nmea_checksum(sentence.sentence);
+    sentence.sentence = "$GPGGA," + sentence.sentence;
+    return sentence;
+  }
+
+  std::string nmea_gps_sensor_plugin::get_nmea_checksum(std::string sentence)
+  {
+    return "";
   }
 
   // Register this plugin with the simulator

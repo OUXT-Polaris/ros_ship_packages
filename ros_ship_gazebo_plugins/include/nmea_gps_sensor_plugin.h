@@ -39,6 +39,7 @@
 
 #include <dynamic_reconfigure/server.h>
 #include <hector_gazebo_plugins/GNSSConfig.h>
+#include <nmea_msgs/Sentence.h>
 
 namespace gazebo
 {
@@ -58,6 +59,9 @@ namespace gazebo
     void dynamicReconfigureCallback(GNSSConfig &config, uint32_t level);
 
   private:
+    //functions for building nmea sentence
+    nmea_msgs::Sentence build_GPGGA_sentence();
+    std::string get_nmea_checksum(std::string sentence);
     /// \brief The parent World
     physics::WorldPtr world;
 
