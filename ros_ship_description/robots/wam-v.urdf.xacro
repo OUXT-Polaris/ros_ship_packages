@@ -224,6 +224,13 @@
       <joint_state_topic>${joint_state_topic}</joint_state_topic>
     </plugin>
 
+    <plugin name="simple_driving_force_right" filename="libship_direction_sensor_plugin.so">
+      <reference_heading>${start_point_heading}</reference_heading>
+    </plugin>
+
+    <plugin name="simple_driving_force_right" filename="libship_speed_sensor_plugin.so">
+    </plugin>
+
     <plugin name="imu_plugin" filename="libgazebo_ros_imu.so">
       <alwaysOn>true</alwaysOn>
       <bodyName>base_link</bodyName>
