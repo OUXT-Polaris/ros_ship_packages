@@ -28,6 +28,7 @@
 
 #include <nmea_gps_sensor_plugin.h>
 #include <gazebo/physics/physics.hh>
+#include <nmea_msgs/Sentence.h>
 
 // WGS84 constants
 static const double equatorial_radius = 6378137.0;
@@ -157,8 +158,9 @@ namespace gazebo
     }
 
     node_handle_ = new ros::NodeHandle(namespace_);
-    fix_publisher_ = node_handle_->advertise<sensor_msgs::NavSatFix>(fix_topic_, 10);
-    velocity_publisher_ = node_handle_->advertise<geometry_msgs::Vector3Stamped>(velocity_topic_, 10);
+    nmea_sentence_publisher_ = node_handle_->advertise<nmea_msgs::Sentence>(fix_topic_, 10);
+    //fix_publisher_ = node_handle_->advertise<sensor_msgs::NavSatFix>(fix_topic_, 10);
+    //velocity_publisher_ = node_handle_->advertise<geometry_msgs::Vector3Stamped>(velocity_topic_, 10);
 
     // setup dynamic_reconfigure servers
     dynamic_reconfigure_server_position_.reset(new dynamic_reconfigure::Server<SensorModelConfig>(ros::NodeHandle(*node_handle_, fix_topic_ + "/position")));
@@ -239,8 +241,8 @@ namespace gazebo
     fix_.position_covariance[4] = position_error_model_.drift.y*position_error_model_.drift.y + position_error_model_.gaussian_noise.y*position_error_model_.gaussian_noise.y;
     fix_.position_covariance[8] = position_error_model_.drift.z*position_error_model_.drift.z + position_error_model_.gaussian_noise.z*position_error_model_.gaussian_noise.z;
 
-    fix_publisher_.publish(fix_);
-    velocity_publisher_.publish(velocity_);
+    //fix_publisher_.publish(fix_);
+    //velocity_publisher_.publish(velocity_);
   }
 
   // Register this plugin with the simulator

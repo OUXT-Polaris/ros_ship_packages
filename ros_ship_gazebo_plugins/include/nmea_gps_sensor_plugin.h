@@ -65,8 +65,9 @@ namespace gazebo
     physics::LinkPtr link;
 
     ros::NodeHandle* node_handle_;
-    ros::Publisher fix_publisher_;
-    ros::Publisher velocity_publisher_;
+    ros::Publisher nmea_sentence_publisher_;
+    //ros::Publisher fix_publisher_;
+    //ros::Publisher velocity_publisher_;
 
     sensor_msgs::NavSatFix fix_;
     geometry_msgs::Vector3Stamped velocity_;
