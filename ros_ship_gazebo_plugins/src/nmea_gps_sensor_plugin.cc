@@ -31,6 +31,7 @@
 
 //headers in stl
 #include <sys/time.h>
+#include <time.h>
 #include <vector>
 
 // WGS84 constants
@@ -56,10 +57,6 @@ namespace gazebo
   nmea_gps_sensor_plugin::~nmea_gps_sensor_plugin()
   {
     updateTimer.Disconnect(updateConnection);
-
-    dynamic_reconfigure_server_position_.reset();
-    dynamic_reconfigure_server_velocity_.reset();
-    dynamic_reconfigure_server_status_.reset();
 
     node_handle_->shutdown();
     delete node_handle_;
@@ -95,8 +92,6 @@ namespace gazebo
 
     // default parameters
     frame_id_ = "/world";
-    fix_topic_ = "fix";
-    velocity_topic_ = "fix_velocity";
 
     reference_latitude_  = DEFAULT_REFERENCE_LATITUDE;
     reference_longitude_ = DEFAULT_REFERENCE_LONGITUDE;
@@ -106,14 +101,13 @@ namespace gazebo
     fix_.status.status  = sensor_msgs::NavSatStatus::STATUS_FIX;
     fix_.status.service = 0;
 
+    if (_sdf->HasElement("nmea_sentence_topic"))
+      nmea_sentence_topic_ = _sdf->GetElement("nmea_sentence_topic")->GetValue()->GetAsString();
+    else
+      nmea_sentence_topic_ = "nmea_sentence";
+
     if (_sdf->HasElement("frameId"))
       frame_id_ = _sdf->GetElement("frameId")->GetValue()->GetAsString();
-
-    if (_sdf->HasElement("topicName"))
-      fix_topic_ = _sdf->GetElement("topicName")->GetValue()->GetAsString();
-
-    if (_sdf->HasElement("velocityTopicName"))
-      velocity_topic_ = _sdf->GetElement("velocityTopicName")->GetValue()->GetAsString();
 
     if (_sdf->HasElement("referenceLatitude"))
       _sdf->GetElement("referenceLatitude")->GetValue()->Get(reference_latitude_);
@@ -161,17 +155,9 @@ namespace gazebo
     }
 
     node_handle_ = new ros::NodeHandle(namespace_);
-    nmea_sentence_publisher_ = node_handle_->advertise<nmea_msgs::Sentence>(fix_topic_, 10);
+    nmea_sentence_publisher_ = node_handle_->advertise<nmea_msgs::Sentence>(nmea_sentence_topic_, 10);
     //fix_publisher_ = node_handle_->advertise<sensor_msgs::NavSatFix>(fix_topic_, 10);
     //velocity_publisher_ = node_handle_->advertise<geometry_msgs::Vector3Stamped>(velocity_topic_, 10);
-
-    // setup dynamic_reconfigure servers
-    dynamic_reconfigure_server_position_.reset(new dynamic_reconfigure::Server<SensorModelConfig>(ros::NodeHandle(*node_handle_, fix_topic_ + "/position")));
-    dynamic_reconfigure_server_velocity_.reset(new dynamic_reconfigure::Server<SensorModelConfig>(ros::NodeHandle(*node_handle_, fix_topic_ + "/velocity")));
-    dynamic_reconfigure_server_status_.reset(new dynamic_reconfigure::Server<GNSSConfig>(ros::NodeHandle(*node_handle_, fix_topic_ + "/status")));
-    dynamic_reconfigure_server_position_->setCallback(boost::bind(&SensorModel3::dynamicReconfigureCallback, &position_error_model_, _1, _2));
-    dynamic_reconfigure_server_velocity_->setCallback(boost::bind(&SensorModel3::dynamicReconfigureCallback, &velocity_error_model_, _1, _2));
-    dynamic_reconfigure_server_status_->setCallback(boost::bind(&nmea_gps_sensor_plugin::dynamicReconfigureCallback, this, _1, _2));
 
     Reset();
 
@@ -244,6 +230,7 @@ namespace gazebo
     fix_.position_covariance[4] = position_error_model_.drift.y*position_error_model_.drift.y + position_error_model_.gaussian_noise.y*position_error_model_.gaussian_noise.y;
     fix_.position_covariance[8] = position_error_model_.drift.z*position_error_model_.drift.z + position_error_model_.gaussian_noise.z*position_error_model_.gaussian_noise.z;
 
+    nmea_sentence_publisher_.publish(build_GPGGA_sentence());
     //fix_publisher_.publish(fix_);
     //velocity_publisher_.publish(velocity_);
   }
@@ -254,6 +241,9 @@ namespace gazebo
     sentence.header = fix_.header;
     struct timeval time_value;
     struct tm *time_st;
+    time_t timer;
+    timer = time(NULL);
+    time_st = gmtime(&timer);
     gettimeofday(&time_value, NULL);
     sentence.sentence = std::to_string(time_st->tm_hour) + std::to_string(time_st->tm_min) + std::to_string(time_st->tm_sec);
     sentence.sentence = sentence.sentence + "." + std::to_string(time_value.tv_usec) + ",";
@@ -298,7 +288,7 @@ namespace gazebo
 
   std::string nmea_gps_sensor_plugin::get_nmea_checksum(std::string sentence)
   {
-    return "";
+    return "00";
   }
 
   // Register this plugin with the simulator

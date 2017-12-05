@@ -79,8 +79,7 @@ namespace gazebo
     std::string namespace_;
     std::string link_name_;
     std::string frame_id_;
-    std::string fix_topic_;
-    std::string velocity_topic_;
+    std::string nmea_sentence_topic_;
 
     double reference_latitude_;
     double reference_longitude_;
@@ -95,9 +94,6 @@ namespace gazebo
 
     UpdateTimer updateTimer;
     event::ConnectionPtr updateConnection;
-
-    boost::shared_ptr<dynamic_reconfigure::Server<SensorModelConfig> > dynamic_reconfigure_server_position_, dynamic_reconfigure_server_velocity_;
-    boost::shared_ptr<dynamic_reconfigure::Server<GNSSConfig> > dynamic_reconfigure_server_status_;
   };
 
 } // namespace gazebo

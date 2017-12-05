@@ -210,6 +210,20 @@
       <referenceHeading>${start_point_heading}</referenceHeading>
     </plugin>
 
+    <plugin name="nmea_gps_sim" filename="libnmea_gps_sensor_plugin.so">
+      <alwaysOn>1</alwaysOn>
+      <updateRate>10</updateRate>
+      <bodyName>gps</bodyName>
+      <frameId>gps</frameId>
+      <drift>5.0 5.0 5.0</drift>
+      <gaussianNoise>0.1 0.1 0.1</gaussianNoise>
+      <velocityDrift>0 0 0</velocityDrift>
+      <velocityGaussianNoise>0.1 0.1 0.1</velocityGaussianNoise>
+      <referenceLatitude>${start_point_latitude}</referenceLatitude>
+      <referenceLongitude>${start_point_longitude}</referenceLongitude>
+      <referenceHeading>${start_point_heading}</referenceHeading>
+    </plugin>
+
     <plugin name="simple_driving_force_left" filename="libsimple_driving_force_plugin.so">
       <target_link>left_motor</target_link>
       <target_joint>left_motor_joint</target_joint>
