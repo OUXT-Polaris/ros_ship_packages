@@ -215,6 +215,7 @@
       <updateRate>10</updateRate>
       <bodyName>gps</bodyName>
       <frameId>gps</frameId>
+      <topicName>nmea_sentence</topicName>
       <drift>5.0 5.0 5.0</drift>
       <gaussianNoise>0.1 0.1 0.1</gaussianNoise>
       <velocityDrift>0 0 0</velocityDrift>

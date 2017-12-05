@@ -101,8 +101,8 @@ namespace gazebo
     fix_.status.status  = sensor_msgs::NavSatStatus::STATUS_FIX;
     fix_.status.service = 0;
 
-    if (_sdf->HasElement("nmea_sentence_topic"))
-      nmea_sentence_topic_ = _sdf->GetElement("nmea_sentence_topic")->GetValue()->GetAsString();
+    if (_sdf->HasElement("topicName"))
+      nmea_sentence_topic_ = _sdf->GetElement("topicName")->GetValue()->GetAsString();
     else
       nmea_sentence_topic_ = "nmea_sentence";
 
@@ -231,11 +231,64 @@ namespace gazebo
     fix_.position_covariance[8] = position_error_model_.drift.z*position_error_model_.drift.z + position_error_model_.gaussian_noise.z*position_error_model_.gaussian_noise.z;
 
     nmea_sentence_publisher_.publish(build_GPGGA_sentence());
+    nmea_sentence_publisher_.publish(build_GPRMC_sentence());
+
     //fix_publisher_.publish(fix_);
     //velocity_publisher_.publish(velocity_);
   }
 
   nmea_msgs::Sentence nmea_gps_sensor_plugin::build_GPGGA_sentence()
+  {
+    nmea_msgs::Sentence sentence;
+    sentence.header = fix_.header;
+    struct timeval time_value;
+    struct tm *time_st;
+    time_t timer;
+    timer = time(NULL);
+    time_st = gmtime(&timer);
+    gettimeofday(&time_value, NULL);
+    sentence.sentence = std::to_string(time_st->tm_hour) + std::to_string(time_st->tm_min) + std::to_string(time_st->tm_sec);
+    sentence.sentence = sentence.sentence + "." + std::to_string(time_value.tv_usec) + ",";
+    //sentence.sentence = sentence.sentence + "A,";
+    if(fix_.latitude < 0)
+    {
+      int digree = std::floor(std::fabs(fix_.latitude));
+      double min = (std::fabs(fix_.latitude)-std::floor(std::fabs(fix_.latitude)))/60;
+      sentence.sentence = sentence.sentence + std::to_string(digree) + std::to_string(min) + ",";
+      sentence.sentence = sentence.sentence + "S,";
+    }
+    else
+    {
+      int digree = std::floor(std::fabs(fix_.latitude));
+      double min = (std::fabs(fix_.latitude)-std::floor(std::fabs(fix_.latitude)))/60;
+      sentence.sentence = sentence.sentence + std::to_string(digree) + std::to_string(min) + ",";
+      sentence.sentence = sentence.sentence + "N,";
+    }
+    if(fix_.longitude < 0)
+    {
+      int digree = std::floor(std::fabs(fix_.longitude));
+      double min = (std::fabs(fix_.longitude)-std::floor(std::fabs(fix_.longitude)))/60;
+      sentence.sentence = sentence.sentence + std::to_string(digree) + std::to_string(min) + ",";
+      sentence.sentence = sentence.sentence + "W,";
+    }
+    else
+    {
+      int digree = std::floor(std::fabs(fix_.longitude));
+      double min = (std::fabs(fix_.longitude)-std::floor(std::fabs(fix_.longitude)))/60;
+      sentence.sentence = sentence.sentence + std::to_string(digree) + std::to_string(min) + ",";
+      sentence.sentence = sentence.sentence + "E,";
+    }
+    sentence.sentence = sentence.sentence + "1,08,1.0,";
+    sentence.sentence = sentence.sentence + std::to_string(fix_.altitude) + ",";
+    sentence.sentence = sentence.sentence + "M,";
+    sentence.sentence = sentence.sentence + std::to_string(fix_.altitude) + ",";
+    sentence.sentence = sentence.sentence + "M,,0000";
+    sentence.sentence = sentence.sentence + "*" + get_nmea_checksum(sentence.sentence);
+    sentence.sentence = "$GPGGA," + sentence.sentence;
+    return sentence;
+  }
+
+  nmea_msgs::Sentence nmea_gps_sensor_plugin::build_GPRMC_sentence()
   {
     nmea_msgs::Sentence sentence;
     sentence.header = fix_.header;
@@ -276,13 +329,13 @@ namespace gazebo
       sentence.sentence = sentence.sentence + std::to_string(digree) + std::to_string(min) + ",";
       sentence.sentence = sentence.sentence + "E,";
     }
-    sentence.sentence = sentence.sentence + "1,08,1.0,";
-    sentence.sentence = sentence.sentence + std::to_string(fix_.altitude) + ",";
-    sentence.sentence = sentence.sentence + "M,";
-    sentence.sentence = sentence.sentence + std::to_string(fix_.altitude) + ",";
-    sentence.sentence = sentence.sentence + "M,,0000";
+    double velocity_knot = (std::pow(velocity_.vector.x,2) + std::pow(velocity_.vector.y,2) + std::pow(velocity_.vector.z,2))*1.94384;
+    sentence.sentence = sentence.sentence + std::to_string(velocity_knot) + ",";
+    double velocity_vector = std::atan2(velocity_.vector.y, velocity_.vector.x)*180/3.14159265359;
+    sentence.sentence = sentence.sentence + std::to_string(velocity_vector) + ",";
+    sentence.sentence = sentence.sentence + ",,,,A";
     sentence.sentence = sentence.sentence + "*" + get_nmea_checksum(sentence.sentence);
-    sentence.sentence = "$GPGGA," + sentence.sentence;
+    sentence.sentence = "$GPRMC," + sentence.sentence;
     return sentence;
   }
 

@@ -59,8 +59,9 @@ namespace gazebo
     void dynamicReconfigureCallback(GNSSConfig &config, uint32_t level);
 
   private:
-    //functions for building nmea sentence
+    //members for building nmea sentence
     nmea_msgs::Sentence build_GPGGA_sentence();
+    nmea_msgs::Sentence build_GPRMC_sentence();
     std::string get_nmea_checksum(std::string sentence);
     /// \brief The parent World
     physics::WorldPtr world;
