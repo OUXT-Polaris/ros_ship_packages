@@ -17,7 +17,7 @@ Fill-out only one section depending on whether you are reporting a bug or a new 
 
   - Ubuntu version:
   - ROS Version:
-  - Autoware branch:
+  - Branch:
 
 # New Feature
 Describe where does new feature request come from. Add high-level picture of how the new feature should work.
