@@ -56,7 +56,7 @@ class twist_publisher:
         twist.linear.x = (transformed_position[0,0] - transformed_position_before[0,0])/duration
         twist.linear.y = (transformed_position[1,0] - transformed_position_before[1,0])/duration
         twist.linear.z = (transformed_position[2,0] - transformed_position_before[2,0])/duration
-        #self.twist_pub.publish(twist)
+        self.twist_pub.publish(twist)
 
 if __name__ == '__main__':
     rospy.init_node('twist_publisher_node', anonymous=True)
