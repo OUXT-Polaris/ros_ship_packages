@@ -8,6 +8,7 @@ USV simulator for ROS
 4.sudo apt install ros-kinetic-jsk-*    
 5.ros-kinetic-hector-gazebo*  
 6.sudo apt install ros-kinetic-nmea*  
+7.sudo apt install ros-kinetic-velodyne*  
 7.catkin_make  
 # robot model
 ## ros_ship
