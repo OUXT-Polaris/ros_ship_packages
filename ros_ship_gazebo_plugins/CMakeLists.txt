@@ -17,6 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
   tf2_ros
   ros_ship_visualization
   nmea_msgs
+  hector_gazebo_plugins
 )
 
 ## System dependencies are found with CMake's conventions
