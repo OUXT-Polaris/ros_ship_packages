@@ -79,7 +79,7 @@
           <geometry>
             <mesh>
               <scale>1 1 1</scale>
-              <uri>/home/masaya/catkin_ws/src/ros_ship_packages/ros_ship_description/world/others/mesh/WATER_SURFACE.dae</uri>
+              <uri>model://ros_ship_description/world/others/mesh/WATER_SURFACE.dae</uri>
             </mesh>
           </geometry>
         </visual>

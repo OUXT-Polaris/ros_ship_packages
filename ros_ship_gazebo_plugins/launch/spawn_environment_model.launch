@@ -11,7 +11,7 @@
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="paused" value="false"/>
     <arg name="use_sim_time" value="true"/>
-    <arg name="world_name" value="$(find ros_ship_description)/world/open_water.world"/>
+    <arg name="world_name" value="$(find ros_ship_gazebo_plugins)/world/open_water.world"/>
   </include>
 <!--
   <node name="dock_spwner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
