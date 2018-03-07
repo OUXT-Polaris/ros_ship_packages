@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
-  <rosparam command="load" file="$(find ros_ship_visualization)/config/google_statc_map_api_key.yaml"/>
+  <rosparam command="load" file="$(find ros_ship_visualization)/config/google_statc_map_api_key_sample.yaml"/>
 
   <node name="plot_characteristic_curve_node" pkg="ros_ship_visualization" type="plot_characteristic_curve.py" args="" output="screen" respawn="true">
   </node>
