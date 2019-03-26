@@ -1,6 +1,9 @@
 # ros_ship_packages
 USV simulator for ROS
 
+* OS : Ubuntu 16.04
+* ROS : Kinetic
+
 # how to build
 1. cd ~/catkin_ws/src
 2. git clone https://github.com/GoodayTH/ros_ship_packages.git
