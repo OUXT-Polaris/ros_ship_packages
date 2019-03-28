@@ -1,18 +1,15 @@
 # ros_ship_packages
 USV simulator for ROS
 
+* OS : Ubuntu 16.04
+* ROS : Kinetic
+
 # how to build
-1.cd ~/catkin_ws/src
-2.git@github.com:hakuturu583/ros_ship_packages.git
-3.cd ../
-4.sudo apt install ros-kinetic-jsk-*
-5.ros-kinetic-hector-gazebo*
-6.sudo apt install ros-kinetic-nmea*
-7.sudo apt install ros-kinetic-velodyne*
-8.sudo apt install ros-kinetic-nmea*
-9.sudo apt install ros-kinetic-robot-pose-ekf
-10.sudo apt install ros-kinetic-gps*
-11.catkin_make
+1. cd ~/catkin_ws/src
+2. git clone https://github.com/GoodayTH/ros_ship_packages.git
+3. cd ../
+4. sudo apt install ros-kinetic-jsk-* ros-kinetic-hector-gazebo* ros-kinetic-nmea* ros-kinetic-velodyne* sudo apt install ros-kinetic-nmea* ros-kinetic-robot-pose-ekf ros-kinetic-gps* ros-kinetic-tf2-sensor-msgs
+5. catkin_make
 # robot model
 ## ros_ship
 ![simulation on gazebo](https://github.com/hakuturu583/ros_ship_packages/blob/master/images/gazebo.png)
